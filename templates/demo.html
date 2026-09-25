@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">⚡ Secure Data Demo (All-In-One Flow)</h1>
+<p class="page-subtitle">Minh họa sự kết hợp cả 6 thuật toán trong cùng một luồng mã hóa và bảo vệ dữ liệu.</p>
+
+<div class="card">
+    <div class="form-group">
+        <label>Original Text Input:</label>
+        <textarea id="demoInput">SecureCrypt Academic Demo 2026</textarea>
+    </div>
+    <button class="btn btn-primary" onclick="runFullDemo()">🚀 Run Full Demo (Chạy cả 6 thuật toán)</button>
+</div>
+
+<div class="card" id="demoResultPanel" style="display: none;">
+    <h3 class="card-title">Kết Quả Xử Lý Chi Tiết:</h3>
+    <div class="form-group">
+        <label>1. AES Session Key Generated (Hex):</label>
+        <div id="demoAESKey" class="output-box"></div>
+    </div>
+    <div class="form-group">
+        <label>2. Encrypted Data with AES-GCM (Ciphertext):</label>
+        <div id="demoAESCipher" class="output-box"></div>
+    </div>
+    <div class="form-group">
+        <label>3. AES Key Encrypted with RSA Public Key:</label>
+        <div id="demoRSAEncKey" class="output-box"></div>
+    </div>
+    <div class="form-group">
+        <label>4. AES Key Encrypted with ElGamal Public Key:</label>
+        <div id="demoElGamalEncKey" class="output-box"></div>
+    </div>
+    <div class="form-group">
+        <label>5. Original Plaintext MD5 Hash:</label>
+        <div id="demoMD5" class="output-box"></div>
+    </div>
+    <div class="form-group">
+        <label>6. Original Plaintext SHA-256 Hash:</label>
+        <div id="demoSHA256" class="output-box"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/demo.js') }}"></script>
+{% endblock %}

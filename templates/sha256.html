@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Hàm băm SHA-256</h1>
+<p class="page-subtitle">Hàm băm an toàn thuộc họ SHA-2 (256-bit Digest), dùng xác thực tính toàn vẹn.</p>
+
+<div class="card">
+    <div class="form-group">
+        <label>Input Text:</label>
+        <textarea id="shaInput" placeholder="Nhập chuỗi cần băm..."></textarea>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="runSHA256Hash()">Generate SHA-256 Hash</button>
+        <button class="btn btn-danger" onclick="clearFields('shaInput', 'shaOutput', 'shaCompareHash')">Clear</button>
+    </div>
+    <div class="form-group" style="margin-top: 15px;">
+        <label>SHA-256 Hash Output (256-bit Hex):</label>
+        <input type="text" id="shaOutput" readonly placeholder="Mã hash SHA-256...">
+        <button class="btn btn-secondary" style="margin-top: 5px;" onclick="copyText('shaOutput')">Copy Hash</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-title">Compare Hash (Kiểm tra toàn vẹn)</h3>
+    <div class="form-group">
+        <label>Nhập Hash SHA-256 đối chiếu:</label>
+        <input type="text" id="shaCompareHash" placeholder="Dán mã Hash cần đối chiếu...">
+    </div>
+    <button class="btn btn-success" onclick="compareSHA256()">Verify Integrity</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sha256.js') }}"></script>
+{% endblock %}

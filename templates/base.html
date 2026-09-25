@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCrypt - Web Application for Cryptography</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="brand">🔐 SecureCrypt</div>
+        <ul class="nav-links">
+            <li><a href="/">Trang chủ</a></li>
+            <li><a href="/des">DES</a></li>
+            <li><a href="/aes">AES</a></li>
+            <li><a href="/md5">MD5</a></li>
+            <li><a href="/sha256">SHA-256</a></li>
+            <li><a href="/rsa">RSA</a></li>
+            <li><a href="/elgamal">ElGamal</a></li>
+            <li><a href="/integrity">Kiểm tra toàn vẹn</a></li>
+            <li><a href="/demo">⚡ Full Demo</a></li>
+            <li><a href="/about">Giới thiệu & Bảng so sánh</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

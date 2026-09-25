@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Mã hóa DES (Data Encryption Standard)</h1>
+<p class="page-subtitle">Minh họa mã hóa đối xứng khối 64-bit sử dụng chế độ DES-CBC.</p>
+
+<div class="card">
+    <div class="form-group">
+        <label>Plaintext (Văn bản gốc):</label>
+        <textarea id="desPlaintext" placeholder="Nhập văn bản cần mã hóa..."></textarea>
+    </div>
+    
+    <div class="form-group">
+        <label>DES Key (16 ký tự Hex = 8 Bytes):</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="desKey" placeholder="Ví dụ: 0123456789abcdef">
+            <button class="btn btn-secondary" onclick="generateDESKey()">Generate Key</button>
+        </div>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="runDESEncrypt()">Encrypt (Mã hóa)</button>
+        <button class="btn btn-success" onclick="runDESDecrypt()">Decrypt (Giải mã)</button>
+        <button class="btn btn-danger" onclick="clearFields('desPlaintext', 'desCiphertext', 'desKey')">Clear</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-title">Kết quả (Ciphertext Base64 / Decrypted Plaintext):</h3>
+    <textarea id="desCiphertext" readonly placeholder="Kết quả hiển thị tại đây..."></textarea>
+    <div style="margin-top: 10px;">
+        <button class="btn btn-secondary" onclick="copyText('desCiphertext')">Copy Kết quả</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-title">How DES works (Nguyên lý hoạt động)</h3>
+    <ul style="color: var(--text-muted); margin-left: 20px; line-height: 1.6;">
+        <li>DES là mã hóa đối xứng: Cùng một khóa bí mật được sử dụng cho cả hai quá trình mã hóa và giải mã.</li>
+        <li>Kích thước khối là 64-bit và độ dài khóa hiệu dụng là 56-bit.</li>
+        <li>DES hiện nay không còn đủ an toàn cho hệ thống thực tế do độ dài khóa quá nhỏ (dễ bị tấn công vét cạn - Brute force).</li>
+        <li>DES được sử dụng trong website này chủ yếu cho mục đích minh họa học thuật.</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/des.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Mã hóa bất đối xứng RSA</h1>
+<p class="page-subtitle">Sử dụng cặp khóa Public Key (Mã hóa) và Private Key (Giải mã) chuẩn RSA-OAEP.</p>
+
+<div class="card">
+    <h3 class="card-title">1. Generate RSA Key Pair</h3>
+    <div class="form-group">
+        <label>Key Size:</label>
+        <select id="rsaBits"><option value="2048">2048-bit (Standard)</option></select>
+    </div>
+    <button class="btn btn-primary" onclick="generateRSAKeys()">Generate Keypair</button>
+    <div class="grid-2" style="margin-top: 15px;">
+        <div>
+            <label>Public Key (PEM):</label>
+            <textarea id="rsaPublicKey" placeholder="Public Key hiển thị tại đây..."></textarea>
+        </div>
+        <div>
+            <label>Private Key (PEM):</label>
+            <textarea id="rsaPrivateKey" placeholder="Private Key hiển thị tại đây..."></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-title">2. Encryption & Decryption</h3>
+    <div class="form-group">
+        <label>Plaintext:</label>
+        <textarea id="rsaPlaintext" placeholder="Nhập văn bản ngắn..."></textarea>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="runRSAEncrypt()">Encrypt with Public Key</button>
+        <button class="btn btn-success" onclick="runRSADecrypt()">Decrypt with Private Key</button>
+        <button class="btn btn-danger" onclick="clearFields('rsaPlaintext', 'rsaCiphertext')">Clear</button>
+    </div>
+    <div class="form-group" style="margin-top: 15px;">
+        <label>Ciphertext (Base64):</label>
+        <textarea id="rsaCiphertext" readonly placeholder="Kết quả mã hóa..."></textarea>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/rsa.js') }}"></script>
+{% endblock %}

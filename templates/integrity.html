@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Kiểm tra tính toàn vẹn tập tin (File Integrity)</h1>
+<p class="page-subtitle">Tính toán đồng thời giá trị băm MD5 và SHA-256 để xác thực tính toàn vẹn của dữ liệu.</p>
+
+<div class="card">
+    <div class="form-group">
+        <label>Chọn Tập tin cần kiểm tra:</label>
+        <input type="file" id="integrityFile">
+    </div>
+    <button class="btn btn-primary" onclick="checkFileIntegrity()">Tính Mã Hash Tập Tin</button>
+</div>
+
+<div class="card" id="fileResultCard" style="display: none;">
+    <h3 class="card-title">Mã Hash Tập Tin</h3>
+    <table>
+        <thead>
+            <tr><th>Thuật toán</th><th>Kết quả Hash (Digest)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>MD5 (128-bit)</td><td id="fileMD5" class="output-box"></td></tr>
+            <tr><td>SHA-256 (256-bit)</td><td id="fileSHA256" class="output-box"></td></tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/integrity.js') }}"></script>
+{% endblock %}

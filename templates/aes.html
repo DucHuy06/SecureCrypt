@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Mã hóa AES (Advanced Encryption Standard)</h1>
+<p class="page-subtitle">Chuẩn mã hóa đối xứng an toàn cao, hỗ trợ AES-GCM 128/256-bit cho Text và File.</p>
+
+<div class="card">
+    <h3 class="card-title">1. Mã hóa & Giải mã Text</h3>
+    <div class="form-group">
+        <label>Plaintext:</label>
+        <textarea id="aesPlaintext" placeholder="Nhập văn bản..."></textarea>
+    </div>
+    <div class="form-group">
+        <label>AES Key (Hex):</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="aesKey" placeholder="Khóa AES (Hex)">
+            <button class="btn btn-secondary" onclick="generateAESKey(128)">Gen 128-bit</button>
+            <button class="btn btn-secondary" onclick="generateAESKey(256)">Gen 256-bit</button>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="runAESEncrypt()">Encrypt Text</button>
+        <button class="btn btn-success" onclick="runAESDecrypt()">Decrypt Text</button>
+        <button class="btn btn-danger" onclick="clearFields('aesPlaintext', 'aesCiphertext', 'aesKey')">Clear</button>
+    </div>
+    <div class="form-group" style="margin-top: 15px;">
+        <label>Ciphertext (Base64):</label>
+        <textarea id="aesCiphertext" readonly placeholder="Kết quả mã hóa..."></textarea>
+        <button class="btn btn-secondary" style="margin-top: 5px;" onclick="copyText('aesCiphertext')">Copy</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-title">2. Mã hóa & Giải mã File</h3>
+    <div class="form-group">
+        <label>Chọn Tập tin:</label>
+        <input type="file" id="aesFile">
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="runAESFileEncrypt()">Encrypt File</button>
+        <button class="btn btn-success" onclick="runAESFileDecrypt()">Decrypt File</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/aes.js') }}"></script>
+{% endblock %}

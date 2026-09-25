@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Bảng so sánh & Tổng quan 6 Thuật toán</h1>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Algorithm</th>
+                <th>Type</th>
+                <th>Encryption/Hash</th>
+                <th>Key Type</th>
+                <th>Main Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>DES</td><td>Symmetric</td><td>Encryption</td><td>Secret Key (56-bit)</td><td>Educational demonstration</td></tr>
+            <tr><td>AES</td><td>Symmetric</td><td>Encryption</td><td>Secret Key (128/256-bit)</td><td>Secure data encryption (Standard)</td></tr>
+            <tr><td>MD5</td><td>Hash Function</td><td>Hashing</td><td>No Key</td><td>Integrity checking (Legacy)</td></tr>
+            <tr><td>SHA-256</td><td>Hash Function</td><td>Hashing</td><td>No Key</td><td>Secure Integrity checking</td></tr>
+            <tr><td>RSA</td><td>Asymmetric</td><td>Encryption</td><td>Public/Private Key</td><td>Secure Key exchange / Digital Signatures</td></tr>
+            <tr><td>ElGamal</td><td>Asymmetric</td><td>Encryption</td><td>Public/Private Key</td><td>Discrete Logarithm Public-key encryption</td></tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Explore Cryptography - Encrypt, Decrypt & Verify</h1>
+<p class="page-subtitle">SecureCrypt là ứng dụng web minh họa các kỹ thuật mật mã cơ bản, bao gồm mã hóa đối xứng, mã hóa bất đối xứng và hàm băm.</p>
+
+<div class="grid-2">
+    <div class="card">
+        <h3 class="card-title">DES</h3>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa đối xứng (Symmetric Encryption)</p>
+        <a href="/des" class="btn btn-primary">Try Now</a>
+    </div>
+    <div class="card">
+        <h3 class="card-title">AES</h3>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa đối xứng chuẩn GCM (128/256-bit)</p>
+        <a href="/aes" class="btn btn-primary">Try Now</a>
+    </div>
+    <div class="card">
+        <h3 class="card-title">MD5</h3>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Hàm băm một chiều (128-bit Hash)</p>
+        <a href="/md5" class="btn btn-primary">Try Now</a>
+    </div>
+    <div class="card">
+        <h3 class="card-title">SHA-256</h3>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Hàm băm an toàn (256-bit Hash)</p>
+        <a href="/sha256" class="btn btn-primary">Try Now</a>
+    </div>
+    <div class="card">
+        <h3 class="card-title">RSA</h3>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa bất đối xứng (Public/Private Key)</p>
+        <a href="/rsa" class="btn btn-primary">Try Now</a>
+    </div>
+    <div class="card">
+        <h3 class="card-title">ElGamal</h3>
+        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa bất đối xứng dựa trên Discrete Logarithm</p>
+        <a href="/elgamal" class="btn btn-primary">Try Now</a>
+    </div>
+</div>
+{% endblock %}

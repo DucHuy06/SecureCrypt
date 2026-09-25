@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Hàm băm MD5</h1>
+<p class="page-subtitle">MD5 LÀ HÀM BĂM MỘT CHIỀU, KHÔNG PHẢI THUẬT TOÁN MÃ HÓA (KHÔNG THỂ GIẢI MÃ).</p>
+
+<div class="card">
+    <div class="form-group">
+        <label>Input Text:</label>
+        <textarea id="md5Input" placeholder="Nhập chuỗi cần băm..."></textarea>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="runMD5Hash()">Generate MD5 Hash</button>
+        <button class="btn btn-danger" onclick="clearFields('md5Input', 'md5Output', 'md5CompareHash')">Clear</button>
+    </div>
+    <div class="form-group" style="margin-top: 15px;">
+        <label>MD5 Hash Output (128-bit Hex):</label>
+        <input type="text" id="md5Output" readonly placeholder="Mã hash MD5...">
+        <button class="btn btn-secondary" style="margin-top: 5px;" onclick="copyText('md5Output')">Copy Hash</button>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-title">Compare Hash (Kiểm tra toàn vẹn)</h3>
+    <div class="form-group">
+        <label>Nhập Hash MD5 thứ 2 để so sánh:</label>
+        <input type="text" id="md5CompareHash" placeholder="Dán mã Hash cần đối chiếu...">
+    </div>
+    <button class="btn btn-success" onclick="compareMD5()">Verify Integrity</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/md5.js') }}"></script>
+{% endblock %}

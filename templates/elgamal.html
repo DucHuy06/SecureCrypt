@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="page-title">Mã hóa bất đối xứng ElGamal</h1>
+<p class="page-subtitle">Dựa trên bài toán Lôgarit rời rạc (Discrete Logarithm Problem).</p>
+
+<div class="card">
+    <h3 class="card-title">1. Key Generation</h3>
+    <button class="btn btn-primary" onclick="generateElGamalKeys()">Generate ElGamal Keypair</button>
+    <div class="grid-2" style="margin-top: 15px;">
+        <div>
+            <label>Public Key (p, g, y JSON):</label>
+            <textarea id="elgamalPublicKey" placeholder="Public Key..."></textarea>
+        </div>
+        <div>
+            <label>Private Key (p, x JSON):</label>
+            <textarea id="elgamalPrivateKey" placeholder="Private Key..."></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card-title">2. Encrypt / Decrypt</h3>
+    <div class="form-group">
+        <label>Plaintext:</label>
+        <textarea id="elgamalPlaintext" placeholder="Nhập văn bản..."></textarea>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="runElGamalEncrypt()">Encrypt</button>
+        <button class="btn btn-success" onclick="runElGamalDecrypt()">Decrypt</button>
+        <button class="btn btn-danger" onclick="clearFields('elgamalPlaintext', 'elgamalCiphertext')">Clear</button>
+    </div>
+    <div class="form-group" style="margin-top: 15px;">
+        <label>Ciphertext Pairs (Base64):</label>
+        <textarea id="elgamalCiphertext" readonly placeholder="Kết quả mã hóa..."></textarea>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/elgamal.js') }}"></script>
+{% endblock %}
