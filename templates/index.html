@@ -1,39 +1,152 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1 class="page-title">Explore Cryptography - Encrypt, Decrypt & Verify</h1>
-<p class="page-subtitle">SecureCrypt là ứng dụng web minh họa các kỹ thuật mật mã cơ bản, bao gồm mã hóa đối xứng, mã hóa bất đối xứng và hàm băm.</p>
+<div class="container-fluid py-3">
+    <!-- Hero Section -->
+    <div class="p-4 mb-4 rounded-3 text-white" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155;">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-6 fw-bold mb-2 text-primary">SecureCrypt System</h1>
+                <p class="fs-6 text-light opacity-75 mb-3">Nền tảng minh họa & công cụ thao tác các thuật toán mật mã kinh điển và hiện đại trong An toàn thông tin.</p>
+                <a href="#algorithms-grid" class="btn btn-primary px-4 py-2 me-2">Khám phá thuật toán</a>
+                <a href="/comparison" class="btn btn-outline-light px-4 py-2">Bảng so sánh</a>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block text-center">
+                <i class="fas fa-user-shield text-primary mb-2" style="font-size: 5rem; opacity: 0.8;"></i>
+            </div>
+        </div>
+        
+        <!-- Stats Row -->
+        <div class="row g-3 mt-3 pt-3 border-top border-secondary">
+            <div class="col-4 text-center">
+                <h4 class="fw-bold mb-0 text-info">6</h4>
+                <small class="text-muted">Thuật toán core</small>
+            </div>
+            <div class="col-4 text-center border-start border-end border-secondary">
+                <h4 class="fw-bold mb-0 text-success">AES-GCM</h4>
+                <small class="text-muted">Chuẩn mã hóa hiện đại</small>
+            </div>
+            <div class="col-4 text-center">
+                <h4 class="fw-bold mb-0 text-warning">2048 bit</h4>
+                <small class="text-muted">Độ dài khóa RSA</small>
+            </div>
+        </div>
+    </div>
 
-<div class="grid-2">
-    <div class="card">
-        <h3 class="card-title">DES</h3>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa đối xứng (Symmetric Encryption)</p>
-        <a href="/des" class="btn btn-primary">Try Now</a>
+    <!-- Algorithms Grid -->
+    <h4 class="fw-bold text-white mb-3" id="algorithms-grid"><i class="fas fa-cubes me-2 text-primary"></i>Danh sách thuật toán</h4>
+    <div class="row g-3">
+        <!-- DES -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-primary mb-0">DES</h5>
+                        <span class="badge bg-warning text-dark">Đối xứng</span>
+                    </div>
+                    <p class="card-text text-muted small flex-grow-1">Mã hóa khối đối xứng (Data Encryption Standard) với độ dài khóa 64-bit (56-bit hiệu dụng).</p>
+                    <a href="/des" class="btn btn-outline-primary btn-sm w-100 mt-2">Thao tác DES <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AES -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-primary mb-0">AES</h5>
+                        <span class="badge bg-success">An toàn cao</span>
+                    </div>
+                    <p class="card-text text-muted small flex-grow-1">Chuẩn mã hóa cao cấp (Advanced Encryption Standard) hỗ trợ chế độ GCM đảm bảo tính bảo mật.</p>
+                    <a href="/aes" class="btn btn-outline-primary btn-sm w-100 mt-2">Thao tác AES <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MD5 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-primary mb-0">MD5</h5>
+                        <span class="badge bg-secondary">Hàm băm</span>
+                    </div>
+                    <p class="card-text text-muted small flex-grow-1">Hàm băm một chiều tạo ra chuỗi băm 128-bit. Thường dùng kiểm tra tính toàn vẹn dữ liệu cơ bản.</p>
+                    <a href="/md5" class="btn btn-outline-primary btn-sm w-100 mt-2">Thao tác MD5 <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHA-256 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-primary mb-0">SHA-256</h5>
+                        <span class="badge bg-info text-dark">Hàm băm chuẩn</span>
+                    </div>
+                    <p class="card-text text-muted small flex-grow-1">Thuật toán băm an toàn thuộc họ SHA-2, tạo chuỗi băm 256-bit ứng dụng rộng rãi trong Blockchain/SSL.</p>
+                    <a href="/sha256" class="btn btn-outline-primary btn-sm w-100 mt-2">Thao tác SHA-256 <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- RSA -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-primary mb-0">RSA</h5>
+                        <span class="badge bg-primary">Bất đối xứng</span>
+                    </div>
+                    <p class="card-text text-muted small flex-grow-1">Thuật toán mã hóa khóa công khai dựa trên độ khó của việc phân tích số nguyên lớn thành thừa số nguyên tố.</p>
+                    <a href="/rsa" class="btn btn-outline-primary btn-sm w-100 mt-2">Thao tác RSA <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ElGamal -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 bg-dark text-white border-secondary shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-primary mb-0">ElGamal</h5>
+                        <span class="badge bg-danger">Bất đối xứng</span>
+                    </div>
+                    <p class="card-text text-muted small flex-grow-1">Hệ thống mật mã khóa bất đối xứng dựa trên bài toán logarit rời rạc trên trường hữu hạn.</p>
+                    <a href="/elgamal" class="btn btn-outline-primary btn-sm w-100 mt-2">Thao tác ElGamal <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <h3 class="card-title">AES</h3>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa đối xứng chuẩn GCM (128/256-bit)</p>
-        <a href="/aes" class="btn btn-primary">Try Now</a>
-    </div>
-    <div class="card">
-        <h3 class="card-title">MD5</h3>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Hàm băm một chiều (128-bit Hash)</p>
-        <a href="/md5" class="btn btn-primary">Try Now</a>
-    </div>
-    <div class="card">
-        <h3 class="card-title">SHA-256</h3>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Hàm băm an toàn (256-bit Hash)</p>
-        <a href="/sha256" class="btn btn-primary">Try Now</a>
-    </div>
-    <div class="card">
-        <h3 class="card-title">RSA</h3>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa bất đối xứng (Public/Private Key)</p>
-        <a href="/rsa" class="btn btn-primary">Try Now</a>
-    </div>
-    <div class="card">
-        <h3 class="card-title">ElGamal</h3>
-        <p style="color: var(--text-muted); margin-bottom: 15px;">Mã hóa bất đối xứng dựa trên Discrete Logarithm</p>
-        <a href="/elgamal" class="btn btn-primary">Try Now</a>
+
+    <!-- Quick Workflow Steps -->
+    <div class="mt-5 p-4 rounded-3" style="background-color: #1e293b; border: 1px solid #334155;">
+        <h5 class="fw-bold text-white mb-3"><i class="fas fa-project-diagram me-2 text-info"></i>Quy trình sử dụng hệ thống</h5>
+        <div class="row text-center g-3">
+            <div class="col-md-4">
+                <div class="p-3 bg-dark rounded border border-secondary h-100">
+                    <div class="badge bg-primary fs-6 mb-2">Bước 1</div>
+                    <h6 class="text-white fw-bold">Chọn thuật toán</h6>
+                    <small class="text-muted">Lựa chọn thuật toán mã hóa đối xứng, bất đối xứng hoặc hàm băm phù hợp.</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-dark rounded border border-secondary h-100">
+                    <div class="badge bg-primary fs-6 mb-2">Bước 2</div>
+                    <h6 class="text-white fw-bold">Nhập Dữ liệu & Khóa</h6>
+                    <small class="text-muted">Nhập văn bản cần xử lý, khởi tạo khóa ngẫu nhiên hoặc tự nhập khóa bảo mật.</small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-dark rounded border border-secondary h-100">
+                    <div class="badge bg-primary fs-6 mb-2">Bước 3</div>
+                    <h6 class="text-white fw-bold">Thao tác & Kiểm tra</h6>
+                    <small class="text-muted">Bấm Mã hóa/Giải mã/Băm để nhận kết quả dạng Ciphertext/Base64 hoặc Hex.</small>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
