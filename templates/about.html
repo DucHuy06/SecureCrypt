@@ -1,27 +1,197 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1 class="page-title">Bảng so sánh & Tổng quan 6 Thuật toán</h1>
+<style>
+    .learn-header {
+        margin-bottom: 30px;
+    }
+    .learn-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+    .learn-desc {
+        font-size: 15px;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
 
-<div class="card">
-    <table>
-        <thead>
-            <tr>
-                <th>Algorithm</th>
-                <th>Type</th>
-                <th>Encryption/Hash</th>
-                <th>Key Type</th>
-                <th>Main Purpose</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>DES</td><td>Symmetric</td><td>Encryption</td><td>Secret Key (56-bit)</td><td>Educational demonstration</td></tr>
-            <tr><td>AES</td><td>Symmetric</td><td>Encryption</td><td>Secret Key (128/256-bit)</td><td>Secure data encryption (Standard)</td></tr>
-            <tr><td>MD5</td><td>Hash Function</td><td>Hashing</td><td>No Key</td><td>Integrity checking (Legacy)</td></tr>
-            <tr><td>SHA-256</td><td>Hash Function</td><td>Hashing</td><td>No Key</td><td>Secure Integrity checking</td></tr>
-            <tr><td>RSA</td><td>Asymmetric</td><td>Encryption</td><td>Public/Private Key</td><td>Secure Key exchange / Digital Signatures</td></tr>
-            <tr><td>ElGamal</td><td>Asymmetric</td><td>Encryption</td><td>Public/Private Key</td><td>Discrete Logarithm Public-key encryption</td></tr>
-        </tbody>
-    </table>
+    /* List of Topics (Style Daxipher) */
+    .topics-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-bottom: 40px;
+    }
+    .topic-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 18px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .topic-card:hover {
+        border-color: var(--accent-indigo);
+        transform: translateX(4px);
+        background: #1a2436;
+    }
+    .topic-info h4 {
+        margin: 0 0 6px 0;
+        font-size: 17px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+    .topic-info p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+    .read-time {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent-indigo);
+        background: rgba(99, 102, 241, 0.1);
+        padding: 4px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    /* Detailed Theory Article Section */
+    .article-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 30px;
+        margin-top: 30px;
+    }
+    .article-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Spec Code Box (Giống hình Daxipher) */
+    .spec-box {
+        background: #0d1322;
+        border: 1px solid #1e2d4a;
+        border-radius: 10px;
+        padding: 18px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 13px;
+        color: #cbd5e1;
+        line-height: 1.7;
+        margin: 16px 0;
+    }
+    .spec-box .key { color: #f472b6; font-weight: bold; }
+    .spec-box .val { color: #38bdf8; }
+    .spec-box .comment { color: #64748b; font-style: italic; }
+
+    /* Security Callout Box (Giống hình Daxipher) */
+    .callout-warning {
+        background: rgba(245, 158, 11, 0.08);
+        border-left: 4px solid var(--accent-amber);
+        border-radius: 0 8px 8px 0;
+        padding: 16px 20px;
+        margin: 20px 0;
+    }
+    .callout-warning h5 {
+        margin: 0 0 6px 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent-amber);
+    }
+    .callout-warning p {
+        margin: 0;
+        font-size: 13px;
+        color: #cbd5e1;
+        line-height: 1.5;
+    }
+</style>
+
+<!-- Top Learn Banner -->
+<div class="learn-header">
+    <h1 class="learn-title">Learn Cryptography & Theory</h1>
+    <div class="learn-desc">Hướng dẫn lý thuyết chuyên sâu về Mật mã học dành cho sinh viên và lập trình viên. Kết nối lý thuyết toán học với ứng dụng thực tế.</div>
+</div>
+
+<!-- List of Learning Guides -->
+<div class="topics-list">
+    <a href="#rsa-detail" class="topic-card">
+        <div class="topic-info">
+            <h4>1. Thuật toán Mã hóa Bất đối xứng RSA & Bài toán Số nguyên lớn</h4>
+            <p>Khóa Public/Private, chu kỳ sinh khóa p & q, công thức $C = M^e \pmod n$ và tấn công giải thừa số.</p>
+        </div>
+        <div class="read-time">8 min read</div>
+    </a>
+
+    <a href="#aes-detail" class="topic-card">
+        <div class="topic-info">
+            <h4>2. Chuẩn mã hóa hiện đại AES (Advanced Encryption Standard)</h4>
+            <p>Cấu trúc ma trận State 4x4, các vòng biến đổi SubBytes, ShiftRows, MixColumns và chế độ AES-GCM.</p>
+        </div>
+        <div class="read-time">10 min read</div>
+    </a>
+
+    <a href="#hash-detail" class="topic-card">
+        <div class="topic-info">
+            <h4>3. Hàm Băm Mật mã (Hash Functions) & Chống Đụng độ</h4>
+            <p>Nguyên lý một chiều của SHA-256, MD5, cấu trúc Merkle-Damgård và ứng dụng trong Chữ ký số.</p>
+        </div>
+        <div class="read-time">6 min read</div>
+    </a>
+</div>
+
+<!-- Article 1: RSA Theory -->
+<div class="article-section" id="rsa-detail">
+    <div class="article-title"><i class="fa-solid fa-key text-indigo"></i> Chi tiết Lý thuyết: Thuật toán RSA</div>
+    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+        RSA là thuật toán mã hóa khóa công khai đầu tiên thích hợp cho việc ký cũng như mã hóa. Độ an toàn dựa trên độ khó của bài toán phân tích số nguyên lớn thành tích hai số nguyên tố.
+    </p>
+
+    <!-- Spec Box -->
+    <div class="spec-box">
+        <span class="comment">// Quy trình Toán học sinh khóa RSA (2048-bit)</span><br>
+        <span class="key">Input p, q:</span> <span class="val">2 số nguyên tố ngẫu nhiên rất lớn</span><br>
+        <span class="key">Modulus n:</span> <span class="val">n = p × q</span> <span class="comment">(Công khai độ dài 2048 bit)</span><br>
+        <span class="key">Euler Phi:</span> <span class="val">φ(n) = (p - 1) × (q - 1)</span><br>
+        <span class="key">Public Key e:</span> <span class="val">Thường chọn e = 65537</span> <span class="comment">(gcd(e, φ(n)) = 1)</span><br>
+        <span class="key">Private Key d:</span> <span class="val">d ≡ e⁻¹ (mod φ(n))</span> <span class="comment">(Nghịch đảo nhân mod)</span><br><br>
+        <span class="key">Encryption:</span> <span class="val">Ciphertext C = Mᵉ (mod n)</span><br>
+        <span class="key">Decryption:</span> <span class="val">Plaintext  M = Cᵈ (mod n)</span>
+    </div>
+
+    <!-- Security Warning Callout -->
+    <div class="callout-warning">
+        <h5><i class="fa-solid fa-triangle-exclamation me-1"></i> Lưu ý An toàn (Security Callout)</h5>
+        <p>Tuyệt đối không sử dụng độ dài khóa RSA nhỏ hơn 2048-bit trong các ứng dụng thực tế. Khóa RSA 512-bit và 768-bit đã bị phá vỡ hoàn toàn bằng thuật toán Siv-Number Field Sieve trên máy tính hiệu năng cao.</p>
+    </div>
+</div>
+
+<!-- Article 2: AES Theory -->
+<div class="article-section" id="aes-detail">
+    <div class="article-title"><i class="fa-solid fa-lock text-emerald"></i> Chi tiết Lý thuyết: Chuẩn Mã hóa AES</div>
+    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+        AES hoạt động trên mạng thay thế-hoán vị (Substitution-Permutation Network). Dữ liệu 128-bit được chia thành ma trận trạng thái $4 \times 4$ byte (State matrix) và trải qua 10, 12, hoặc 14 vòng lặp tùy độ dài khóa.
+    </p>
+
+    <div class="spec-box">
+        <span class="comment">// 4 bước biến đổi cốt lõi trong mỗi vòng AES (Round)</span><br>
+        <span class="key">1. SubBytes:</span> <span class="val">Thay thế phi tuyến từng byte qua bảng S-Box.</span><br>
+        <span class="key">2. ShiftRows:</span> <span class="val">Dịch chuyển các hàng của ma trận State theo chu kỳ.</span><br>
+        <span class="key">3. MixColumns:</span> <span class="val">Nhân ma trận cột trên trường hữu hạn Galois GF(2⁸).</span><br>
+        <span class="key">4. AddRoundKey:</span> <span class="val">XOR trạng thái hiện tại với khóa con (Round Key).</span>
+    </div>
 </div>
 {% endblock %}
