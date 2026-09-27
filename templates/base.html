@@ -3,35 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureCrypt - Web Application for Cryptography</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %}SecureCrypt - Cryptography Playground{% endblock %}</title>
+    <!-- Google Font Plus Jakarta Sans & FontAwesome icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-body: #0b0f19;
+            --bg-card: #151d2a;
+            --border-color: #222f43;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-indigo: #6366f1;
+            --accent-indigo-hover: #4f46e5;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-cyan: #06b6d4;
+            --accent-rose: #f43f5e;
+            --accent-purple: #d946ef;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Header Navigation (Style Daxipher) */
+        .top-navbar {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 18px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .brand-logo i {
+            color: var(--accent-indigo);
+            font-size: 20px;
+        }
+
+        .nav-tabs-group {
+            display: flex;
+            align-items: center;
+            background: #111827;
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab-item {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 7px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 7px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-tab-item:hover {
+            color: var(--text-main);
+        }
+
+        .nav-tab-item.active {
+            background: var(--accent-indigo);
+            color: #ffffff;
+        }
+
+        .nav-tab-item.ai-badge {
+            background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+            color: white;
+        }
+
+        .btn-github {
+            background: #1f293d;
+            color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-github:hover {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        /* Layout Container */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="brand">🔐 SecureCrypt</div>
-        <ul class="nav-links">
-            <li><a href="/">Trang chủ</a></li>
-            <li><a href="/des">DES</a></li>
-            <li><a href="/aes">AES</a></li>
-            <li><a href="/md5">MD5</a></li>
-            <li><a href="/sha256">SHA-256</a></li>
-            <li><a href="/rsa">RSA</a></li>
-            <li><a href="/elgamal">ElGamal</a></li>
-            <li><a href="/integrity">Kiểm tra toàn vẹn</a></li>
-            <li><a href="/demo">⚡ Full Demo</a></li>
-            <li><a href="/about">Giới thiệu & Bảng so sánh</a></li>
-        </ul>
-    </div>
 
-    <div class="main-content">
-        <div class="container">
-            {% block content %}{% endblock %}
+    <!-- Top Navigation Header Bar -->
+    <header class="top-navbar">
+        <a href="/" class="brand-logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>SecureCrypt</span>
+        </a>
+
+        <nav class="nav-tabs-group">
+            <a href="/" class="nav-tab-item active"><i class="fa-solid fa-wrench"></i> Tools</a>
+            <a href="/demo" class="nav-tab-item"><i class="fa-solid fa-flask"></i> Demos</a>
+            <a href="/ai-chat" class="nav-tab-item ai-badge"><i class="fa-solid fa-robot"></i> Crypto AI</a>
+            <a href="/about" class="nav-tab-item"><i class="fa-solid fa-graduation-cap"></i> Learn</a>
+        </nav>
+
+        <div>
+            <a href="https://github.com/DucHuy06/SecureCrypt" target="_blank" class="btn-github">
+                <i class="fa-brands fa-github me-1"></i> GitHub
+            </a>
         </div>
-    </div>
+    </header>
 
-    <div id="toast"></div>
+    <!-- Main Content Body -->
+    <main class="app-container">
+        {% block content %}{% endblock %}
+    </main>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    {% block scripts %}{% endblock %}
 </body>
 </html>
