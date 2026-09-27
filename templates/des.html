@@ -1,49 +1,124 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1 class="page-title">Mã hóa DES (Data Encryption Standard)</h1>
-<p class="page-subtitle">Minh họa mã hóa đối xứng khối 64-bit sử dụng chế độ DES-CBC.</p>
+<style>
+    .demo-header {
+        margin-bottom: 30px;
+    }
+    .demo-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+    .demo-desc {
+        font-size: 15px;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
 
-<div class="card">
-    <div class="form-group">
-        <label>Plaintext (Văn bản gốc):</label>
-        <textarea id="desPlaintext" placeholder="Nhập văn bản cần mã hóa..."></textarea>
-    </div>
-    
-    <div class="form-group">
-        <label>DES Key (16 ký tự Hex = 8 Bytes):</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="text" id="desKey" placeholder="Ví dụ: 0123456789abcdef">
-            <button class="btn btn-secondary" onclick="generateDESKey()">Generate Key</button>
+    .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 20px;
+    }
+
+    .demo-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.25s ease;
+    }
+    .demo-card:hover {
+        border-color: var(--accent-indigo);
+        transform: translateY(-4px);
+    }
+
+    .tag-sim {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--accent-emerald);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        align-self: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .demo-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 10px;
+    }
+
+    .demo-text {
+        font-size: 13.5px;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .btn-launch {
+        background: #1e293b;
+        color: var(--text-main);
+        border: 1px solid var(--border-color);
+        padding: 10px 0;
+        width: 100%;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+    }
+    .btn-launch:hover {
+        background: var(--accent-indigo);
+        color: #ffffff;
+        border-color: var(--accent-indigo);
+    }
+</style>
+
+<div class="demo-header">
+    <h1 class="demo-title">Interactive Cryptography Demos</h1>
+    <div class="demo-desc">Các kịch bản mô phỏng tương tác giúp trực quan hóa quy trình mật mã học trong các ứng dụng thực tế.</div>
+</div>
+
+<div class="demo-grid">
+    <!-- Demo 1: Alice & Bob -->
+    <div class="demo-card">
+        <div>
+            <span class="tag-sim">Interactive Simulator</span>
+            <div class="demo-name">Mô phỏng Truyền tin Alice & Bob</div>
+            <div class="demo-text">Trực quan hóa luồng gửi tin nhắn bí mật từ Alice sang Bob qua kênh truyền internet. Kết hợp giữa mã hóa AES và tính toán giá trị băm SHA-256.</div>
         </div>
+        <a href="/aes" class="btn-launch">Chạy Mô Phỏng Alice & Bob →</a>
     </div>
 
-    <div class="btn-group">
-        <button class="btn btn-primary" onclick="runDESEncrypt()">Encrypt (Mã hóa)</button>
-        <button class="btn btn-success" onclick="runDESDecrypt()">Decrypt (Giải mã)</button>
-        <button class="btn btn-danger" onclick="clearFields('desPlaintext', 'desCiphertext', 'desKey')">Clear</button>
+    <!-- Demo 2: Integrity & Avalanche Effect -->
+    <div class="demo-card">
+        <div>
+            <span class="tag-sim">Visual Analysis</span>
+            <div class="demo-name">Kiểm tra Toàn vẹn & Hiệu ứng Tuyết Lở</div>
+            <div class="demo-text">Thử nghiệm thay đổi duy nhất 1 ký tự ở văn bản đầu vào để quan sát sự thay đổi 100% hoàn toàn của chuỗi Băm (Avalanche Effect).</div>
+        </div>
+        <a href="/integrity" class="btn-launch">Thử Hiệu Ứng Tuyết Lở →</a>
+    </div>
+
+    <!-- Demo 3: Digital Signature -->
+    <div class="demo-card">
+        <div>
+            <span class="tag-sim">Cryptographic Proof</span>
+            <div class="demo-name">Mô phỏng Chữ ký số (Digital Signature)</div>
+            <div class="demo-text">Ký số văn bản bằng Private Key RSA và xác thực tính chính chủ của tài liệu bằng Public Key RSA.</div>
+        </div>
+        <a href="/rsa" class="btn-launch">Thao tác Chữ Ký Số →</a>
     </div>
 </div>
-
-<div class="card">
-    <h3 class="card-title">Kết quả (Ciphertext Base64 / Decrypted Plaintext):</h3>
-    <textarea id="desCiphertext" readonly placeholder="Kết quả hiển thị tại đây..."></textarea>
-    <div style="margin-top: 10px;">
-        <button class="btn btn-secondary" onclick="copyText('desCiphertext')">Copy Kết quả</button>
-    </div>
-</div>
-
-<div class="card">
-    <h3 class="card-title">How DES works (Nguyên lý hoạt động)</h3>
-    <ul style="color: var(--text-muted); margin-left: 20px; line-height: 1.6;">
-        <li>DES là mã hóa đối xứng: Cùng một khóa bí mật được sử dụng cho cả hai quá trình mã hóa và giải mã.</li>
-        <li>Kích thước khối là 64-bit và độ dài khóa hiệu dụng là 56-bit.</li>
-        <li>DES hiện nay không còn đủ an toàn cho hệ thống thực tế do độ dài khóa quá nhỏ (dễ bị tấn công vét cạn - Brute force).</li>
-        <li>DES được sử dụng trong website này chủ yếu cho mục đích minh họa học thuật.</li>
-    </ul>
-</div>
-{% endblock %}
-
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/des.js') }}"></script>
 {% endblock %}
