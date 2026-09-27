@@ -32,7 +32,7 @@
             padding: 0;
         }
 
-        /* Top Header Navigation (Style Daxipher) */
+        /* Top Header Navigation */
         .top-navbar {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
@@ -86,33 +86,23 @@
             color: var(--text-main);
         }
 
+        /* Dynamic Active Tab Style */
         .nav-tab-item.active {
             background: var(--accent-indigo);
             color: #ffffff;
         }
 
-        .nav-tab-item.ai-badge {
+        /* Dynamic Active AI Tab Style */
+        .nav-tab-item.ai-tab.active {
             background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
-            color: white;
-        }
-
-        .btn-github {
-            background: #1f293d;
-            color: #ffffff;
-            border: 1px solid var(--border-color);
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        .btn-github:hover {
-            background: #334155;
             color: #ffffff;
         }
 
-        /* Layout Container */
+        /* Empty Header Corner */
+        .right-header-placeholder {
+            min-width: 100px;
+        }
+
         .app-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -129,18 +119,24 @@
             <span>SecureCrypt</span>
         </a>
 
+        <!-- Dynamic Nav: Chỉ sáng màu đúng trang đang đứng -->
         <nav class="nav-tabs-group">
-            <a href="/" class="nav-tab-item active"><i class="fa-solid fa-wrench"></i> Tools</a>
-            <a href="/demo" class="nav-tab-item"><i class="fa-solid fa-flask"></i> Demos</a>
-            <a href="/ai-chat" class="nav-tab-item ai-badge"><i class="fa-solid fa-robot"></i> Crypto AI</a>
-            <a href="/about" class="nav-tab-item"><i class="fa-solid fa-graduation-cap"></i> Learn</a>
+            <a href="/" class="nav-tab-item {% if request.path == '/' or request.path in ['/des', '/aes', '/md5', '/sha256', '/rsa', '/elgamal'] %}active{% endif %}">
+                <i class="fa-solid fa-wrench"></i> Tools
+            </a>
+            <a href="/demo" class="nav-tab-item {% if request.path == '/demo' or request.path == '/demos' %}active{% endif %}">
+                <i class="fa-solid fa-flask"></i> Demos
+            </a>
+            <a href="/ai-chat" class="nav-tab-item ai-tab {% if request.path == '/ai-chat' %}active{% endif %}">
+                <i class="fa-solid fa-robot"></i> Crypto AI
+            </a>
+            <a href="/about" class="nav-tab-item {% if request.path == '/about' or request.path == '/comparison' %}active{% endif %}">
+                <i class="fa-solid fa-graduation-cap"></i> Learn
+            </a>
         </nav>
 
-        <div>
-            <a href="https://github.com/DucHuy06/SecureCrypt" target="_blank" class="btn-github">
-                <i class="fa-brands fa-github me-1"></i> GitHub
-            </a>
-        </div>
+        <!-- Để trống góc phải -->
+        <div class="right-header-placeholder"></div>
     </header>
 
     <!-- Main Content Body -->
