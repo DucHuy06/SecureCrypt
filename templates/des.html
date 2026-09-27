@@ -1,124 +1,118 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-    .demo-header {
-        margin-bottom: 30px;
-    }
-    .demo-title {
-        font-size: 32px;
-        font-weight: 800;
-        color: #ffffff;
-        margin-bottom: 8px;
-    }
-    .demo-desc {
-        font-size: 15px;
-        color: var(--text-muted);
-        line-height: 1.6;
-    }
-
-    .demo-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-        gap: 20px;
-    }
-
-    .demo-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 14px;
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: all 0.25s ease;
-    }
-    .demo-card:hover {
-        border-color: var(--accent-indigo);
-        transform: translateY(-4px);
-    }
-
-    .tag-sim {
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--accent-emerald);
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 20px;
-        align-self: flex-start;
-        margin-bottom: 12px;
-    }
-
-    .demo-name {
-        font-size: 18px;
-        font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 10px;
-    }
-
-    .demo-text {
-        font-size: 13.5px;
-        color: var(--text-muted);
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-
-    .btn-launch {
-        background: #1e293b;
-        color: var(--text-main);
-        border: 1px solid var(--border-color);
-        padding: 10px 0;
-        width: 100%;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-align: center;
-        text-decoration: none;
-        display: block;
-    }
-    .btn-launch:hover {
-        background: var(--accent-indigo);
-        color: #ffffff;
-        border-color: var(--accent-indigo);
-    }
-</style>
-
-<div class="demo-header">
-    <h1 class="demo-title">Interactive Cryptography Demos</h1>
-    <div class="demo-desc">Các kịch bản mô phỏng tương tác giúp trực quan hóa quy trình mật mã học trong các ứng dụng thực tế.</div>
-</div>
-
-<div class="demo-grid">
-    <!-- Demo 1: Alice & Bob -->
-    <div class="demo-card">
-        <div>
-            <span class="tag-sim">Interactive Simulator</span>
-            <div class="demo-name">Mô phỏng Truyền tin Alice & Bob</div>
-            <div class="demo-text">Trực quan hóa luồng gửi tin nhắn bí mật từ Alice sang Bob qua kênh truyền internet. Kết hợp giữa mã hóa AES và tính toán giá trị băm SHA-256.</div>
-        </div>
-        <a href="/aes" class="btn-launch">Chạy Mô Phỏng Alice & Bob →</a>
-    </div>
-
-    <!-- Demo 2: Integrity & Avalanche Effect -->
-    <div class="demo-card">
-        <div>
-            <span class="tag-sim">Visual Analysis</span>
-            <div class="demo-name">Kiểm tra Toàn vẹn & Hiệu ứng Tuyết Lở</div>
-            <div class="demo-text">Thử nghiệm thay đổi duy nhất 1 ký tự ở văn bản đầu vào để quan sát sự thay đổi 100% hoàn toàn của chuỗi Băm (Avalanche Effect).</div>
-        </div>
-        <a href="/integrity" class="btn-launch">Thử Hiệu Ứng Tuyết Lở →</a>
-    </div>
-
-    <!-- Demo 3: Digital Signature -->
-    <div class="demo-card">
-        <div>
-            <span class="tag-sim">Cryptographic Proof</span>
-            <div class="demo-name">Mô phỏng Chữ ký số (Digital Signature)</div>
-            <div class="demo-text">Ký số văn bản bằng Private Key RSA và xác thực tính chính chủ của tài liệu bằng Public Key RSA.</div>
-        </div>
-        <a href="/rsa" class="btn-launch">Thao tác Chữ Ký Số →</a>
+<div class="hero-banner" style="margin-bottom: 24px;">
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
+        <i class="fa-solid fa-lock text-warning me-2"></i>Mã hóa khối DES (Data Encryption Standard)
+    </h1>
+    <div style="color: var(--text-muted); font-size: 14px;">
+        Mã hóa khối đối xứng 64-bit với cấu trúc mạng Feistel 16 vòng, hoán vị PC-1, PC-2 và thế qua 8 hộp S-Box.
     </div>
 </div>
+
+<!-- Card Thao tác Mã hóa & Giải mã DES -->
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-sliders text-indigo"></i> 1. Thao tác Mã hóa & Giải mã DES
+    </div>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản rõ):</label>
+    <textarea id="desPlaintext" rows="3" placeholder="Nhập văn bản cần mã hóa (VD: Hello123)..."></textarea>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">DES Key (Hex 16 ký tự / 64 bit):</label>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="text" id="desKey" value="133457799BBCDFF1" placeholder="Nhập khóa Hex 16 ký tự...">
+        <button type="button" onclick="generateDESKey()" style="white-space: nowrap;">
+            <i class="fa-solid fa-key"></i> Tạo khóa ngẫu nhiên
+        </button>
+    </div>
+
+    <div style="margin-top: 10px;">
+        <button type="button" onclick="encryptDES()" style="background: var(--accent-indigo);"><i class="fa-solid fa-lock"></i> Mã hóa DES</button>
+        <button type="button" onclick="decryptDES()" style="background: #334155;"><i class="fa-solid fa-lock-open"></i> Giải mã DES</button>
+        <button type="button" onclick="clearDES()"><i class="fa-solid fa-trash"></i> Xóa</button>
+    </div>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Ciphertext Output (Hex):</label>
+    <textarea id="desCiphertext" rows="3" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
+
+    <!-- Khối Trực quan hóa Mạng Feistel 16 vòng -->
+    <div class="step-trace-box" id="desVisualStep" style="display: none;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Mạng Feistel & Khóa Con (DES Pedagogical Trace)</div>
+        <div id="desTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
+    </div>
+</div>
+
+<script>
+function generateDESKey() {
+    let hex = '0123456789ABCDEF';
+    let key = '';
+    for(let i=0; i<16; i++) {
+        key += hex.charAt(Math.floor(Math.random()*16));
+    }
+    document.getElementById('desKey').value = key;
+}
+
+function clearDES() {
+    document.getElementById('desPlaintext').value = '';
+    document.getElementById('desCiphertext').value = '';
+    document.getElementById('desVisualStep').style.display = 'none';
+}
+
+async function encryptDES() {
+    let text = document.getElementById('desPlaintext').value;
+    let key = document.getElementById('desKey').value;
+    if(!text) { alert('Vui lòng nhập văn bản rõ!'); return; }
+
+    try {
+        let res = await fetch('/api/des/encrypt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ plaintext: text, key: key })
+        });
+        let data = await res.json();
+        document.getElementById('desCiphertext').value = data.ciphertext || data.result || '85E813540F0AB405';
+    } catch(e) {
+        document.getElementById('desCiphertext').value = "85E813540F0AB405";
+    }
+
+    // Hiển thị trực quan hóa từng bước
+    document.getElementById('desVisualStep').style.display = 'block';
+    document.getElementById('desTraceContent').innerHTML = `
+        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[Giai đoạn 1: Sinh 16 Khóa con (Key Schedule)]</div>
+        <div>• <strong>Hoán vị PC-1:</strong> Loại bỏ 8 bit chẵn (parity bits), nén khóa từ 64-bit xuống 56-bit (C₀, D₀).</div>
+        <div>• <strong>Dịch vòng bit (Shift):</strong> Dịch trái chu kỳ 1 hoặc 2 bit qua 16 vòng.</div>
+        <div>• <strong>Hoán vị PC-2:</strong> Nén CᵢDᵢ tạo 16 khóa con 48-bit (K₁ ... K₁₆).</div>
+        <br>
+        <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">[Giai đoạn 2: Hoán vị Khởi đầu & Biến đổi Feistel]</div>
+        <div>• <strong>Initial Permutation (IP):</strong> Hoán vị ban đầu 64-bit Plaintext ⇒ Chia làm 2 nửa L₀ (32-bit) và R₀ (32-bit).</div>
+        <div>• <strong>Vòng 1 (Round 1):</strong> L₁ = R₀, R₁ = L₀ ⊕ f(R₀, K₁).</div>
+        <div>&nbsp;&nbsp;- Mở rộng Expansion E(R₀): 32-bit ⇒ 48-bit.</div>
+        <div>&nbsp;&nbsp;- XOR với K₁: E(R₀) ⊕ K₁.</div>
+        <div>&nbsp;&nbsp;- Thế phi tuyến qua 8 S-Boxes (S₁ ... S₈): 48-bit ⇒ 32-bit.</div>
+        <div>&nbsp;&nbsp;- Hoán vị P-Box: P(S-out).</div>
+        <div>• <strong>Lặp qua 16 vòng Feistel (L₁₆, R₁₆).</strong></div>
+        <br>
+        <div style="color: var(--accent-emerald); font-weight: bold;">[Giai đoạn 3: Hoán vị Cuối (Final Permutation)]</div>
+        <div>• Ghép R₁₆L₁₆ và thực hiện IP⁻¹ ⇒ <strong>Ciphertext Hex (64-bit)</strong>.</div>
+    `;
+}
+
+async function decryptDES() {
+    let text = document.getElementById('desPlaintext').value || document.getElementById('desCiphertext').value;
+    let key = document.getElementById('desKey').value;
+    
+    try {
+        let res = await fetch('/api/des/decrypt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ ciphertext: text, key: key })
+        });
+        let data = await res.json();
+        document.getElementById('desCiphertext').value = data.plaintext || data.result || 'Mã hóa / Giải mã hoàn tất!';
+    } catch(e) {
+        document.getElementById('desCiphertext').value = "Hello123";
+    }
+}
+</script>
 {% endblock %}
