@@ -1,11 +1,18 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify
+import google.generativeai as genai
+
 from routes.crypto_routes import crypto_bp
 from routes.file_routes import file_bp
 from routes.demo_routes import demo_bp
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Tối đa 32MB file upload
+
+# Cấu hình Gemini API Key từ biến môi trường (An toàn, tránh lộ Key trên GitHub)
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 # Đăng ký API routes
 app.register_blueprint(crypto_bp, url_prefix='/api')
@@ -46,6 +53,7 @@ def integrity_page():
     return render_template('integrity.html')
 
 @app.route('/demo')
+@app.route('/demos')
 def demo_page():
     return render_template('demo.html')
 
@@ -53,15 +61,27 @@ def demo_page():
 def about_page():
     return render_template('about.html')
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)  
-
 @app.route('/ai-chat')
 def ai_chat():
     return render_template('ai_chat.html')
 
-@app.route('/demo')
-@app.route('/demos')
-def demo():
-    return render_template('demo.html')
+# API Route cho Crypto AI Chatbot
+@app.route('/api/chat', methods=['POST'])
+def chat_api():
+    data = request.get_json() or {}
+    user_message = data.get('message', '')
+    
+    if not user_message:
+        return jsonify({'reply': 'Vui lòng nhập câu hỏi.'})
+        
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        prompt = f"Bạn là Trợ lý AI chuyên gia về Mật mã học (Cryptography) cho ứng dụng SecureCrypt. Hãy giải đáp ngắn gọn, dễ hiểu và chính xác bằng tiếng Việt câu hỏi sau: {user_message}"
+        response = model.generate_content(prompt)
+        return jsonify({'reply': response.text})
+    except Exception as e:
+        return jsonify({'reply': f"Không thể kết nối AI: {str(e)}"})
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
