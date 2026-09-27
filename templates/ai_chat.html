@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .chat-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        height: 70vh;
+        overflow: hidden;
+    }
+    .chat-header {
+        padding: 16px 24px;
+        background: #111827;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .chat-body {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .chat-msg {
+        max-width: 80%;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    .msg-ai {
+        background: #1e293b;
+        color: #f8fafc;
+        border: 1px solid var(--border-color);
+        align-self: flex-start;
+    }
+    .msg-user {
+        background: var(--accent-indigo);
+        color: #ffffff;
+        align-self: flex-end;
+    }
+    .chat-footer {
+        padding: 16px;
+        background: #111827;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        gap: 10px;
+    }
+    .chat-input {
+        flex: 1;
+        background: #0f172a;
+        border: 1px solid var(--border-color);
+        color: #ffffff;
+        padding: 12px 16px;
+        border-radius: 8px;
+        outline: none;
+    }
+    .chat-btn {
+        background: var(--accent-indigo);
+        color: white;
+        border: none;
+        padding: 0 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+</style>
+
+<div class="chat-wrapper">
+    <div class="chat-header">
+        <i class="fa-solid fa-robot text-warning fs-4"></i>
+        <div>
+            <div style="font-weight: 700; color: #fff;">Crypto Knowledge AI Assistant</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Hỏi đáp kiến thức Mật mã học, Công thức toán & Cách tạo khóa</div>
+        </div>
+    </div>
+
+    <div class="chat-body" id="chatBody">
+        <div class="chat-msg msg-ai">
+            👋 Xin chào! Tôi là Trợ lý AI chuyên biệt về Mật mã học (Cryptography). Bạn cần giải đáp công thức toán học, nguyên lý AES/RSA hay kịch bản kiểm tra bài tập An toàn thông tin nào?
+        </div>
+    </div>
+
+    <div class="chat-footer">
+        <input type="text" id="userInput" class="chat-input" placeholder="Hỏi AI (VD: Phân biệt RSA và AES? Công thức băm SHA-256 hoạt động thế nào?)...">
+        <button class="chat-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i> Gửi</button>
+    </div>
+</div>
+
+<script>
+function sendMessage() {
+    let input = document.getElementById('userInput');
+    let text = input.value.trim();
+    if(!text) return;
+
+    let body = document.getElementById('chatBody');
+    
+    // Append User Message
+    body.innerHTML += `<div class="chat-msg msg-user">${text}</div>`;
+    input.value = '';
+    body.scrollTop = body.scrollHeight;
+
+    // AI Response Simulation
+    setTimeout(() => {
+        let reply = "Đây là câu hỏi rất hay về Mật mã học! ";
+        let lower = text.toLowerCase();
+        
+        if(lower.includes('rsa') || lower.includes('bất đối xứng')) {
+            reply += "RSA là hệ thống mật mã khóa bất đối xứng dựa trên độ khó của bài toán phân tích số nguyên lớn thành tích 2 số nguyên tố p và q. Công thức mã hóa: C = M^e mod n, giải mã: M = C^d mod n.";
+        } else if(lower.includes('aes') || lower.includes('des') || lower.includes('đối xứng')) {
+            reply += "Mã hóa đối xứng (Symmetric Encryption) dùng chung 1 Secret Key cho cả 2 quá trình Mã hóa và Giải mã. AES (Advanced Encryption Standard) hiện tại an toàn hơn DES rất nhiều nhờ cấu trúc vòng biến đổi SubBytes, ShiftRows, MixColumns và AddRoundKey.";
+        } else if(lower.includes('băm') || lower.includes('hash') || lower.includes('sha') || lower.includes('md5')) {
+            reply += "Hàm băm (Hash Function) biến đổi chuỗi dữ liệu đầu vào có độ dài bất kỳ thành một chuỗi Hex có độ dài cố định. Hàm băm mang tính chất một chiều (One-way) và chống đụng độ (Collision Resistance).";
+        } else {
+            reply += "Dữ liệu mật mã cần đảm bảo 3 yếu tố cốt lõi của An toàn thông tin (CIA Triad): Tính bảo mật (Confidentiality), Tính toàn vẹn (Integrity) và Tính khả dụng (Availability).";
+        }
+
+        body.innerHTML += `<div class="chat-msg msg-ai">${reply}</div>`;
+        body.scrollTop = body.scrollHeight;
+    }, 600);
+}
+</script>
+{% endblock %}
