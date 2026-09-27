@@ -74,14 +74,18 @@ def chat_api():
     if not user_message:
         return jsonify({'reply': 'Vui lòng nhập câu hỏi.'})
         
-    try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        prompt = f"Bạn là Trợ lý AI chuyên gia về Mật mã học (Cryptography) cho ứng dụng SecureCrypt. Hãy giải đáp ngắn gọn, dễ hiểu và chính xác bằng tiếng Việt câu hỏi sau: {user_message}"
-        response = model.generate_content(prompt)
-        return jsonify({'reply': response.text})
-    except Exception as e:
-        return jsonify({'reply': f"Không thể kết nối AI: {str(e)}"})
+    prompt = f"Bạn là Trợ lý AI chuyên gia về Mật mã học (Cryptography) cho ứng dụng SecureCrypt. Hãy giải đáp ngắn gọn, dễ hiểu và chính xác bằng tiếng Việt câu hỏi sau: {user_message}"
+    
+    # Danh sách các tên model chuẩn theo thứ tự ưu tiên
+    candidate_models = ['gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro']
+    
+    for model_name in candidate_models:
+        try:
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(prompt)
+            if response and response.text:
+                return jsonify({'reply': response.text})
+        except Exception:
+            continue  # Nếu model này báo lỗi, tự động chuyển sang model tiếp theo
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    return jsonify({'reply': 'Chưa thể kết nối tới Gemini AI. Vui lòng kiểm tra lại biến môi trường GEMINI_API_KEY trên Render.'})
