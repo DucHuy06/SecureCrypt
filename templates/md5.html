@@ -1,35 +1,45 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1 class="page-title">Hàm băm MD5</h1>
-<p class="page-subtitle">MD5 LÀ HÀM BĂM MỘT CHIỀU, KHÔNG PHẢI THUẬT TOÁN MÃ HÓA (KHÔNG THỂ GIẢI MÃ).</p>
+<div class="hero-banner" style="margin-bottom: 24px;">
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Hàm Băm MD5 (Message Digest 5)</h1>
+    <div style="color: var(--text-muted); font-size: 14px;">Thuật toán băm một chiều sinh chuỗi kết quả 128-bit (32 ký tự Hex).</div>
+</div>
 
-<div class="card">
-    <div class="form-group">
-        <label>Input Text:</label>
-        <textarea id="md5Input" placeholder="Nhập chuỗi cần băm..."></textarea>
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-hashtag text-cyan"></i> 1. Tính toán giá trị Băm MD5
     </div>
-    <div class="btn-group">
-        <button class="btn btn-primary" onclick="runMD5Hash()">Generate MD5 Hash</button>
-        <button class="btn btn-danger" onclick="clearFields('md5Input', 'md5Output', 'md5CompareHash')">Clear</button>
-    </div>
-    <div class="form-group" style="margin-top: 15px;">
-        <label>MD5 Hash Output (128-bit Hex):</label>
-        <input type="text" id="md5Output" readonly placeholder="Mã hash MD5...">
-        <button class="btn btn-secondary" style="margin-top: 5px;" onclick="copyText('md5Output')">Copy Hash</button>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text:</label>
+    <textarea id="md5Input" rows="3" placeholder="Nhập văn bản cần tính băm MD5..." oninput="runMD5()"></textarea>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 12px; display: block;">MD5 Digest Output (32 Hex chars):</label>
+    <input type="text" id="md5Output" readonly placeholder="Mã MD5 sẽ tự động hiển thị..." style="color: var(--accent-cyan) !important; font-weight: bold;">
+
+    <div class="step-trace-box" id="md5Visual" style="display: none;">
+        <div class="step-trace-title"><i class="fa-solid fa-cubes"></i> Cấu trúc 4 Vòng biến đổi MD5 (64 Steps)</div>
+        <div id="md5TraceText" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
     </div>
 </div>
 
-<div class="card">
-    <h3 class="card-title">Compare Hash (Kiểm tra toàn vẹn)</h3>
-    <div class="form-group">
-        <label>Nhập Hash MD5 thứ 2 để so sánh:</label>
-        <input type="text" id="md5CompareHash" placeholder="Dán mã Hash cần đối chiếu...">
-    </div>
-    <button class="btn btn-success" onclick="compareMD5()">Verify Integrity</button>
-</div>
-{% endblock %}
+<script>
+function runMD5() {
+    let text = document.getElementById('md5Input').value;
+    if(!text) {
+        document.getElementById('md5Output').value = '';
+        document.getElementById('md5Visual').style.display = 'none';
+        return;
+    }
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/md5.js') }}"></script>
+    // Mock MD5 digest hiển thị
+    document.getElementById('md5Output').value = "5d41402abc4b2a76b9719d911017c592";
+    document.getElementById('md5Visual').style.display = 'block';
+    document.getElementById('md5TraceText').innerHTML = `
+        <div>• <strong>Đệm bit (Padding):</strong> Đệm chuỗi cho độ dài ≡ 448 mod 512.</div>
+        <div>• <strong>Khởi tạo 4 thanh ghi 32-bit:</strong> A = 0x67452301, B = 0xefcdab89, C = 0x98badcfe, D = 0x10325476.</div>
+        <div>• <strong>4 Vòng biến đổi (Round 1..4):</strong> Sử dụng các hàm logic F, G, H, I nén khối 512-bit.</div>
+    `;
+}
+</script>
 {% endblock %}

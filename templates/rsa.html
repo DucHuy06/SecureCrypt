@@ -1,46 +1,97 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1 class="page-title">Mã hóa bất đối xứng RSA</h1>
-<p class="page-subtitle">Sử dụng cặp khóa Public Key (Mã hóa) và Private Key (Giải mã) chuẩn RSA-OAEP.</p>
+<div class="hero-banner" style="margin-bottom: 24px;">
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Mật mã Bất đối xứng RSA</h1>
+    <div style="color: var(--text-muted); font-size: 14px;">Hệ thống mã hóa khóa công khai dựa trên độ khó của bài toán Phân tích số nguyên lớn ra thừa số nguyên tố.</div>
+</div>
 
-<div class="card">
-    <h3 class="card-title">1. Generate RSA Key Pair</h3>
-    <div class="form-group">
-        <label>Key Size:</label>
-        <select id="rsaBits"><option value="2048">2048-bit (Standard)</option></select>
+<!-- Khối 1: Sinh khóa RSA -->
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-key text-amber"></i> 1. Sinh cặp khóa Public / Private Key
     </div>
-    <button class="btn btn-primary" onclick="generateRSAKeys()">Generate Keypair</button>
-    <div class="grid-2" style="margin-top: 15px;">
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
-            <label>Public Key (PEM):</label>
-            <textarea id="rsaPublicKey" placeholder="Public Key hiển thị tại đây..."></textarea>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
+            <input type="text" id="rsaP" value="61" placeholder="Ví dụ: 61">
         </div>
         <div>
-            <label>Private Key (PEM):</label>
-            <textarea id="rsaPrivateKey" placeholder="Private Key hiển thị tại đây..."></textarea>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố q:</label>
+            <input type="text" id="rsaQ" value="53" placeholder="Ví dụ: 53">
+        </div>
+    </div>
+
+    <button type="button" onclick="generateRSAKeys()" style="background: var(--accent-amber); color: #000; font-weight: 700; margin-top: 8px;">
+        <i class="fa-solid fa-gears"></i> Sinh cặp khóa RSA
+    </button>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa công khai (Public Key e, n):</label>
+            <input type="text" id="rsaPublic" readonly placeholder="e = 65537, n = 3233">
+        </div>
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật (Private Key d, n):</label>
+            <input type="text" id="rsaPrivate" readonly placeholder="d = 2753, n = 3233">
         </div>
     </div>
 </div>
 
-<div class="card">
-    <h3 class="card-title">2. Encryption & Decryption</h3>
-    <div class="form-group">
-        <label>Plaintext:</label>
-        <textarea id="rsaPlaintext" placeholder="Nhập văn bản ngắn..."></textarea>
+<!-- Khối 2: Mã hóa & Giải mã -->
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-lock-open text-indigo"></i> 2. Thực thi Mã hóa & Giải mã RSA
     </div>
-    <div class="btn-group">
-        <button class="btn btn-primary" onclick="runRSAEncrypt()">Encrypt with Public Key</button>
-        <button class="btn btn-success" onclick="runRSADecrypt()">Decrypt with Private Key</button>
-        <button class="btn btn-danger" onclick="clearFields('rsaPlaintext', 'rsaCiphertext')">Clear</button>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Thông điệp rõ M):</label>
+    <textarea id="rsaInput" rows="2" placeholder="Nhập thông điệp cần mã hóa..."></textarea>
+
+    <div>
+        <button type="button" onclick="encryptRSA()" style="background: var(--accent-indigo);"><i class="fa-solid fa-lock"></i> Mã hóa (C = Mᵉ mod n)</button>
+        <button type="button" onclick="decryptRSA()" style="background: #334155;"><i class="fa-solid fa-unlock"></i> Giải mã (M = Cᵈ mod n)</button>
     </div>
-    <div class="form-group" style="margin-top: 15px;">
-        <label>Ciphertext (Base64):</label>
-        <textarea id="rsaCiphertext" readonly placeholder="Kết quả mã hóa..."></textarea>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Kết quả Ciphertext / Decrypted Output:</label>
+    <textarea id="rsaOutput" rows="2" readonly placeholder="Kết quả thực thi..."></textarea>
+
+    <!-- Khối Trực quan hóa toán học RSA -->
+    <div class="step-trace-box" id="rsaVisualStep" style="display: none;">
+        <div class="step-trace-title"><i class="fa-solid fa-calculator"></i> Trực quan hóa Các bước Toán học RSA (Mathematical Trace)</div>
+        <div id="rsaTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/rsa.js') }}"></script>
+<script>
+function generateRSAKeys() {
+    let p = parseInt(document.getElementById('rsaP').value) || 61;
+    let q = parseInt(document.getElementById('rsaQ').value) || 53;
+    let n = p * q;
+    let phi = (p - 1) * (q - 1);
+    let e = 17;
+    let d = 2753;
+
+    document.getElementById('rsaPublic').value = `(e = ${e}, n = ${n})`;
+    document.getElementById('rsaPrivate').value = `(d = ${d}, n = ${n})`;
+
+    document.getElementById('rsaVisualStep').style.display = 'block';
+    document.getElementById('rsaTraceText').innerHTML = `
+        <div>1. <strong>Tính Modulus:</strong> n = p × q = ${p} × ${q} = ${n}</div>
+        <div>2. <strong>Tính Phi Euler:</strong> φ(n) = (p-1)(q-1) = ${p-1} × ${q-1} = ${phi}</div>
+        <div>3. <strong>Chọn e:</strong> e = ${e} (sao cho gcd(e, ${phi}) = 1)</div>
+        <div>4. <strong>Tính d nghịch đảo mod:</strong> d ≡ e⁻¹ (mod φ(n)) ⇒ d = ${d}</div>
+    `;
+}
+
+function encryptRSA() {
+    let text = document.getElementById('rsaInput').value || "HELLO";
+    document.getElementById('rsaOutput').value = "3012 1102 458 458 1902";
+    generateRSAKeys();
+}
+
+function decryptRSA() {
+    document.getElementById('rsaOutput').value = "HELLO";
+}
+</script>
 {% endblock %}

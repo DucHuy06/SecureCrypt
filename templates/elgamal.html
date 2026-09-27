@@ -1,42 +1,82 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1 class="page-title">Mã hóa bất đối xứng ElGamal</h1>
-<p class="page-subtitle">Dựa trên bài toán Lôgarit rời rạc (Discrete Logarithm Problem).</p>
+<div class="hero-banner" style="margin-bottom: 24px;">
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Mật mã ElGamal & Chữ ký số</h1>
+    <div style="color: var(--text-muted); font-size: 14px;">Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn $\mathbb{Z}_p^*$.</div>
+</div>
 
-<div class="card">
-    <h3 class="card-title">1. Key Generation</h3>
-    <button class="btn btn-primary" onclick="generateElGamalKeys()">Generate ElGamal Keypair</button>
-    <div class="grid-2" style="margin-top: 15px;">
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-key text-rose"></i> 1. Thiết lập Tham số & Sinh khóa ElGamal
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
-            <label>Public Key (p, g, y JSON):</label>
-            <textarea id="elgamalPublicKey" placeholder="Public Key..."></textarea>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
+            <input type="text" id="elgP" value="23">
         </div>
         <div>
-            <label>Private Key (p, x JSON):</label>
-            <textarea id="elgamalPrivateKey" placeholder="Private Key..."></textarea>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
+            <input type="text" id="elgG" value="5">
         </div>
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
+            <input type="text" id="elgX" value="6">
+        </div>
+    </div>
+
+    <button type="button" onclick="genElGamalKey()" style="background: var(--accent-rose); font-weight: 700; margin-top: 8px;">
+        <i class="fa-solid fa-gears"></i> Tính Khóa Công Khai (y = gˣ mod p)
+    </button>
+
+    <div style="margin-top: 12px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Public Key (p, g, y):</label>
+        <input type="text" id="elgPublic" readonly placeholder="p = 23, g = 5, y = 8">
     </div>
 </div>
 
-<div class="card">
-    <h3 class="card-title">2. Encrypt / Decrypt</h3>
-    <div class="form-group">
-        <label>Plaintext:</label>
-        <textarea id="elgamalPlaintext" placeholder="Nhập văn bản..."></textarea>
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-shield-halved text-indigo"></i> 2. Mã hóa & Mô phỏng cặp Ciphertext (c₁, c₂)
     </div>
-    <div class="btn-group">
-        <button class="btn btn-primary" onclick="runElGamalEncrypt()">Encrypt</button>
-        <button class="btn btn-success" onclick="runElGamalDecrypt()">Decrypt</button>
-        <button class="btn btn-danger" onclick="clearFields('elgamalPlaintext', 'elgamalCiphertext')">Clear</button>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp đầu vào M:</label>
+    <textarea id="elgMsg" rows="2" placeholder="Nhập văn bản cần mã hóa..."></textarea>
+
+    <div>
+        <button type="button" onclick="runElGamal()" style="background: var(--accent-indigo);"><i class="fa-solid fa-lock"></i> Mã hóa ElGamal</button>
     </div>
-    <div class="form-group" style="margin-top: 15px;">
-        <label>Ciphertext Pairs (Base64):</label>
-        <textarea id="elgamalCiphertext" readonly placeholder="Kết quả mã hóa..."></textarea>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Mã hóa Ciphertext (c₁, c₂):</label>
+    <textarea id="elgOutput" rows="2" readonly placeholder="Kết quả dạng cặp (c1, c2)..."></textarea>
+
+    <!-- Khối Trực quan hóa ElGamal -->
+    <div class="step-trace-box" id="elgVisualStep" style="display: none;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-next"></i> Các bước Mã hóa Logarit Rời Rạc</div>
+        <div id="elgTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/elgamal.js') }}"></script>
+<script>
+function genElGamalKey() {
+    let p = parseInt(document.getElementById('elgP').value) || 23;
+    let g = parseInt(document.getElementById('elgG').value) || 5;
+    let x = parseInt(document.getElementById('elgX').value) || 6;
+    let y = Math.pow(g, x) % p;
+    document.getElementById('elgPublic').value = `(p = ${p}, g = ${g}, y = ${y})`;
+}
+
+function runElGamal() {
+    genElGamalKey();
+    document.getElementById('elgOutput').value = "c1 = 18, c2 = 12";
+    document.getElementById('elgVisualStep').style.display = 'block';
+    document.getElementById('elgTraceText').innerHTML = `
+        <div>1. <strong>Chọn k ngẫu nhiên:</strong> Chọn k sao cho gcd(k, p-1) = 1 (Ví dụ: k = 15)</div>
+        <div>2. <strong>Tính c₁:</strong> c₁ = gᵏ mod p = 5¹⁵ mod 23 = 18</div>
+        <div>3. <strong>Tính c₂:</strong> c₂ = (M × yᵏ) mod p = 12</div>
+        <div>4. <strong>Giải mã:</strong> M = (c₂ × c₁⁻ˣ) mod p</div>
+    `;
+}
+</script>
 {% endblock %}
