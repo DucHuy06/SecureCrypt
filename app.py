@@ -9,7 +9,7 @@ from routes.demo_routes import demo_bp
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Tối đa 32MB file upload
 
-# Cấu hình Gemini API Key từ biến môi trường (An toàn, tránh lộ Key trên GitHub)
+# Cấu hình Gemini API Key từ biến môi trường
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
@@ -65,7 +65,7 @@ def about_page():
 def ai_chat():
     return render_template('ai_chat.html')
 
-# API Route cho Crypto AI Chatbot
+# API Route cho Crypto AI Chatbot (Tự động tìm model thích hợp)
 @app.route('/api/chat', methods=['POST'])
 def chat_api():
     data = request.get_json() or {}
@@ -74,18 +74,43 @@ def chat_api():
     if not user_message:
         return jsonify({'reply': 'Vui lòng nhập câu hỏi.'})
         
+    if not os.environ.get('GEMINI_API_KEY'):
+        return jsonify({'reply': 'Chưa cấu hình GEMINI_API_KEY trên Render Environment Variables.'})
+        
     prompt = f"Bạn là Trợ lý AI chuyên gia về Mật mã học (Cryptography) cho ứng dụng SecureCrypt. Hãy giải đáp ngắn gọn, dễ hiểu và chính xác bằng tiếng Việt câu hỏi sau: {user_message}"
     
-    # Danh sách các tên model chuẩn theo thứ tự ưu tiên
-    candidate_models = ['gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro']
-    
-    for model_name in candidate_models:
-        try:
-            model = genai.GenerativeModel(model_name)
-            response = model.generate_content(prompt)
-            if response and response.text:
-                return jsonify({'reply': response.text})
-        except Exception:
-            continue  # Nếu model này báo lỗi, tự động chuyển sang model tiếp theo
+    try:
+        # 1. Tự động lấy danh sách model hỗ trợ sinh nội dung từ Google API
+        available_models = []
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                available_models.append(m.name)
+        
+        # 2. Thử gọi từng model khả dụng
+        for model_name in available_models:
+            try:
+                model = genai.GenerativeModel(model_name)
+                response = model.generate_content(prompt)
+                if response and response.text:
+                    return jsonify({'reply': response.text})
+            except Exception:
+                continue
 
-    return jsonify({'reply': 'Chưa thể kết nối tới Gemini AI. Vui lòng kiểm tra lại biến môi trường GEMINI_API_KEY trên Render.'})
+        # 3. Fallback danh sách tên chuẩn ASCII nếu list_models không trả về
+        fallback_models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
+        for m_name in fallback_models:
+            try:
+                model = genai.GenerativeModel(m_name)
+                response = model.generate_content(prompt)
+                if response and response.text:
+                    return jsonify({'reply': response.text})
+            except Exception:
+                continue
+
+        return jsonify({'reply': 'API Key hợp lệ nhưng không thể khởi tạo Model. Vui lòng kiểm tra lại quyền API Key.'})
+    except Exception as e:
+        return jsonify({'reply': f'Lỗi kết nối Gemini API: {str(e)}'})
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
