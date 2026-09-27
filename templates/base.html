@@ -32,7 +32,7 @@
             padding: 0;
         }
 
-        /* Top Header Navigation */
+        /* Header Bar */
         .top-navbar {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(12px);
@@ -55,10 +55,7 @@
             color: #ffffff;
             text-decoration: none;
         }
-        .brand-logo i {
-            color: var(--accent-indigo);
-            font-size: 20px;
-        }
+        .brand-logo i { color: var(--accent-indigo); font-size: 20px; }
 
         .nav-tabs-group {
             display: flex;
@@ -81,47 +78,108 @@
             align-items: center;
             gap: 6px;
         }
+        .nav-tab-item:hover { color: var(--text-main); }
+        .nav-tab-item.active { background: var(--accent-indigo); color: #ffffff; }
+        .nav-tab-item.ai-tab.active { background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%); color: #ffffff; }
 
-        .nav-tab-item:hover {
-            color: var(--text-main);
+        .right-header-placeholder { min-width: 80px; }
+        .app-container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+        /* Modern Custom Form Controls (Chống thô sơ) */
+        textarea, input[type="text"], input[type="password"], select {
+            width: 100%;
+            background-color: #0f172a !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 10px !important;
+            color: #f8fafc !important;
+            padding: 12px 16px !important;
+            font-family: 'Plus Jakarta Sans', monospace !important;
+            font-size: 13.5px !important;
+            outline: none !important;
+            box-sizing: border-box !important;
+            transition: all 0.2s ease !important;
+            margin-top: 6px;
+            margin-bottom: 12px;
         }
 
-        /* Dynamic Active Tab Style */
-        .nav-tab-item.active {
+        textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
+            border-color: var(--accent-indigo) !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+        }
+
+        /* Styled Buttons */
+        button, input[type="button"], input[type="submit"] {
+            background: #1e293b;
+            color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 6px;
+            margin-bottom: 8px;
+        }
+
+        button:hover, input[type="button"]:hover {
             background: var(--accent-indigo);
+            border-color: var(--accent-indigo);
             color: #ffffff;
+            transform: translateY(-1px);
         }
 
-        /* Dynamic Active AI Tab Style */
-        .nav-tab-item.ai-tab.active {
-            background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+        /* Modern Card Containers */
+        .crypto-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .card-title-header {
+            font-size: 18px;
+            font-weight: 700;
             color: #ffffff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
         }
 
-        /* Empty Header Corner */
-        .right-header-placeholder {
-            min-width: 100px;
+        /* Step Visualizer Card */
+        .step-trace-box {
+            background: #0d1322;
+            border: 1px dashed var(--accent-indigo);
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 16px;
         }
-
-        .app-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
+        .step-trace-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation Header Bar -->
     <header class="top-navbar">
         <a href="/" class="brand-logo">
             <i class="fa-solid fa-shield-halved"></i>
             <span>SecureCrypt</span>
         </a>
 
-        <!-- Dynamic Nav: Chỉ sáng màu đúng trang đang đứng -->
         <nav class="nav-tabs-group">
-            <a href="/" class="nav-tab-item {% if request.path == '/' or request.path in ['/des', '/aes', '/md5', '/sha256', '/rsa', '/elgamal'] %}active{% endif %}">
+            <a href="/" class="nav-tab-item {% if request.path == '/' or request.path in ['/des', '/aes', '/md5', '/sha256', '/rsa', '/elgamal', '/integrity'] %}active{% endif %}">
                 <i class="fa-solid fa-wrench"></i> Tools
             </a>
             <a href="/demo" class="nav-tab-item {% if request.path == '/demo' or request.path == '/demos' %}active{% endif %}">
@@ -130,16 +188,14 @@
             <a href="/ai-chat" class="nav-tab-item ai-tab {% if request.path == '/ai-chat' %}active{% endif %}">
                 <i class="fa-solid fa-robot"></i> Crypto AI
             </a>
-            <a href="/about" class="nav-tab-item {% if request.path == '/about' or request.path == '/comparison' %}active{% endif %}">
+            <a href="/about" class="nav-tab-item {% if request.path == '/about' %}active{% endif %}">
                 <i class="fa-solid fa-graduation-cap"></i> Learn
             </a>
         </nav>
 
-        <!-- Để trống góc phải -->
         <div class="right-header-placeholder"></div>
     </header>
 
-    <!-- Main Content Body -->
     <main class="app-container">
         {% block content %}{% endblock %}
     </main>

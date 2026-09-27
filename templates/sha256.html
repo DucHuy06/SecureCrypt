@@ -1,35 +1,51 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h1 class="page-title">Hàm băm SHA-256</h1>
-<p class="page-subtitle">Hàm băm an toàn thuộc họ SHA-2 (256-bit Digest), dùng xác thực tính toàn vẹn.</p>
+<div class="hero-banner" style="margin-bottom: 24px;">
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Hàm băm SHA-256 (Secure Hash Algorithm)</h1>
+    <div style="color: var(--text-muted); font-size: 14px;">Hàm băm một chiều tạo chuỗi Đại diện Digest 256-bit (64 ký tự Hex). Dùng kiểm tra tính Toàn vẹn dữ liệu.</div>
+</div>
 
-<div class="card">
-    <div class="form-group">
-        <label>Input Text:</label>
-        <textarea id="shaInput" placeholder="Nhập chuỗi cần băm..."></textarea>
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-hashtag text-cyan"></i> 1. Tính toán Giá trị Băm (Calculate SHA-256 Hash)
     </div>
-    <div class="btn-group">
-        <button class="btn btn-primary" onclick="runSHA256Hash()">Generate SHA-256 Hash</button>
-        <button class="btn btn-danger" onclick="clearFields('shaInput', 'shaOutput', 'shaCompareHash')">Clear</button>
-    </div>
-    <div class="form-group" style="margin-top: 15px;">
-        <label>SHA-256 Hash Output (256-bit Hex):</label>
-        <input type="text" id="shaOutput" readonly placeholder="Mã hash SHA-256...">
-        <button class="btn btn-secondary" style="margin-top: 5px;" onclick="copyText('shaOutput')">Copy Hash</button>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Văn bản đầu vào):</label>
+    <textarea id="hashInput" rows="3" placeholder="Nhập văn bản cần băm..." oninput="calculateHash()"></textarea>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 12px; display: block;">SHA-256 Digest Output (64 Hex chars):</label>
+    <input type="text" id="hashOutput" readonly placeholder="Mã băm SHA-256 sẽ tự động tính toán real-time..." style="color: var(--accent-cyan) !important; font-weight: bold;">
+
+    <!-- Khối Trực quan hóa quá trình Băm -->
+    <div class="step-trace-box" id="hashVisual" style="display: none;">
+        <div class="step-trace-title"><i class="fa-solid fa-cubes"></i> Trực quan hóa Cấu trúc Merkle–Damgård (64 Rounds)</div>
+        <div id="hashTraceText" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
     </div>
 </div>
 
-<div class="card">
-    <h3 class="card-title">Compare Hash (Kiểm tra toàn vẹn)</h3>
-    <div class="form-group">
-        <label>Nhập Hash SHA-256 đối chiếu:</label>
-        <input type="text" id="shaCompareHash" placeholder="Dán mã Hash cần đối chiếu...">
-    </div>
-    <button class="btn btn-success" onclick="compareSHA256()">Verify Integrity</button>
-</div>
-{% endblock %}
+<script>
+async function calculateHash() {
+    let text = document.getElementById('hashInput').value;
+    if(!text) {
+        document.getElementById('hashOutput').value = '';
+        document.getElementById('hashVisual').style.display = 'none';
+        return;
+    }
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/sha256.js') }}"></script>
+    // Tính băm SHA-256 bằng Web Crypto API sẵn có của trình duyệt
+    const msgUint8 = new TextEncoder().encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    document.getElementById('hashOutput').value = hashHex;
+    document.getElementById('hashVisual').style.display = 'block';
+    document.getElementById('hashTraceText').innerHTML = `
+        <div>• <strong>Đệm dữ liệu (Padding):</strong> Thêm bit '1' và các bit '0' để độ dài văn bản ≡ 448 mod 512.</div>
+        <div>• <strong>Khởi tạo thanh ghi (H0..H7):</strong> Khởi tạo 8 giá trị băm ban đầu từ hằng số căn bậc hai số nguyên tố.</div>
+        <div>• <strong>Nén 64 vòng lặp (64 Compression Rounds):</strong> Áp dụng các hàm phi tuyến $Ch, Maj, \\Sigma_0, \\Sigma_1$.</div>
+    `;
+}
+</script>
 {% endblock %}

@@ -2,76 +2,42 @@
 
 {% block content %}
 <style>
-    /* Header Title Section */
-    .hero-header {
-        margin-bottom: 35px;
+    .hero-banner {
+        margin-bottom: 30px;
     }
     .hero-title {
         font-size: 32px;
         font-weight: 800;
         color: #ffffff;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     .hero-subtitle {
         font-size: 15px;
         color: var(--text-muted);
-        max-width: 750px;
-        line-height: 1.6;
-    }
-
-    /* Grid Section */
-    .section-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--text-main);
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
     }
 
     .tools-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
         gap: 20px;
-        margin-bottom: 40px;
     }
 
-    .card-tool {
+    .tool-card {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 22px;
+        border-radius: 14px;
+        padding: 24px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
     }
-    .card-tool:hover {
+    .tool-card:hover {
+        border-color: var(--accent-indigo);
         transform: translateY(-4px);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-    }
-
-    /* Viền màu riêng tương ứng thuật toán */
-    .card-des { border-top: 3px solid var(--accent-amber); }
-    .card-aes { border-top: 3px solid var(--accent-emerald); }
-    .card-hash { border-top: 3px solid var(--accent-cyan); }
-    .card-rsa { border-top: 3px solid var(--accent-indigo); }
-    .card-elgamal { border-top: 3px solid var(--accent-rose); }
-    .card-ai { border-top: 3px solid var(--accent-purple); background: linear-gradient(180deg, #1e132e 0%, #151d2a 100%); }
-
-    .card-header-flex {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-
-    .tool-name {
-        font-size: 19px;
-        font-weight: 700;
-        color: #ffffff;
-        margin: 0;
+        box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
     }
 
     .badge-tag {
@@ -82,188 +48,131 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    .tag-amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
-    .tag-emerald { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); }
-    .tag-cyan { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
-    .tag-indigo { background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo); }
-    .tag-rose { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); }
-    .tag-purple { background: rgba(217, 70, 239, 0.2); color: #f0abfc; }
+    .badge-ai { background: rgba(217, 70, 239, 0.15); color: var(--accent-purple); }
+    .badge-sym { background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo); }
+    .badge-hash { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+    .badge-asym { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+
+    .card-header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .tool-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+    }
 
     .tool-desc {
         font-size: 13.5px;
         color: var(--text-muted);
-        line-height: 1.5;
-        margin-bottom: 20px;
+        line-height: 1.6;
+        margin-bottom: 24px;
     }
 
     .btn-action {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
         width: 100%;
-        padding: 10px 0;
-        background: #1e293b;
-        color: var(--text-main);
-        border: 1px solid var(--border-color);
+        padding: 11px 0;
         border-radius: 8px;
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 600;
         text-decoration: none;
-        transition: all 0.2s ease;
-    }
-    .btn-action:hover {
-        background: var(--accent-indigo);
-        color: #ffffff;
-        border-color: var(--accent-indigo);
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
     }
 
-    /* Khối Step-by-Step Explainer cho Giảng viên */
-    .edu-banner {
-        background: rgba(30, 41, 59, 0.6);
-        border: 1px dashed #334155;
-        border-radius: 12px;
-        padding: 24px;
-        margin-top: 10px;
-    }
-    .edu-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--accent-emerald);
-        margin-bottom: 12px;
-    }
-    .edu-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 15px;
-    }
-    .edu-box {
-        background: #0f172a;
-        padding: 14px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-    }
-    .edu-step {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--accent-indigo);
-        text-transform: uppercase;
-    }
-    .edu-head {
-        font-size: 14px;
-        font-weight: 600;
-        color: #ffffff;
-        margin: 4px 0;
-    }
-    .edu-text {
-        font-size: 12px;
-        color: var(--text-muted);
-        margin: 0;
-    }
+    .btn-indigo { background: #222e48; color: #ffffff; }
+    .btn-indigo:hover { background: var(--accent-indigo); }
+
+    .btn-purple { background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%); color: #ffffff; }
+    .btn-purple:hover { opacity: 0.9; }
 </style>
 
-<!-- Hero Section Header -->
-<div class="hero-header">
-    <h1 class="hero-title">Cryptography Tools & Learning Playground</h1>
-    <div class="hero-subtitle">Nền tảng thực thi, minh họa kịch bản và trực quan hóa thuật toán mật mã trực tiếp trên trình duyệt. Hỗ trợ học tập và nghiên cứu An toàn thông tin.</div>
+<div class="hero-banner">
+    <h1 class="hero-title">Cryptography Playground & Tools</h1>
+    <div class="hero-subtitle">Nền tảng thực thi, trực quan hóa và thử nghiệm các thuật toán mật mã học hiện đại.</div>
 </div>
 
-<!-- Special AI Assistant Card Banner -->
-<div class="section-title"><i class="fa-solid fa-sparkles text-warning"></i> Trợ lý Mật mã học AI & Công cụ</div>
-
 <div class="tools-grid">
-    <!-- AI Assistant -->
-    <div class="card-tool card-ai">
+    <!-- Thẻ Crypto AI -->
+    <div class="tool-card">
         <div>
             <div class="card-header-flex">
-                <h3 class="tool-name"><i class="fa-solid fa-robot text-warning me-2"></i>Crypto AI Chatbot</h3>
-                <span class="badge-tag tag-purple">AI Hỏi Đáp</span>
+                <h3 class="tool-title">Crypto AI Assistant</h3>
+                <span class="badge-tag badge-ai">Trợ lý AI</span>
             </div>
             <p class="tool-desc">Trợ lý AI chuyên sâu về Mật mã học. Giải đáp thắc mắc công thức toán, cách tạo khóa và kiểm tra bài tập An toàn thông tin cho sinh viên.</p>
         </div>
-        <a href="/ai-chat" class="btn-action" style="background: linear-gradient(135deg, #a855f7, #d946ef); border: none;">Hỏi đáp ngay với Crypto AI <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/ai-chat" class="btn-action btn-purple">Hỏi đáp ngay với Crypto AI <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
-    <!-- DES -->
-    <div class="card-tool card-des">
+    <!-- Thẻ DES -->
+    <div class="tool-card">
         <div>
             <div class="card-header-flex">
-                <h3 class="tool-name">DES Algorithm</h3>
-                <span class="badge-tag tag-amber">Đối xứng</span>
+                <h3 class="tool-title">DES Cryptosystem</h3>
+                <span class="badge-tag badge-sym">Đối xứng</span>
             </div>
             <p class="tool-desc">Mã hóa khối đối xứng chuẩn 64-bit block. Minh họa quá trình hoán vị PC-1, PC-2 và các vòng Feistel biến đổi dữ liệu.</p>
         </div>
-        <a href="/des" class="btn-action">Thao tác DES <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/des" class="btn-action btn-indigo">Thao tác DES <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
-    <!-- AES -->
-    <div class="card-tool card-aes">
+    <!-- Thẻ AES -->
+    <div class="tool-card">
         <div>
             <div class="card-header-flex">
-                <h3 class="tool-name">AES Encryption</h3>
-                <span class="badge-tag tag-emerald">Chuẩn Quốc Tế</span>
+                <h3 class="tool-title">AES Cryptosystem</h3>
+                <span class="badge-tag badge-sym">Đối xứng</span>
             </div>
             <p class="tool-desc">Chuẩn mã hóa cao cấp Advanced Encryption Standard hỗ trợ chế độ GCM/CBC, hiển thị Ma trận SubBytes và ShiftRows.</p>
         </div>
-        <a href="/aes" class="btn-action">Thao tác AES <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/aes" class="btn-action btn-indigo">Thao tác AES <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
-    <!-- MD5 & SHA256 -->
-    <div class="card-tool card-hash">
+    <!-- Thẻ Hash -->
+    <div class="tool-card">
         <div>
             <div class="card-header-flex">
-                <h3 class="tool-name">MD5 & SHA-256 Hash</h3>
-                <span class="badge-tag tag-cyan">Hàm Băm</span>
+                <h3 class="tool-title">MD5 & SHA-256 Hash</h3>
+                <span class="badge-tag badge-hash">Hàm Băm</span>
             </div>
             <p class="tool-desc">Tính toán giá trị băm một chiều (Hash Digest). Kiểm tra tính toàn vẹn dữ liệu và cơ chế chống đụng độ (Collision Resistance).</p>
         </div>
-        <a href="/sha256" class="btn-action">Thao tác Hàm Băm <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/md5" class="btn-action btn-indigo">Thao tác Hàm Băm <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
-    <!-- RSA -->
-    <div class="card-tool card-rsa">
+    <!-- Thẻ RSA -->
+    <div class="tool-card">
         <div>
             <div class="card-header-flex">
-                <h3 class="tool-name">RSA Cryptosystem</h3>
-                <span class="badge-tag tag-indigo">Bất đối xứng</span>
+                <h3 class="tool-title">RSA Cryptosystem</h3>
+                <span class="badge-tag badge-asym">Bất Đối Xứng</span>
             </div>
             <p class="tool-desc">Mã hóa khóa công khai dựa trên độ khó phân tích số nguyên lớn. Minh họa từng bước sinh cặp khóa p, q, n, e, d.</p>
         </div>
-        <a href="/rsa" class="btn-action">Thao tác RSA <i class="fa-solid fa-arrow-right"></i></a>
+        <a href="/rsa" class="btn-action btn-indigo">Thao tác RSA <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 
-    <!-- ElGamal -->
-    <div class="card-tool card-elgamal">
+    <!-- Thẻ ElGamal -->
+    <div class="tool-card">
         <div>
             <div class="card-header-flex">
-                <h3 class="tool-name">ElGamal System</h3>
-                <span class="badge-tag tag-rose">Bất đối xứng</span>
+                <h3 class="tool-title">ElGamal System</h3>
+                <span class="badge-tag badge-asym">Bất Đối Xứng</span>
             </div>
             <p class="tool-desc">Hệ thống mật mã dựa trên bài toán Logarit rời rạc trên trường hữu hạn $\mathbb{Z}_p^*$. Hỗ trợ mã hóa và tạo Chữ ký số.</p>
         </div>
-        <a href="/elgamal" class="btn-action">Thao tác ElGamal <i class="fa-solid fa-arrow-right"></i></a>
-    </div>
-</div>
-
-<!-- Pedagogical Step-by-Step Educational Banner (Dành riêng cho Giảng viên xem) -->
-<div class="edu-banner">
-    <div class="edu-title"><i class="fa-solid fa-graduation-cap me-2"></i>Mô hình Trực quan hóa dành cho Học tập & Bảo vệ Đồ án</div>
-    <div class="edu-grid">
-        <div class="edu-box">
-            <div class="edu-step">Bước 1: Input & Parameters</div>
-            <div class="edu-head">Khởi tạo dữ liệu</div>
-            <div class="edu-text">Nhập văn bản rõ (Plaintext) và thiết lập tham số khóa an toàn.</div>
-        </div>
-        <div class="edu-box">
-            <div class="edu-step">Bước 2: Mathematical Trace</div>
-            <div class="edu-head">Thực thi thuật toán</div>
-            <div class="edu-text">Hệ thống tính toán theo công thức toán học và xuất dữ liệu trung gian.</div>
-        </div>
-        <div class="edu-box">
-            <div class="edu-step">Bước 3: Output Analysis</div>
-            <div class="edu-head">Kết quả & So sánh</div>
-            <div class="edu-text">Hiển thị Ciphertext dạng Hex/Base64 và đo thời gian xử lý thực tế.</div>
-        </div>
+        <a href="/elgamal" class="btn-action btn-indigo">Thao tác ElGamal <i class="fa-solid fa-arrow-right"></i></a>
     </div>
 </div>
 {% endblock %}
