@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .crypto-card textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
+        white-space: pre-wrap !important;
+        font-family: inherit !important;
+        font-size: 14px !important;
+        resize: vertical;
+    }
+</style>
+
 <!-- Nhúng thư viện CryptoJS tính MD5 thật real-time -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
@@ -19,7 +33,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Nhập văn bản đầu vào):</label>
-    <textarea id="md5Input" rows="3" style="word-break: break-all !important; overflow-wrap: anywhere !important; white-space: pre-wrap !important; width: 100%;" placeholder="Nhập văn bản bất kỳ để tính băm MD5..." oninput="calculateMD5()"></textarea>
+    <textarea id="md5Input" rows="3" spellcheck="false" autocomplete="off" placeholder="Nhập văn bản bất kỳ để tính băm MD5..." oninput="calculateMD5()"></textarea>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
         <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">MD5 Digest Output (32 Hex chars / 128 bit):</label>
