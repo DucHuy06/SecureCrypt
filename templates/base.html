@@ -85,9 +85,10 @@
         .right-header-placeholder { min-width: 80px; }
         .app-container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
 
-        /* Modern Custom Form Controls (Chống thô sơ) */
+        /* Modern Custom Form Controls - Khắc phục triệt để ngắt dòng sớm */
         textarea, input[type="text"], input[type="password"], select {
-            width: 100%;
+            display: block !important;
+            width: 100% !important;
             background-color: #0f172a !important;
             border: 1px solid var(--border-color) !important;
             border-radius: 10px !important;
@@ -100,6 +101,9 @@
             transition: all 0.2s ease !important;
             margin-top: 6px;
             margin-bottom: 12px;
+            white-space: pre-wrap !important;
+            word-break: break-all !important;
+            overflow-wrap: anywhere !important;
         }
 
         textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
