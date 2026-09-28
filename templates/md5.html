@@ -6,17 +6,19 @@
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
-        white-space: pre !important;
-        overflow-x: auto !important;
+        white-space: pre-wrap !important;
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
         font-family: inherit !important;
         font-size: 14px !important;
         resize: vertical;
     }
-    /* Đảm bảo khung mô phỏng trace MD5 không bị tràn màn hình */
-    .step-trace-box div {
+    .step-trace-box, .step-trace-box div, .step-trace-box span {
         word-break: break-all !important;
         overflow-wrap: anywhere !important;
         white-space: pre-wrap !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 </style>
 
@@ -38,7 +40,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Nhập văn bản đầu vào):</label>
-    <textarea id="md5Input" rows="3" wrap="off" spellcheck="false" autocomplete="off" placeholder="Nhập văn bản bất kỳ để tính băm MD5..." oninput="calculateMD5()"></textarea>
+    <textarea id="md5Input" rows="3" spellcheck="false" autocomplete="off" placeholder="Nhập văn bản bất kỳ để tính băm MD5..." oninput="calculateMD5()"></textarea>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
         <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">MD5 Digest Output (32 Hex chars / 128 bit):</label>

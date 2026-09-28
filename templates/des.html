@@ -13,6 +13,14 @@
         font-size: 14px !important;
         resize: vertical;
     }
+    /* Chống tràn viền tuyệt đối cho toàn bộ khung giải thích và trace */
+    .step-trace-box, .step-trace-box div, .step-trace-box span {
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
+        white-space: pre-wrap !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
 </style>
 
 <div class="hero-banner" style="margin-bottom: 24px;">

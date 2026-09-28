@@ -6,17 +6,19 @@
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
-        white-space: pre !important;
-        overflow-x: auto !important;
+        white-space: pre-wrap !important;
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
         font-family: inherit !important;
         font-size: 14px !important;
         resize: vertical;
     }
-    /* Đảm bảo khung mô phỏng trace không bị tràn màn hình */
-    .step-trace-box div {
+    .step-trace-box, .step-trace-box div, .step-trace-box span {
         word-break: break-all !important;
         overflow-wrap: anywhere !important;
         white-space: pre-wrap !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 </style>
 
@@ -36,7 +38,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản gốc cần mã hóa):</label>
-    <textarea id="aesPlaintext" rows="3" wrap="off" spellcheck="false" autocomplete="off" placeholder="Nhập chuỗi văn bản cần mã hóa..."></textarea>
+    <textarea id="aesPlaintext" rows="3" spellcheck="false" autocomplete="off" placeholder="Nhập chuỗi văn bản cần mã hóa..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key (Hex - 128 bit / 32 ký tự hoặc 256 bit / 64 ký tự):</label>
     <div style="display: flex; gap: 10px; align-items: center;">
@@ -63,7 +65,7 @@
             <i class="fa-solid fa-copy"></i> Copy Ciphertext
         </button>
     </div>
-    <textarea id="aesCiphertext" rows="3" wrap="off" readonly spellcheck="false" autocomplete="off" placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
+    <textarea id="aesCiphertext" rows="3" readonly spellcheck="false" autocomplete="off" placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="aesEncryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Mã Hóa AES (4x4 State Matrix)</div>
@@ -78,7 +80,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext cần giải mã (Dán dữ liệu mã hóa vào đây):</label>
-    <textarea id="aesDecryptCiphertext" rows="3" wrap="off" spellcheck="false" autocomplete="off" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
+    <textarea id="aesDecryptCiphertext" rows="3" spellcheck="false" autocomplete="off" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key Giải Mã (Hex 32/64 ký tự):</label>
     <input type="text" id="aesDecryptKey" value="" placeholder="Dán khóa AES Key tương ứng vào đây...">
@@ -89,7 +91,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Decrypted Plaintext (Văn bản gốc khôi phục):</label>
-    <textarea id="aesDecryptedPlaintext" rows="3" wrap="off" readonly spellcheck="false" autocomplete="off" placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
+    <textarea id="aesDecryptedPlaintext" rows="3" readonly spellcheck="false" autocomplete="off" placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="aesDecryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Giải Mã AES</div>
