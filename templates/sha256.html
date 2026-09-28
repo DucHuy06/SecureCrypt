@@ -3,21 +3,20 @@
 {% block content %}
 <div class="hero-banner" style="margin-bottom: 24px;">
     <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Hàm băm SHA-256 (Secure Hash Algorithm)</h1>
-    <div style="color: var(--text-muted); font-size: 14px;">Hàm băm một chiều tạo chuỗi Đại diện Digest 256-bit (64 ký tự Hex). Dùng kiểm tra tính Toàn vẹn dữ liệu.</div>
+    <div style="color: var(--text-muted); font-size: 14px;">Hàm băm an toàn thuộc họ SHA-2 (256-bit Digest), dùng xác thực tính toàn vẹn dữ liệu.</div>
 </div>
 
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-hashtag text-cyan"></i> 1. Tính toán Giá trị Băm (Calculate SHA-256 Hash)
+        <i class="fa-solid fa-hashtag text-cyan"></i> Tính toán Giá trị Băm SHA-256
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Văn bản đầu vào):</label>
     <textarea id="hashInput" rows="3" placeholder="Nhập văn bản cần băm..." oninput="calculateHash()"></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 12px; display: block;">SHA-256 Digest Output (64 Hex chars):</label>
-    <input type="text" id="hashOutput" readonly placeholder="Mã băm SHA-256 sẽ tự động tính toán real-time..." style="color: var(--accent-cyan) !important; font-weight: bold;">
+    <input type="text" id="hashOutput" value="" readonly placeholder="Mã băm SHA-256 sẽ tự động tính toán real-time..." style="color: var(--accent-cyan) !important; font-weight: bold;">
 
-    <!-- Khối Trực quan hóa quá trình Băm -->
     <div class="step-trace-box" id="hashVisual" style="display: none;">
         <div class="step-trace-title"><i class="fa-solid fa-cubes"></i> Trực quan hóa Cấu trúc Merkle–Damgård (64 Rounds)</div>
         <div id="hashTraceText" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
@@ -33,7 +32,6 @@ async function calculateHash() {
         return;
     }
 
-    // Tính băm SHA-256 bằng Web Crypto API sẵn có của trình duyệt
     const msgUint8 = new TextEncoder().encode(text);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -42,9 +40,9 @@ async function calculateHash() {
     document.getElementById('hashOutput').value = hashHex;
     document.getElementById('hashVisual').style.display = 'block';
     document.getElementById('hashTraceText').innerHTML = `
-        <div>• <strong>Đệm dữ liệu (Padding):</strong> Thêm bit '1' và các bit '0' để độ dài văn bản ≡ 448 mod 512.</div>
-        <div>• <strong>Khởi tạo thanh ghi (H0..H7):</strong> Khởi tạo 8 giá trị băm ban đầu từ hằng số căn bậc hai số nguyên tố.</div>
-        <div>• <strong>Nén 64 vòng lặp (64 Compression Rounds):</strong> Áp dụng các hàm phi tuyến $Ch, Maj, \\Sigma_0, \\Sigma_1$.</div>
+        <div>• <strong>Đệm dữ liệu (Padding):</strong> Thêm bit '1' và các bit '0' sao cho độ dài văn bản ≡ 448 mod 512.</div>
+        <div>• <strong>Khởi tạo thanh ghi (H0..H7):</strong> 8 giá trị băm ban đầu từ hằng số căn bậc hai số nguyên tố.</div>
+        <div>• <strong>Nén 64 vòng lặp:</strong> Áp dụng các hàm phi tuyến Ch, Maj, Σ₀, Σ₁.</div>
     `;
 }
 </script>

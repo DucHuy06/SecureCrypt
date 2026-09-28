@@ -10,14 +10,13 @@
     </div>
 </div>
 
-<!-- Card Thao tác Mã hóa & Giải mã DES -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-sliders text-indigo"></i> 1. Thao tác Mã hóa & Giải mã DES
+        <i class="fa-solid fa-sliders text-indigo"></i> Thao tác Mã hóa & Giải mã DES
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản rõ):</label>
-    <textarea id="desPlaintext" rows="3" placeholder="Nhập văn bản cần mã hóa (VD: Hello123)..."></textarea>
+    <textarea id="desPlaintext" rows="3" placeholder="Nhập văn bản cần mã hóa..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">DES Key (Hex 16 ký tự / 64 bit):</label>
     <div style="display: flex; gap: 10px; align-items: center;">
@@ -36,7 +35,6 @@
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Ciphertext Output (Hex):</label>
     <textarea id="desCiphertext" rows="3" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
 
-    <!-- Khối Trực quan hóa Mạng Feistel 16 vòng -->
     <div class="step-trace-box" id="desVisualStep" style="display: none;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Mạng Feistel & Khóa Con (DES Pedagogical Trace)</div>
         <div id="desTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
@@ -79,21 +77,15 @@ async function encryptDES() {
         document.getElementById('desCiphertext').value = "85E813540F0AB405";
     }
 
-    // Hiển thị trực quan hóa từng bước
     document.getElementById('desVisualStep').style.display = 'block';
     document.getElementById('desTraceContent').innerHTML = `
         <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[Giai đoạn 1: Sinh 16 Khóa con (Key Schedule)]</div>
-        <div>• <strong>Hoán vị PC-1:</strong> Loại bỏ 8 bit chẵn (parity bits), nén khóa từ 64-bit xuống 56-bit (C₀, D₀). Khóa sử dụng: <span style="color:#f59e0b">${key}</span></div>
+        <div>• <strong>Hoán vị PC-1:</strong> Loại bỏ 8 bit chẵn, nén khóa từ 64-bit xuống 56-bit (C₀, D₀).</div>
         <div>• <strong>Dịch vòng bit (Shift):</strong> Dịch trái chu kỳ 1 hoặc 2 bit qua 16 vòng.</div>
         <div>• <strong>Hoán vị PC-2:</strong> Nén CᵢDᵢ tạo 16 khóa con 48-bit (K₁ ... K₁₆).</div>
         <br>
         <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">[Giai đoạn 2: Hoán vị Khởi đầu & Biến đổi Feistel]</div>
-        <div>• <strong>Initial Permutation (IP):</strong> Hoán vị ban đầu 64-bit Plaintext ⇒ Chia làm 2 nửa L₀ (32-bit) và R₀ (32-bit).</div>
-        <div>• <strong>Vòng 1 (Round 1):</strong> L₁ = R₀, R₁ = L₀ ⊕ f(R₀, K₁).</div>
-        <div>&nbsp;&nbsp;- Mở rộng Expansion E(R₀): 32-bit ⇒ 48-bit.</div>
-        <div>&nbsp;&nbsp;- XOR với K₁: E(R₀) ⊕ K₁.</div>
-        <div>&nbsp;&nbsp;- Thế phi tuyến qua 8 S-Boxes (S₁ ... S₈): 48-bit ⇒ 32-bit.</div>
-        <div>&nbsp;&nbsp;- Hoán vị P-Box: P(S-out).</div>
+        <div>• <strong>Initial Permutation (IP):</strong> Hoán vị ban đầu 64-bit Plaintext ⇒ Chia L₀ và R₀.</div>
         <div>• <strong>Lặp qua 16 vòng Feistel (L₁₆, R₁₆).</strong></div>
         <br>
         <div style="color: var(--accent-emerald); font-weight: bold;">[Giai đoạn 3: Hoán vị Cuối (Final Permutation)]</div>
@@ -104,8 +96,7 @@ async function encryptDES() {
 async function decryptDES() {
     let text = document.getElementById('desPlaintext').value || document.getElementById('desCiphertext').value;
     let key = document.getElementById('desKey').value.trim();
-    
-    if(!key) { alert('Vui lòng nhập khóa DES Key để giải mã!'); return; }
+    if(!key) { alert('Vui lòng nhập khóa DES Key!'); return; }
 
     try {
         let res = await fetch('/api/des/decrypt', {
@@ -114,7 +105,7 @@ async function decryptDES() {
             body: JSON.stringify({ ciphertext: text, key: key })
         });
         let data = await res.json();
-        document.getElementById('desCiphertext').value = data.plaintext || data.result || 'Mã hóa / Giải mã hoàn tất!';
+        document.getElementById('desCiphertext').value = data.plaintext || data.result || 'Giải mã hoàn tất!';
     } catch(e) {
         document.getElementById('desCiphertext').value = "Hello123";
     }

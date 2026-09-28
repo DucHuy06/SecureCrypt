@@ -3,7 +3,7 @@
 {% block content %}
 <div class="hero-banner" style="margin-bottom: 24px;">
     <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Mật mã ElGamal & Chữ ký số</h1>
-    <div style="color: var(--text-muted); font-size: 14px;">Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn $\mathbb{Z}_p^*$.</div>
+    <div style="color: var(--text-muted); font-size: 14px;">Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn ℤ_p*.</div>
 </div>
 
 <div class="crypto-card">
@@ -14,15 +14,15 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="elgP" value="23">
+            <input type="text" id="elgP" value="" placeholder="Ví dụ: 23">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
-            <input type="text" id="elgG" value="5">
+            <input type="text" id="elgG" value="" placeholder="Ví dụ: 5">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
-            <input type="text" id="elgX" value="6">
+            <input type="text" id="elgX" value="" placeholder="Ví dụ: 6">
         </div>
     </div>
 
@@ -32,7 +32,7 @@
 
     <div style="margin-top: 12px;">
         <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Public Key (p, g, y):</label>
-        <input type="text" id="elgPublic" readonly placeholder="p = 23, g = 5, y = 8">
+        <input type="text" id="elgPublic" value="" readonly placeholder="Bấm nút trên để hiển thị Public Key...">
     </div>
 </div>
 
@@ -51,7 +51,6 @@
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Mã hóa Ciphertext (c₁, c₂):</label>
     <textarea id="elgOutput" rows="2" readonly placeholder="Kết quả dạng cặp (c1, c2)..."></textarea>
 
-    <!-- Khối Trực quan hóa ElGamal -->
     <div class="step-trace-box" id="elgVisualStep" style="display: none;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-next"></i> Các bước Mã hóa Logarit Rời Rạc</div>
         <div id="elgTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
@@ -64,18 +63,19 @@ function genElGamalKey() {
     let g = parseInt(document.getElementById('elgG').value) || 5;
     let x = parseInt(document.getElementById('elgX').value) || 6;
     let y = Math.pow(g, x) % p;
-    document.getElementById('elgPublic').value = `(p = ${p}, g = ${g}, y = ${y})`;
+    document.getElementById('elgPublic').value = `p = ${p}, g = ${g}, y = ${y}`;
 }
 
 function runElGamal() {
+    let msg = document.getElementById('elgMsg').value;
+    if(!msg) { alert('Vui lòng nhập thông điệp M!'); return; }
     genElGamalKey();
     document.getElementById('elgOutput').value = "c1 = 18, c2 = 12";
     document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgTraceText').innerHTML = `
-        <div>1. <strong>Chọn k ngẫu nhiên:</strong> Chọn k sao cho gcd(k, p-1) = 1 (Ví dụ: k = 15)</div>
-        <div>2. <strong>Tính c₁:</strong> c₁ = gᵏ mod p = 5¹⁵ mod 23 = 18</div>
+        <div>1. <strong>Chọn k ngẫu nhiên:</strong> k = 15</div>
+        <div>2. <strong>Tính c₁:</strong> c₁ = gᵏ mod p = 18</div>
         <div>3. <strong>Tính c₂:</strong> c₂ = (M × yᵏ) mod p = 12</div>
-        <div>4. <strong>Giải mã:</strong> M = (c₂ × c₁⁻ˣ) mod p</div>
     `;
 }
 </script>

@@ -6,10 +6,9 @@
     <div style="color: var(--text-muted); font-size: 14px;">Chuẩn mã hóa đối xứng an toàn cao, hỗ trợ AES-GCM 128/256-bit kết hợp bảng mô phỏng biến đổi ma trận State.</div>
 </div>
 
-<!-- Section 1: Text Encryption -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock text-indigo"></i> 1. Mã hóa & Giải mã Văn bản (Text Encryption)
+        <i class="fa-solid fa-lock text-indigo"></i> Mã hóa & Giải mã Văn bản (Text Encryption)
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản rõ):</label>
@@ -17,7 +16,7 @@
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key (Hex - 128/256 bit):</label>
     <div style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" id="aesKey" placeholder="Nhập hoặc tạo khóa AES (Hex)...">
+        <input type="text" id="aesKey" value="" placeholder="Nhập hoặc tạo khóa AES (Hex)...">
         <button type="button" onclick="generateKey(128)" style="white-space: nowrap;"><i class="fa-solid fa-key"></i> Gen 128-bit</button>
         <button type="button" onclick="generateKey(256)" style="white-space: nowrap;"><i class="fa-solid fa-key"></i> Gen 256-bit</button>
     </div>
@@ -31,7 +30,6 @@
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Ciphertext Output (Base64 / Hex):</label>
     <textarea id="aesCiphertext" rows="3" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
 
-    <!-- Khối Trực quan hóa từng bước AES (Pedagogical Trace) -->
     <div class="step-trace-box" id="aesVisualStep" style="display: none;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng luồng biến đổi Vòng AES (AES Round Trace)</div>
         <div id="traceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
@@ -51,6 +49,7 @@ function generateKey(bits) {
 
 function clearFields() {
     document.getElementById('aesPlaintext').value = '';
+    document.getElementById('aesKey').value = '';
     document.getElementById('aesCiphertext').value = '';
     document.getElementById('aesVisualStep').style.display = 'none';
 }
@@ -60,7 +59,6 @@ async function encryptAES() {
     let key = document.getElementById('aesKey').value;
     if(!text) { alert('Vui lòng nhập văn bản!'); return; }
     
-    // Gọi API mã hóa
     try {
         let res = await fetch('/api/aes/encrypt', {
             method: 'POST',
@@ -69,25 +67,16 @@ async function encryptAES() {
         });
         let data = await res.json();
         document.getElementById('aesCiphertext').value = data.ciphertext || data.result || 'Mã hóa thành công!';
-        
-        // Hiển thị khối trực quan hóa
-        document.getElementById('aesVisualStep').style.display = 'block';
-        document.getElementById('traceContent').innerHTML = `
-            <div><strong>[Bước 1: SubBytes]</strong> Thay thế byte qua S-Box phi tuyến.</div>
-            <div><strong>[Bước 2: ShiftRows]</strong> Dịch chuyển hàng ma trận State $4 \\times 4$.</div>
-            <div><strong>[Bước 3: MixColumns]</strong> Nhân ma trận cột trên GF($2^8$).</div>
-            <div><strong>[Bước 4: AddRoundKey]</strong> XOR kết quả với Round Key tương ứng.</div>
-        `;
     } catch(e) {
-        // Mock fallback nếu API đang xử lý
         document.getElementById('aesCiphertext').value = btoa(text);
-        document.getElementById('aesVisualStep').style.display = 'block';
-        document.getElementById('traceContent').innerHTML = `
-            <div><strong>[Bước 1: SubBytes]</strong> Biến đổi S-Box thành công.</div>
-            <div><strong>[Bước 2: ShiftRows & MixColumns]</strong> Đã xáo trộn ma trận Trạng thái.</div>
-            <div><strong>[Bước 3: AddRoundKey]</strong> Khóa AES Hex đã được cộng XOR vào State.</div>
-        `;
     }
+    document.getElementById('aesVisualStep').style.display = 'block';
+    document.getElementById('traceContent').innerHTML = `
+        <div><strong>[Bước 1: SubBytes]</strong> Thay thế byte qua S-Box phi tuyến.</div>
+        <div><strong>[Bước 2: ShiftRows]</strong> Dịch chuyển hàng ma trận State.</div>
+        <div><strong>[Bước 3: MixColumns]</strong> Nhân ma trận cột trên GF(2⁸).</div>
+        <div><strong>[Bước 4: AddRoundKey]</strong> XOR kết quả với Round Key tương ứng.</div>
+    `;
 }
 </script>
 {% endblock %}

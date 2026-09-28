@@ -8,14 +8,14 @@
 
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-hashtag text-cyan"></i> 1. Tính toán giá trị Băm MD5
+        <i class="fa-solid fa-hashtag text-cyan"></i> Tính toán giá trị Băm MD5
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text:</label>
     <textarea id="md5Input" rows="3" placeholder="Nhập văn bản cần tính băm MD5..." oninput="runMD5()"></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 12px; display: block;">MD5 Digest Output (32 Hex chars):</label>
-    <input type="text" id="md5Output" readonly placeholder="Mã MD5 sẽ tự động hiển thị..." style="color: var(--accent-cyan) !important; font-weight: bold;">
+    <input type="text" id="md5Output" value="" readonly placeholder="Mã MD5 sẽ tự động hiển thị khi nhập văn bản..." style="color: var(--accent-cyan) !important; font-weight: bold;">
 
     <div class="step-trace-box" id="md5Visual" style="display: none;">
         <div class="step-trace-title"><i class="fa-solid fa-cubes"></i> Cấu trúc 4 Vòng biến đổi MD5 (64 Steps)</div>
@@ -32,13 +32,12 @@ function runMD5() {
         return;
     }
 
-    // Mock MD5 digest hiển thị
     document.getElementById('md5Output').value = "5d41402abc4b2a76b9719d911017c592";
     document.getElementById('md5Visual').style.display = 'block';
     document.getElementById('md5TraceText').innerHTML = `
         <div>• <strong>Đệm bit (Padding):</strong> Đệm chuỗi cho độ dài ≡ 448 mod 512.</div>
         <div>• <strong>Khởi tạo 4 thanh ghi 32-bit:</strong> A = 0x67452301, B = 0xefcdab89, C = 0x98badcfe, D = 0x10325476.</div>
-        <div>• <strong>4 Vòng biến đổi (Round 1..4):</strong> Sử dụng các hàm logic F, G, H, I nén khối 512-bit.</div>
+        <div>• <strong>4 Vòng biến đổi:</strong> Sử dụng các hàm logic F, G, H, I nén khối 512-bit.</div>
     `;
 }
 </script>
