@@ -1,4 +1,6 @@
-flask
-pycryptodome
-gunicorn
-google-generativeai
+Flask==2.2.5
+Jinja2==3.0.3
+MarkupSafe==2.1.3
+google-generativeai>=0.3.0
+gunicorn>=20.1.0
+werkzeug==2.2.3
