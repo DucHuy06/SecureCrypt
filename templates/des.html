@@ -21,7 +21,7 @@
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">DES Key (Hex 16 ký tự / 64 bit):</label>
     <div style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" id="desKey" value="133457799BBCDFF1" placeholder="Nhập khóa Hex 16 ký tự...">
+        <input type="text" id="desKey" value="" placeholder="Nhập khóa Hex 16 ký tự (hoặc bấm Tạo khóa ngẫu nhiên)...">
         <button type="button" onclick="generateDESKey()" style="white-space: nowrap;">
             <i class="fa-solid fa-key"></i> Tạo khóa ngẫu nhiên
         </button>
@@ -55,14 +55,17 @@ function generateDESKey() {
 
 function clearDES() {
     document.getElementById('desPlaintext').value = '';
+    document.getElementById('desKey').value = '';
     document.getElementById('desCiphertext').value = '';
     document.getElementById('desVisualStep').style.display = 'none';
 }
 
 async function encryptDES() {
-    let text = document.getElementById('desPlaintext').value;
-    let key = document.getElementById('desKey').value;
+    let text = document.getElementById('desPlaintext').value.trim();
+    let key = document.getElementById('desKey').value.trim();
+    
     if(!text) { alert('Vui lòng nhập văn bản rõ!'); return; }
+    if(!key) { alert('Vui lòng nhập khóa DES Hex (16 ký tự) hoặc bấm "Tạo khóa ngẫu nhiên"!'); return; }
 
     try {
         let res = await fetch('/api/des/encrypt', {
@@ -80,7 +83,7 @@ async function encryptDES() {
     document.getElementById('desVisualStep').style.display = 'block';
     document.getElementById('desTraceContent').innerHTML = `
         <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[Giai đoạn 1: Sinh 16 Khóa con (Key Schedule)]</div>
-        <div>• <strong>Hoán vị PC-1:</strong> Loại bỏ 8 bit chẵn (parity bits), nén khóa từ 64-bit xuống 56-bit (C₀, D₀).</div>
+        <div>• <strong>Hoán vị PC-1:</strong> Loại bỏ 8 bit chẵn (parity bits), nén khóa từ 64-bit xuống 56-bit (C₀, D₀). Khóa sử dụng: <span style="color:#f59e0b">${key}</span></div>
         <div>• <strong>Dịch vòng bit (Shift):</strong> Dịch trái chu kỳ 1 hoặc 2 bit qua 16 vòng.</div>
         <div>• <strong>Hoán vị PC-2:</strong> Nén CᵢDᵢ tạo 16 khóa con 48-bit (K₁ ... K₁₆).</div>
         <br>
@@ -100,8 +103,10 @@ async function encryptDES() {
 
 async function decryptDES() {
     let text = document.getElementById('desPlaintext').value || document.getElementById('desCiphertext').value;
-    let key = document.getElementById('desKey').value;
+    let key = document.getElementById('desKey').value.trim();
     
+    if(!key) { alert('Vui lòng nhập khóa DES Key để giải mã!'); return; }
+
     try {
         let res = await fetch('/api/des/decrypt', {
             method: 'POST',
