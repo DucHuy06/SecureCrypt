@@ -1,30 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Nhúng thư viện CryptoJS tính MD5 thật real-time -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
 <div class="hero-banner" style="margin-bottom: 24px;">
-    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Hàm Băm MD5 (Message Digest 5)</h1>
-    <div style="color: var(--text-muted); font-size: 14px;">Thuật toán băm một chiều sinh chuỗi kết quả 128-bit (32 ký tự Hex).</div>
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
+        <i class="fa-solid fa-hashtag text-cyan me-2"></i>Hàm Băm MD5 (Message Digest 5)
+    </h1>
+    <div style="color: var(--text-muted); font-size: 14px;">
+        Thuật toán băm một chiều sinh chuỗi đại diện Digest cố định 128-bit (32 ký tự Hex) từ bất kỳ văn bản đầu vào nào.
+    </div>
 </div>
 
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-hashtag text-cyan"></i> Tính toán giá trị Băm MD5
+        <i class="fa-solid fa-calculator text-cyan"></i> Tính toán Giá trị Băm MD5 Real-time
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text:</label>
-    <textarea id="md5Input" rows="3" placeholder="Nhập văn bản cần tính băm MD5..." oninput="runMD5()"></textarea>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Nhập văn bản đầu vào):</label>
+    <textarea id="md5Input" rows="3" placeholder="Nhập văn bản bất kỳ để tính băm MD5..." oninput="calculateMD5()"></textarea>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 12px; display: block;">MD5 Digest Output (32 Hex chars):</label>
-    <input type="text" id="md5Output" value="" readonly placeholder="Mã MD5 sẽ tự động hiển thị khi nhập văn bản..." style="color: var(--accent-cyan) !important; font-weight: bold;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">MD5 Digest Output (32 Hex chars / 128 bit):</label>
+        <button type="button" onclick="copyMD5()" style="padding: 4px 12px; font-size: 12px; background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy MD5
+        </button>
+    </div>
+    <input type="text" id="md5Output" value="" readonly placeholder="Mã MD5 sẽ tự động tính toán từng phím gõ..." style="color: var(--accent-cyan) !important; font-weight: bold;">
 
-    <div class="step-trace-box" id="md5Visual" style="display: none;">
-        <div class="step-trace-title"><i class="fa-solid fa-cubes"></i> Cấu trúc 4 Vòng biến đổi MD5 (64 Steps)</div>
-        <div id="md5TraceText" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
+    <!-- Khối Mô phỏng Động giải thích quá trình băm MD5 -->
+    <div class="step-trace-box" id="md5Visual" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-cubes"></i> Mô phỏng Chi tiết Cấu trúc Nén MD5</div>
+        <div id="md5TraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
 
 <script>
-function runMD5() {
+function copyMD5() {
+    let el = document.getElementById('md5Output');
+    if(!el.value) { alert('Chưa có mã MD5 để Copy!'); return; }
+    el.select();
+    navigator.clipboard.writeText(el.value);
+    alert('Đã Copy mã MD5 vào Clipboard!');
+}
+
+function calculateMD5() {
     let text = document.getElementById('md5Input').value;
     if(!text) {
         document.getElementById('md5Output').value = '';
@@ -32,12 +53,24 @@ function runMD5() {
         return;
     }
 
-    document.getElementById('md5Output').value = "5d41402abc4b2a76b9719d911017c592";
+    // Tính mã băm MD5 thật bằng CryptoJS
+    let hash = CryptoJS.MD5(text).toString();
+    document.getElementById('md5Output').value = hash;
+
+    // Tính độ dài bit và hiển thị Trace Động
+    let byteLength = new TextEncoder().encode(text).length;
+    let bitLength = byteLength * 8;
+
     document.getElementById('md5Visual').style.display = 'block';
     document.getElementById('md5TraceText').innerHTML = `
-        <div>• <strong>Đệm bit (Padding):</strong> Đệm chuỗi cho độ dài ≡ 448 mod 512.</div>
-        <div>• <strong>Khởi tạo 4 thanh ghi 32-bit:</strong> A = 0x67452301, B = 0xefcdab89, C = 0x98badcfe, D = 0x10325476.</div>
-        <div>• <strong>4 Vòng biến đổi:</strong> Sử dụng các hàm logic F, G, H, I nén khối 512-bit.</div>
+        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[PHÂN TÍCH QUÁ TRÌNH BĂM THỰC TẾ]</div>
+        <div>• <strong>Dữ liệu đầu vào:</strong> "${text}" (${byteLength} bytes / ${bitLength} bits)</div>
+        <div>• <strong>Đệm bit (Padding):</strong> Thêm 1 bit '1' và các bit '0' sao cho độ dài ≡ 448 mod 512 bits.</div>
+        <div>• <strong>Khởi tạo Thanh ghi 32-bit:</strong> A = 0x67452301, B = 0xefcdab89, C = 0x98badcfe, D = 0x10325476.</div>
+        <div>• <strong>Thực thi 64 bước nén (4 Vòng lặp x 16 phép toán):</strong> Sử dụng hàm phi tuyến $F(B,C,D)$, $G(B,C,D)$, $H(B,C,D)$, $I(B,C,D)$.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+            ➔ MD5 DIGEST 128-BIT (32 HEX): <span style="color:#06b6d4">${hash}</span>
+        </div>
     `;
 }
 </script>
