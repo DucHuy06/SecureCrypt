@@ -1,19 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-    /* Ép tất cả ô textarea trong card mở rộng full 100% và chỉ xuống dòng khi chạm mép phải */
-    .crypto-card textarea {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-        word-break: break-all !important;
-        overflow-wrap: anywhere !important;
-        white-space: pre-wrap !important;
-        resize: vertical;
-    }
-</style>
-
 <div class="hero-banner" style="margin-bottom: 24px;">
     <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
         <i class="fa-solid fa-lock text-warning me-2"></i>Mã hóa khối DES (Data Encryption Standard)
@@ -30,7 +17,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản gốc cần mã hóa):</label>
-    <textarea id="desPlaintext" rows="3" placeholder="Nhập văn bản cần mã hóa (VD: huy)..."></textarea>
+    <textarea id="desPlaintext" rows="3" style="word-break: break-all !important; overflow-wrap: anywhere !important; white-space: pre-wrap !important; width: 100%;" placeholder="Nhập văn bản cần mã hóa (VD: huy)..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">DES Key (Hex 16 ký tự / 64 bit):</label>
     <div style="display: flex; gap: 10px; align-items: center;">
@@ -54,7 +41,7 @@
             <i class="fa-solid fa-copy"></i> Copy Ciphertext
         </button>
     </div>
-    <textarea id="desCiphertext" rows="3" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
+    <textarea id="desCiphertext" rows="3" style="word-break: break-all !important; overflow-wrap: anywhere !important; white-space: pre-wrap !important; width: 100%;" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="desEncryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Mã Hóa DES</div>
@@ -69,7 +56,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext cần giải mã (Dán dữ liệu mã hóa vào đây):</label>
-    <textarea id="desDecryptCiphertext" rows="3" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
+    <textarea id="desDecryptCiphertext" rows="3" style="word-break: break-all !important; overflow-wrap: anywhere !important; white-space: pre-wrap !important; width: 100%;" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">DES Key Giải Mã (Hex 16 ký tự):</label>
     <input type="text" id="desDecryptKey" value="" placeholder="Dán khóa DES Key tương ứng vào đây...">
@@ -80,7 +67,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Decrypted Plaintext (Văn bản gốc khôi phục):</label>
-    <textarea id="desDecryptedPlaintext" rows="3" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
+    <textarea id="desDecryptedPlaintext" rows="3" style="word-break: break-all !important; overflow-wrap: anywhere !important; white-space: pre-wrap !important; width: 100%;" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="desDecryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Giải Mã DES</div>
