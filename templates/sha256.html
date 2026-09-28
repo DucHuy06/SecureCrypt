@@ -1,48 +1,92 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .crypto-card textarea {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        white-space: pre-wrap !important;
+        overflow-wrap: anywhere !important;
+        font-family: inherit !important;
+        font-size: 14px !important;
+        resize: vertical;
+    }
+    .step-trace-box, .step-trace-box div, .step-trace-box span {
+        overflow-wrap: anywhere !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+</style>
+
+<!-- Nhúng thư viện CryptoJS để tính toán SHA-256 thực tế real-time -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
 <div class="hero-banner" style="margin-bottom: 24px;">
-    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Hàm băm SHA-256 (Secure Hash Algorithm)</h1>
-    <div style="color: var(--text-muted); font-size: 14px;">Hàm băm an toàn thuộc họ SHA-2 (256-bit Digest), dùng xác thực tính toàn vẹn dữ liệu.</div>
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
+        <i class="fa-solid fa-shield-halved text-cyan me-2"></i>Hàm băm SHA–256 (Secure Hash Algorithm)
+    </h1>
+    <div style="color: var(--text-muted); font-size: 14px;">
+        Hàm băm an toàn thuộc họ SHA-2 (256-bit Digest), dùng xác thực tính toàn vẹn dữ liệu và chống đụng độ (Collision Resistance).
+    </div>
 </div>
 
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-hashtag text-cyan"></i> Tính toán Giá trị Băm SHA-256
+        <i class="fa-solid fa-calculator text-cyan"></i> Tính toán Giá trị Băm SHA-256 Real-time
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Văn bản đầu vào):</label>
-    <textarea id="hashInput" rows="3" placeholder="Nhập văn bản cần băm..." oninput="calculateHash()"></textarea>
+    <textarea id="sha256Input" rows="3" spellcheck="false" autocomplete="off" placeholder="Nhập văn bản bất kỳ để tính băm SHA-256..." oninput="calculateSHA256()"></textarea>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 12px; display: block;">SHA-256 Digest Output (64 Hex chars):</label>
-    <input type="text" id="hashOutput" value="" readonly placeholder="Mã băm SHA-256 sẽ tự động tính toán real-time..." style="color: var(--accent-cyan) !important; font-weight: bold;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">SHA-256 Digest Output (64 Hex chars):</label>
+        <button type="button" onclick="copySHA256()" style="padding: 4px 12px; font-size: 12px; background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy SHA-256
+        </button>
+    </div>
+    <input type="text" id="sha256Output" value="" readonly placeholder="Mã SHA-256 sẽ tự động tính toán từng phím gõ..." style="color: var(--accent-cyan) !important; font-weight: bold;">
 
-    <div class="step-trace-box" id="hashVisual" style="display: none;">
+    <!-- Khối Mô phỏng Cấu trúc Merkle–Damgård -->
+    <div class="step-trace-box" id="sha256Visual" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-cubes"></i> Trực quan hóa Cấu trúc Merkle–Damgård (64 Rounds)</div>
-        <div id="hashTraceText" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
+        <div id="sha256TraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
 
 <script>
-async function calculateHash() {
-    let text = document.getElementById('hashInput').value;
+function copySHA256() {
+    let el = document.getElementById('sha256Output');
+    if(!el.value) { alert('Chưa có mã SHA-256 để Copy!'); return; }
+    el.select();
+    navigator.clipboard.writeText(el.value);
+    alert('Đã Copy mã SHA-256 vào Clipboard!');
+}
+
+function calculateSHA256() {
+    let text = document.getElementById('sha256Input').value;
     if(!text) {
-        document.getElementById('hashOutput').value = '';
-        document.getElementById('hashVisual').style.display = 'none';
+        document.getElementById('sha256Output').value = '';
+        document.getElementById('sha256Visual').style.display = 'none';
         return;
     }
 
-    const msgUint8 = new TextEncoder().encode(text);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    let hash = CryptoJS.SHA256(text).toString();
+    document.getElementById('sha256Output').value = hash;
 
-    document.getElementById('hashOutput').value = hashHex;
-    document.getElementById('hashVisual').style.display = 'block';
-    document.getElementById('hashTraceText').innerHTML = `
+    let byteLength = new TextEncoder().encode(text).length;
+    let bitLength = byteLength * 8;
+
+    document.getElementById('sha256Visual').style.display = 'block';
+    document.getElementById('sha256TraceText').innerHTML = `
+        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[PHÂN TÍCH QUÁ TRÌNH BĂM SHA-256]</div>
+        <div>• <strong>Dữ liệu đầu vào:</strong> "${text}" (${byteLength} bytes / ${bitLength} bits)</div>
         <div>• <strong>Đệm dữ liệu (Padding):</strong> Thêm bit '1' và các bit '0' sao cho độ dài văn bản ≡ 448 mod 512.</div>
-        <div>• <strong>Khởi tạo thanh ghi (H0..H7):</strong> 8 giá trị băm ban đầu từ hằng số căn bậc hai số nguyên tố.</div>
-        <div>• <strong>Nén 64 vòng lặp:</strong> Áp dụng các hàm phi tuyến Ch, Maj, Σ₀, Σ₁.</div>
+        <div>• <strong>Khởi tạo thanh ghi (H₀..H₇):</strong> 8 giá trị băm ban đầu từ hằng số căn bậc hai số nguyên tố.</div>
+        <div>• <strong>Nén 64 vòng lặp:</strong> Áp dụng các hàm phi tuyến Ch, Maj, $\Sigma_0$, $\Sigma_1$.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+            ➔ SHA-256 DIGEST (64 HEX): <span style="color:#06b6d4">${hash}</span>
+        </div>
     `;
 }
 </script>
