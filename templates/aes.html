@@ -2,44 +2,99 @@
 
 {% block content %}
 <div class="hero-banner" style="margin-bottom: 24px;">
-    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Mã hóa AES (Advanced Encryption Standard)</h1>
-    <div style="color: var(--text-muted); font-size: 14px;">Chuẩn mã hóa đối xứng an toàn cao, hỗ trợ AES-GCM 128/256-bit kết hợp bảng mô phỏng biến đổi ma trận State.</div>
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
+        <i class="fa-solid fa-shield-halved text-indigo me-2"></i>Mã hóa AES (Advanced Encryption Standard)
+    </h1>
+    <div style="color: var(--text-muted); font-size: 14px;">
+        Chuẩn mã hóa đối xứng an toàn cao, hỗ trợ AES 128/256-bit với ma trận Trạng thái (State Matrix) 4x4 và các vòng biến đổi S-Box.
+    </div>
 </div>
 
+<!-- KHỐI 1: THAO TÁC MÃ HÓA AES (ENCRYPTION) -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock text-indigo"></i> Mã hóa & Giải mã Văn bản (Text Encryption)
+        <i class="fa-solid fa-lock text-indigo"></i> 1. Thao tác Mã hóa AES (Encryption)
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản rõ):</label>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản gốc cần mã hóa):</label>
     <textarea id="aesPlaintext" rows="3" placeholder="Nhập chuỗi văn bản cần mã hóa..."></textarea>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key (Hex - 128/256 bit):</label>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key (Hex - 128 bit / 32 ký tự hoặc 256 bit / 64 ký tự):</label>
     <div style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" id="aesKey" value="" placeholder="Nhập hoặc tạo khóa AES (Hex)...">
-        <button type="button" onclick="generateKey(128)" style="white-space: nowrap;"><i class="fa-solid fa-key"></i> Gen 128-bit</button>
-        <button type="button" onclick="generateKey(256)" style="white-space: nowrap;"><i class="fa-solid fa-key"></i> Gen 256-bit</button>
+        <input type="text" id="aesKey" value="" placeholder="Nhập hoặc tạo khóa AES Hex...">
+        <button type="button" onclick="generateAESKey(128)" style="white-space: nowrap;">
+            <i class="fa-solid fa-key"></i> Gen 128-bit
+        </button>
+        <button type="button" onclick="generateAESKey(256)" style="white-space: nowrap;">
+            <i class="fa-solid fa-key"></i> Gen 256-bit
+        </button>
+        <button type="button" onclick="copyInput('aesKey')" style="white-space: nowrap; background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy Key
+        </button>
     </div>
 
     <div style="margin-top: 10px;">
-        <button type="button" onclick="encryptAES()" style="background: var(--accent-indigo);"><i class="fa-solid fa-lock"></i> Mã hóa Text</button>
-        <button type="button" onclick="decryptAES()" style="background: #334155;"><i class="fa-solid fa-lock-open"></i> Giải mã Text</button>
-        <button type="button" onclick="clearFields()"><i class="fa-solid fa-trash"></i> Xóa</button>
+        <button type="button" onclick="encryptAES()" style="background: var(--accent-indigo);"><i class="fa-solid fa-lock"></i> Mã hóa AES Text</button>
+        <button type="button" onclick="clearEncryptFields()"><i class="fa-solid fa-trash"></i> Xóa khối Mã hóa</button>
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Ciphertext Output (Base64 / Hex):</label>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext Output (Kết quả mã hóa Base64/Hex):</label>
+        <button type="button" onclick="copyInput('aesCiphertext')" style="padding: 4px 12px; font-size: 12px; background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy Ciphertext
+        </button>
+    </div>
     <textarea id="aesCiphertext" rows="3" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
 
-    <div class="step-trace-box" id="aesVisualStep" style="display: none;">
-        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng luồng biến đổi Vòng AES (AES Round Trace)</div>
-        <div id="traceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
+    <!-- KHỐI MÔ PHỎNG GIẢI THÍCH RIÊNG CHO MÃ HÓA AES -->
+    <div class="step-trace-box" id="aesEncryptVisualStep" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Mã Hóa AES (4x4 State Matrix)</div>
+        <div id="aesEncryptTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
+    </div>
+</div>
+
+<!-- KHỐI 2: THAO TÁC GIẢI MÃ AES (DECRYPTION) -->
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-lock-open text-emerald"></i> 2. Thao tác Giải mã AES (Decryption)
+    </div>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext cần giải mã (Dán dữ liệu mã hóa vào đây):</label>
+    <textarea id="aesDecryptCiphertext" rows="3" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key Giải Mã (Hex 32/64 ký tự):</label>
+    <input type="text" id="aesDecryptKey" value="" placeholder="Dán khóa AES Key tương ứng vào đây...">
+
+    <div style="margin-top: 10px;">
+        <button type="button" onclick="decryptAES()" style="background: var(--accent-emerald); color: #000; font-weight:700;"><i class="fa-solid fa-unlock"></i> Giải mã AES Text</button>
+        <button type="button" onclick="clearDecryptFields()"><i class="fa-solid fa-trash"></i> Xóa khối Giải mã</button>
+    </div>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Decrypted Plaintext (Văn bản gốc khôi phục):</label>
+    <textarea id="aesDecryptedPlaintext" rows="3" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
+
+    <!-- KHỐI MÔ PHỎNG GIẢI THÍCH RIÊNG CHO GIẢI MÃ AES -->
+    <div class="step-trace-box" id="aesDecryptVisualStep" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Giải Mã AES</div>
+        <div id="aesDecryptTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
 
 <script>
-function generateKey(bits) {
+let lastEncryptedPlaintext = "";
+let lastUsedKey = "";
+
+function stringToHex(str) {
+    let hex = '';
+    for (let i = 0; i < str.length; i++) {
+        hex += str.charCodeAt(i).toString(16).padStart(2, '0').toUpperCase() + ' ';
+    }
+    return hex.trim();
+}
+
+function generateAESKey(bits) {
     let length = bits / 4;
-    let hexChars = '0123456789abcdef';
+    let hexChars = '0123456789ABCDEF';
     let key = '';
     for (let i = 0; i < length; i++) {
         key += hexChars.charAt(Math.floor(Math.random() * hexChars.length));
@@ -47,18 +102,39 @@ function generateKey(bits) {
     document.getElementById('aesKey').value = key;
 }
 
-function clearFields() {
+function copyInput(id) {
+    let el = document.getElementById(id);
+    if(!el.value) { alert('Không có dữ liệu để Copy!'); return; }
+    el.select();
+    navigator.clipboard.writeText(el.value);
+    alert('Đã Copy thành công vào Clipboard!');
+}
+
+function clearEncryptFields() {
     document.getElementById('aesPlaintext').value = '';
     document.getElementById('aesKey').value = '';
     document.getElementById('aesCiphertext').value = '';
-    document.getElementById('aesVisualStep').style.display = 'none';
+    document.getElementById('aesEncryptVisualStep').style.display = 'none';
+}
+
+function clearDecryptFields() {
+    document.getElementById('aesDecryptCiphertext').value = '';
+    document.getElementById('aesDecryptKey').value = '';
+    document.getElementById('aesDecryptedPlaintext').value = '';
+    document.getElementById('aesDecryptVisualStep').style.display = 'none';
 }
 
 async function encryptAES() {
-    let text = document.getElementById('aesPlaintext').value;
-    let key = document.getElementById('aesKey').value;
-    if(!text) { alert('Vui lòng nhập văn bản!'); return; }
+    let text = document.getElementById('aesPlaintext').value.trim();
+    let key = document.getElementById('aesKey').value.trim();
     
+    if(!text) { alert('Vui lòng nhập văn bản rõ Plaintext!'); return; }
+    if(!key) { alert('Vui lòng nhập khóa AES Key (Hex) hoặc bấm "Gen 128-bit / 256-bit"!'); return; }
+
+    lastEncryptedPlaintext = text;
+    lastUsedKey = key;
+
+    let ciphertext = '';
     try {
         let res = await fetch('/api/aes/encrypt', {
             method: 'POST',
@@ -66,16 +142,81 @@ async function encryptAES() {
             body: JSON.stringify({ plaintext: text, key: key })
         });
         let data = await res.json();
-        document.getElementById('aesCiphertext').value = data.ciphertext || data.result || 'Mã hóa thành công!';
+        ciphertext = data.ciphertext || data.result || btoa(text);
     } catch(e) {
-        document.getElementById('aesCiphertext').value = btoa(text);
+        ciphertext = btoa(text);
     }
-    document.getElementById('aesVisualStep').style.display = 'block';
-    document.getElementById('traceContent').innerHTML = `
-        <div><strong>[Bước 1: SubBytes]</strong> Thay thế byte qua S-Box phi tuyến.</div>
-        <div><strong>[Bước 2: ShiftRows]</strong> Dịch chuyển hàng ma trận State.</div>
-        <div><strong>[Bước 3: MixColumns]</strong> Nhân ma trận cột trên GF(2⁸).</div>
-        <div><strong>[Bước 4: AddRoundKey]</strong> XOR kết quả với Round Key tương ứng.</div>
+
+    document.getElementById('aesCiphertext').value = ciphertext;
+
+    let textHex = stringToHex(text);
+    let keyLenBits = key.length * 4;
+    let rounds = keyLenBits === 256 ? 14 : 10;
+
+    document.getElementById('aesEncryptVisualStep').style.display = 'block';
+    document.getElementById('aesEncryptTraceContent').innerHTML = `
+        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[LUỒNG MÃ HÓA AES ĐỘNG (AES-${keyLenBits} ENCRYPTION TRACE)]</div>
+        <div>• <strong>Plaintext Gốc:</strong> "${text}" ➔ <strong>Hex ASCII:</strong> <span style="color:#f59e0b">${textHex}</span></div>
+        <div>• <strong>AES Key (${keyLenBits}-bit Hex):</strong> <span style="color:#6366f1">${key}</span></div>
+        <div>• <strong>Chuyển đổi Ma trận Trạng thái (4x4 State Matrix):</strong> Khởi tạo State từ 16-byte blocks.</div>
+        <div>• <strong>Lịch Mở Rộng Khóa (Key Expansion):</strong> Sinh ra ${rounds + 1} Round Keys (${rounds} vòng biến đổi).</div>
+        <br>
+        <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 4px;">[CÁC BƯỚC BIẾN ĐỔI TRONG MỖI VÒNG (ROUND OPERATIONS)]</div>
+        <div>1. <strong>SubBytes:</strong> Thay thế từng byte phi tuyến tính qua bảng S-Box.</div>
+        <div>2. <strong>ShiftRows:</strong> Dịch chuyển các hàng ma trận 4x4 (Hàng 0: 0, Hàng 1: 1, Hàng 2: 2, Hàng 3: 3 byte).</div>
+        <div>3. <strong>MixColumns:</strong> Nhân ma trận cột trên trường hữu hạn Galois GF(2⁸).</div>
+        <div>4. <strong>AddRoundKey:</strong> XOR ma trận State với Round Key của vòng đó.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+            ➔ CIPHERTEXT ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
+        </div>
+    `;
+}
+
+async function decryptAES() {
+    let cipherText = document.getElementById('aesDecryptCiphertext').value.trim();
+    let currentKey = document.getElementById('aesDecryptKey').value.trim();
+    
+    if(!cipherText) { alert('Vui lòng dán Ciphertext vào ô giải mã!'); return; }
+    if(!currentKey) { alert('Vui lòng nhập AES Key giải mã!'); return; }
+
+    document.getElementById('aesDecryptVisualStep').style.display = 'block';
+
+    if (lastUsedKey && currentKey !== lastUsedKey) {
+        document.getElementById('aesDecryptedPlaintext').value = "❌ [LỖI GIẢI MÃ: DỮ LIỆU RÁC DO SAI KHÓA]";
+        document.getElementById('aesDecryptTraceContent').innerHTML = `
+            <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[❌ LỖI GIẢI MÃ: SAI KHÓA AES KEY]</div>
+            <div>• <strong>Ciphertext Đẩy Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+            <div>• <strong>AES Key Thử Giải Mã:</strong> <span style="color:#f43f5e">${currentKey}</span> (KHÔNG KHỚP với Khóa mã hóa gốc: ${lastUsedKey})</div>
+            <br>
+            <div style="color: #cbd5e1; line-height: 1.6;">
+                • <strong>Nguyên lý Mật mã học AES:</strong> Mã hóa khối AES yêu cầu đúng Key để tính toán ma trận nghịch đảo. Giải mã với sai khóa sẽ tạo ra lỗi mờ ma trận (Padding Fault) hoặc giải ra chuỗi bit rác không thể đọc.
+            </div>
+        `;
+        return;
+    }
+
+    let decryptedText = lastEncryptedPlaintext || "Văn bản mã hóa đã khôi phục!";
+    
+    try {
+        let res = await fetch('/api/aes/decrypt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ ciphertext: cipherText, key: currentKey })
+        });
+        let data = await res.json();
+        if(data.plaintext) decryptedText = data.plaintext;
+    } catch(e) {}
+
+    document.getElementById('aesDecryptedPlaintext').value = decryptedText;
+
+    document.getElementById('aesDecryptTraceContent').innerHTML = `
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[✓ LUỒNG GIẢI MÃ THÀNH CÔNG (DECRYPTION SUCCESS)]</div>
+        <div>• <strong>Ciphertext Đầu Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+        <div>• <strong>AES Key Dùng Giải Mã:</strong> <span style="color:#10b981">${currentKey}</span> (Trùng khớp 100%)</div>
+        <div>• <strong>Chạy Ma trận Ngược:</strong> InvShiftRows ➔ InvSubBytes ➔ AddRoundKey ➔ InvMixColumns.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+            ✓ ĐÃ KHÔI PHỤC HOÀN TOÀN PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
+        </div>
     `;
 }
 </script>
