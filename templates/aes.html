@@ -17,7 +17,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Văn bản gốc cần mã hóa):</label>
-    <textarea id="aesPlaintext" rows="3" placeholder="Nhập chuỗi văn bản cần mã hóa..."></textarea>
+    <textarea id="aesPlaintext" rows="3" cols="100" placeholder="Nhập chuỗi văn bản cần mã hóa..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key (Hex - 128 bit / 32 ký tự hoặc 256 bit / 64 ký tự):</label>
     <div style="display: flex; gap: 10px; align-items: center;">
@@ -44,9 +44,8 @@
             <i class="fa-solid fa-copy"></i> Copy Ciphertext
         </button>
     </div>
-    <textarea id="aesCiphertext" rows="3" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
+    <textarea id="aesCiphertext" rows="3" cols="100" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
 
-    <!-- KHỐI MÔ PHỎNG GIẢI THÍCH RIÊNG CHO MÃ HÓA AES -->
     <div class="step-trace-box" id="aesEncryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Mã Hóa AES (4x4 State Matrix)</div>
         <div id="aesEncryptTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
@@ -60,7 +59,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext cần giải mã (Dán dữ liệu mã hóa vào đây):</label>
-    <textarea id="aesDecryptCiphertext" rows="3" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
+    <textarea id="aesDecryptCiphertext" rows="3" cols="100" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">AES Key Giải Mã (Hex 32/64 ký tự):</label>
     <input type="text" id="aesDecryptKey" value="" placeholder="Dán khóa AES Key tương ứng vào đây...">
@@ -71,9 +70,8 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Decrypted Plaintext (Văn bản gốc khôi phục):</label>
-    <textarea id="aesDecryptedPlaintext" rows="3" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
+    <textarea id="aesDecryptedPlaintext" rows="3" cols="100" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
 
-    <!-- KHỐI MÔ PHỎNG GIẢI THÍCH RIÊNG CHO GIẢI MÃ AES -->
     <div class="step-trace-box" id="aesDecryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Giải Mã AES</div>
         <div id="aesDecryptTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
@@ -163,7 +161,7 @@ async function encryptAES() {
         <br>
         <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 4px;">[CÁC BƯỚC BIẾN ĐỔI TRONG MỖI VÒNG (ROUND OPERATIONS)]</div>
         <div>1. <strong>SubBytes:</strong> Thay thế từng byte phi tuyến tính qua bảng S-Box.</div>
-        <div>2. <strong>ShiftRows:</strong> Dịch chuyển các hàng ma trận 4x4 (Hàng 0: 0, Hàng 1: 1, Hàng 2: 2, Hàng 3: 3 byte).</div>
+        <div>2. <strong>ShiftRows:</strong> Dịch chuyển các hàng ma trận 4x4.</div>
         <div>3. <strong>MixColumns:</strong> Nhân ma trận cột trên trường hữu hạn Galois GF(2⁸).</div>
         <div>4. <strong>AddRoundKey:</strong> XOR ma trận State với Round Key của vòng đó.</div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
