@@ -42,6 +42,12 @@
         </button>
     </div>
     <textarea id="desCiphertext" rows="3" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
+
+    <!-- KHỐI MÔ PHỎNG GIẢI THÍCH RIÊNG CHO MÃ HÓA -->
+    <div class="step-trace-box" id="desEncryptVisualStep" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Mã Hóa DES</div>
+        <div id="desEncryptTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
+    </div>
 </div>
 
 <!-- KHỐI 2: THAO TÁC GIẢI MÃ (DECRYPTION) -->
@@ -51,7 +57,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext cần giải mã (Dán dữ liệu mã hóa vào đây):</label>
-    <textarea id="desDecryptCiphertext" rows="3" placeholder="Dán đoạn mã Ciphertext cần giải mã..."></textarea>
+    <textarea id="desDecryptCiphertext" rows="3" placeholder="Dán đoạn mã Ciphertext cần giải mã vào đây..."></textarea>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">DES Key Giải Mã (Hex 16 ký tự):</label>
     <input type="text" id="desDecryptKey" value="" placeholder="Dán khóa DES Key tương ứng vào đây...">
@@ -63,12 +69,12 @@
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Decrypted Plaintext (Văn bản gốc khôi phục):</label>
     <textarea id="desDecryptedPlaintext" rows="3" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
-</div>
 
-<!-- KHỐI 3: MÔ PHỎNG CHI TIẾT TRACE -->
-<div class="step-trace-box" id="desVisualStep" style="display: none; margin-bottom: 30px;">
-    <div class="step-trace-title" id="desTraceTitle"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Mạng Feistel Động</div>
-    <div id="desTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
+    <!-- KHỐI MÔ PHỎNG GIẢI THÍCH RIÊNG CHO GIẢI MÃ -->
+    <div class="step-trace-box" id="desDecryptVisualStep" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Mô phỏng Chi tiết Luồng Giải Mã DES</div>
+        <div id="desDecryptTraceContent" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
+    </div>
 </div>
 
 <script>
@@ -104,12 +110,14 @@ function clearEncryptFields() {
     document.getElementById('desPlaintext').value = '';
     document.getElementById('desKey').value = '';
     document.getElementById('desCiphertext').value = '';
+    document.getElementById('desEncryptVisualStep').style.display = 'none';
 }
 
 function clearDecryptFields() {
     document.getElementById('desDecryptCiphertext').value = '';
     document.getElementById('desDecryptKey').value = '';
     document.getElementById('desDecryptedPlaintext').value = '';
+    document.getElementById('desDecryptVisualStep').style.display = 'none';
 }
 
 async function encryptDES() {
@@ -137,18 +145,14 @@ async function encryptDES() {
 
     document.getElementById('desCiphertext').value = ciphertext;
 
-    // Tự động điền nhanh xuống khối Giải mã để tiện test
-    document.getElementById('desDecryptCiphertext').value = ciphertext;
-    document.getElementById('desDecryptKey').value = key;
-
-    // Hiển thị Trace Mã Hóa
+    // HIỂN THỊ MÔ PHỎNG GIẢI THÍCH MÃ HÓA
     let textHex = stringToHex(text);
     let key56 = key.substring(0, 14);
     let l0 = key.substring(0, 8);
     let r0 = key.substring(8, 16);
 
-    document.getElementById('desVisualStep').style.display = 'block';
-    document.getElementById('desTraceContent').innerHTML = `
+    document.getElementById('desEncryptVisualStep').style.display = 'block';
+    document.getElementById('desEncryptTraceContent').innerHTML = `
         <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[LUỒNG MÃ HÓA DES ĐỘNG (ENCRYPTION TRACE)]</div>
         <div>• <strong>Plaintext Gốc:</strong> "${text}" ➔ <strong>Hex ASCII:</strong> <span style="color:#f59e0b">${textHex}</span></div>
         <div>• <strong>DES Key Dùng Mã Hóa:</strong> <span style="color:#6366f1">${key}</span></div>
@@ -168,12 +172,12 @@ async function decryptDES() {
     if(!cipherText) { alert('Vui lòng dán Ciphertext vào ô giải mã!'); return; }
     if(!currentKey) { alert('Vui lòng nhập DES Key giải mã!'); return; }
 
-    document.getElementById('desVisualStep').style.display = 'block';
+    document.getElementById('desDecryptVisualStep').style.display = 'block';
 
     // KIỂM TRA SAI KHÓA
     if (lastUsedKey && currentKey !== lastUsedKey) {
         document.getElementById('desDecryptedPlaintext').value = "❌ [LỖI GIẢI MÃ: DỮ LIỆU RÁC DO SAI KHÓA]";
-        document.getElementById('desTraceContent').innerHTML = `
+        document.getElementById('desDecryptTraceContent').innerHTML = `
             <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[❌ LỖI GIẢI MÃ: SAI KHÓA DES KEY]</div>
             <div>• <strong>Ciphertext Đẩy Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
             <div>• <strong>DES Key Thử Giải Mã:</strong> <span style="color:#f43f5e">${currentKey}</span> (KHÔNG KHỚP với Khóa mã hóa gốc: ${lastUsedKey})</div>
@@ -200,7 +204,7 @@ async function decryptDES() {
 
     document.getElementById('desDecryptedPlaintext').value = decryptedText;
 
-    document.getElementById('desTraceContent').innerHTML = `
+    document.getElementById('desDecryptTraceContent').innerHTML = `
         <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[✓ LUỒNG GIẢI MÃ THÀNH CÔNG (DECRYPTION SUCCESS)]</div>
         <div>• <strong>Ciphertext Đầu Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
         <div>• <strong>DES Key Dùng Giải Mã:</strong> <span style="color:#10b981">${currentKey}</span> (Trùng khớp 100%)</div>
