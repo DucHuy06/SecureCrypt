@@ -56,11 +56,11 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa công khai (Public Key e, n):</label>
-            <input type="text" id="rsaPublic" value="" readonly placeholder="Chưa có khóa, hãy nhập p, q và bấm Sinh cặp khóa...">
+            <input type="text" id="rsaPublic" value="" readonly placeholder="Chưa có khóa...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật (Private Key d, n):</label>
-            <input type="text" id="rsaPrivate" value="" readonly placeholder="Chưa có khóa, hãy nhập p, q và bấm Sinh cặp khóa...">
+            <input type="text" id="rsaPrivate" value="" readonly placeholder="Chưa có khóa...">
         </div>
     </div>
 
@@ -70,7 +70,7 @@
     </div>
 </div>
 
-<!-- KHỐI 2: THAO TÁC MÃ HÓA RSA (ENCRYPTION) -->
+<!-- KHỐI 2: THAO TÁC MÃ HÓA RSA -->
 <div class="crypto-card">
     <div class="card-title-header">
         <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa RSA (Encryption)
@@ -100,7 +100,7 @@
     </div>
 </div>
 
-<!-- KHỐI 3: THAO TÁC GIẢI MÃ RSA (DECRYPTION) -->
+<!-- KHỐI 3: THAO TÁC GIẢI MÃ RSA -->
 <div class="crypto-card">
     <div class="card-title-header">
         <i class="fa-solid fa-lock-open text-emerald"></i> 3. Thao tác Giải mã RSA (Decryption)
@@ -112,11 +112,11 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Private Key d (Khóa bí mật):</label>
-            <input type="text" id="rsaDecryptKeyD" value="" placeholder="Nhập giá trị d...">
+            <input type="text" id="rsaDecryptKeyD" value="" placeholder="Nhập thủ công giá trị d...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Modulus n (Khóa chung):</label>
-            <input type="text" id="rsaDecryptKeyN" value="" placeholder="Nhập giá trị n...">
+            <input type="text" id="rsaDecryptKeyN" value="" placeholder="Nhập thủ công giá trị n...">
         </div>
     </div>
 
@@ -137,13 +137,9 @@
 </div>
 
 <script>
-let currentN = 0;
-let currentE = 17;
-let currentD = 0;
-
-function gcd(a, b) {
-    return b === 0 ? a : gcd(b, a % b);
-}
+let lastGeneratedN = 0;
+let lastGeneratedE = 17;
+let lastGeneratedD = 0;
 
 function modInverse(e, phi) {
     let t = 0, newt = 1;
@@ -174,11 +170,6 @@ function generateRSAKeys() {
     let p = parseInt(pVal);
     let q = parseInt(qVal);
 
-    if(isNaN(p) || isNaN(q)) {
-        alert('Giá trị p và q phải là số nguyên!');
-        return;
-    }
-
     let n = p * q;
     let phi = (p - 1) * (q - 1);
     let e = 17;
@@ -186,20 +177,16 @@ function generateRSAKeys() {
 
     let d = modInverse(e, phi);
     if(d === -1) {
-        alert('Không tìm thấy nghịch đảo modular với e và phi(n) hiện tại. Hãy thử cặp p, q khác!');
+        alert('Không tìm thấy nghịch đảo modular hợp lệ. Hãy thử cặp p, q khác!');
         return;
     }
 
-    currentN = n;
-    currentE = e;
-    currentD = d;
+    lastGeneratedN = n;
+    lastGeneratedE = e;
+    lastGeneratedD = d;
 
     document.getElementById('rsaPublic').value = `e = ${e}, n = ${n}`;
     document.getElementById('rsaPrivate').value = `d = ${d}, n = ${n}`;
-    
-    // Tự động gán sang ô giải mã để tiện test
-    document.getElementById('rsaDecryptKeyD').value = d;
-    document.getElementById('rsaDecryptKeyN').value = n;
 
     document.getElementById('rsaKeyVisualStep').style.display = 'block';
     document.getElementById('rsaKeyTraceText').innerHTML = `
@@ -207,7 +194,7 @@ function generateRSAKeys() {
         <div>1. <strong>Chọn 2 số nguyên tố:</strong> p = ${p}, q = ${q}</div>
         <div>2. <strong>Tính Modulus (n):</strong> n = p × q = ${p} × ${q} = <span style="color:#06b6d4">${n}</span></div>
         <div>3. <strong>Tính hàm Euler Phi:</strong> φ(n) = (p - 1)(q - 1) = (${p}-1)×(${q}-1) = <span style="color:#06b6d4">${phi}</span></div>
-        <div>4. <strong>Chọn khóa công khai e:</strong> e = ${e} (thỏa mãn 1 < e < φ(n) và nguyên tố cùng nhau với φ(n))</div>
+        <div>4. <strong>Chọn khóa công khai e:</strong> e = ${e} (thỏa mãn điều kiện nguyên tố cùng nhau với φ(n))</div>
         <div>5. <strong>Tính khóa bí mật d:</strong> d = e⁻¹ mod φ(n) ➔ d = <span style="color:#10b981">${d}</span></div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
             ➔ KẾT QUẢ: Public Key (e=${e}, n=${n}) | Private Key (d=${d}, n=${n})
@@ -217,7 +204,7 @@ function generateRSAKeys() {
 
 function copyInput(id) {
     let el = document.getElementById(id);
-    if(!el.value) { alert('Chưa có dữ liệu khóa để Copy! Hãy bấm Sinh cặp khóa trước.'); return; }
+    if(!el.value) { alert('Chưa có dữ liệu khóa để Copy!'); return; }
     el.select();
     navigator.clipboard.writeText(el.value);
     alert('Đã Copy thành công vào Clipboard!');
@@ -240,33 +227,23 @@ function clearDecryptFields() {
 function encryptRSA() {
     let text = document.getElementById('rsaPlaintext').value.trim();
     if(!text) { alert('Vui lòng nhập văn bản Plaintext cần mã hóa!'); return; }
-    if(!currentN) {
-        // Nếu chưa sinh khóa, gọi hàm sinh khóa ngầm với giá trị mặc định 61 và 53
-        document.getElementById('rsaP').value = '61';
-        document.getElementById('rsaQ').value = '53';
-        generateRSAKeys();
-    }
+    if(!lastGeneratedN) { alert('Vui lòng tạo cặp khóa ở Bước 1 trước khi mã hóa!'); return; }
 
     let cipherArr = [];
     for(let i=0; i<text.length; i++) {
         let m = text.charCodeAt(i);
-        let c = Number((BigInt(m) ** BigInt(currentE)) % BigInt(currentN));
+        let c = Number((BigInt(m) ** BigInt(lastGeneratedE)) % BigInt(lastGeneratedN));
         cipherArr.push(c);
     }
     let ciphertext = cipherArr.join(' ');
 
     document.getElementById('rsaCiphertext').value = ciphertext;
-    document.getElementById('rsaDecryptCiphertext').value = ciphertext;
-    document.getElementById('rsaDecryptKeyD').value = currentD;
-    document.getElementById('rsaDecryptKeyN').value = currentN;
-
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
         <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[CHI TIẾT LUỒNG MÃ HÓA RSA]</div>
         <div>• <strong>Văn bản gốc (Plaintext):</strong> "${text}"</div>
-        <div>• <strong>Chuyển đổi từng ký tự sang mã ASCII (M):</strong> ${text.split('').map(ch => `${ch}=${ch.charCodeAt(0)}`).join(', ')}</div>
-        <div>• <strong>Sử dụng Khóa công khai:</strong> e = ${currentE}, n = ${currentN}</div>
-        <div>• <strong>Áp dụng công thức mã hóa khối:</strong> C = Mᵉ mod n cho từng ký tự.</div>
+        <div>• <strong>Mã hóa qua Khóa công khai:</strong> e = ${lastGeneratedE}, n = ${lastGeneratedN}</div>
+        <div>• <strong>Công thức:</strong> C = Mᵉ mod n</div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
             ➔ CIPHERTEXT ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
         </div>
@@ -279,7 +256,7 @@ function decryptRSA() {
     let n = document.getElementById('rsaDecryptKeyN').value.trim();
 
     if(!cipherText) { alert('Vui lòng dán Ciphertext vào ô giải mã!'); return; }
-    if(!d || !n) { alert('Vui lòng nhập đầy đủ Khóa bí mật d và Modulus n!'); return; }
+    if(!d || !n) { alert('Vui lòng nhập thủ công Khóa bí mật d và Modulus n ở Bước 3!'); return; }
 
     let cipherArr = cipherText.split(' ');
     let plainChars = [];
@@ -293,15 +270,14 @@ function decryptRSA() {
     let decryptedText = plainChars.join('') || "";
 
     document.getElementById('rsaDecryptedPlaintext').value = decryptedText;
-
     document.getElementById('rsaDecryptVisualStep').style.display = 'block';
     document.getElementById('rsaDecryptTraceText').innerHTML = `
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[CHI TIẾT LUỒNG GIẢI MÃ RSA THÀNH CÔNG]</div>
-        <div>• <strong>Ciphertext Đầu Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-        <div>• <strong>Sử dụng Khóa bí mật:</strong> d = ${d}, n = ${n}</div>
-        <div>• <strong>Áp dụng công thức giải mã:</strong> M = Cᵈ mod n cho từng khối số mã hóa.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[CHI TIẾT LUỒNG GIẢI MÃ RSA]</div>
+        <div>• <strong>Ciphertext:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+        <div>• <strong>Sử dụng Khóa bí mật do người dùng nhập:</strong> d = ${d}, n = ${n}</div>
+        <div>• <strong>Công thức:</strong> M = Cᵈ mod n</div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ ĐÃ KHÔI PHỤC HOÀN TOÀN PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
+            ✓ ĐÃ KHÔI PHỤC PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
         </div>
     `;
 }
