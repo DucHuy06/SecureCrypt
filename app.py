@@ -96,7 +96,7 @@ def chat_api():
             except Exception:
                 continue
 
-        # 3. Fallback danh sách tên chuẩn ASCII nếu list_models không trả về
+        # 3. Fallback danh sách tên chuẩn nếu list_models không trả về
         fallback_models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
         for m_name in fallback_models:
             try:
