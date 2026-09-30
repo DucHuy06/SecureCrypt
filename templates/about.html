@@ -161,12 +161,12 @@
     <div class="learn-desc">Hệ thống tài liệu học tập chuyên sâu toàn diện 6 thuật toán mật mã cốt lõi dành cho sinh viên CNTT & An toàn thông tin. Bấm vào từng chủ đề để khám phá nguyên lý toán học và ứng dụng thực tế.</div>
 </div>
 
-<!-- ================= 1. DANH SÁCH TỔNG QUAN (HIỆN BAN ĐẦU) ================= -->
+<!-- ================= 1. DANH SÁCH TỔNG QUAN ================= -->
 <div class="topics-list" id="hubList">
     <div class="topic-card" onclick="openTheory('des')">
         <div class="topic-info">
             <h4>1. Thuật toán Mã hóa Khối DES (Data Encryption Standard)</h4>
-            <p>Tìm hiểu kiến trúc mạng Feistel 16 vòng, ma trận hoán vị IP, E-box, P-box và bảng S-box.</p>
+            <p>Kiến trúc mạng Feistel 16 vòng, ma trận hoán vị IP, E-box, P-box và bảng S-box.</p>
         </div>
         <div class="read-time">10 min read</div>
     </div>
@@ -212,24 +212,24 @@
     </div>
 </div>
 
-<!-- ================= 2. CÁC TRANG CHI TIẾT LÝ THUYẾT (ẨN ĐI, CHỈ HIỆN KHI BẤM) ================= -->
+<!-- ================= 2. CÁC TRANG CHI TIẾT LÝ THUYẾT ĐÃ ĐƯỢC MỞ RỘNG ĐẦY ĐỦ ================= -->
 
 <!-- DES Theory -->
 <div class="theory-view" id="view-des">
     <button class="back-btn" onclick="closeTheory()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
     <div class="theory-heading"><i class="fa-solid fa-lock text-blue"></i> Chi tiết Lý thuyết: Thuật toán DES</div>
     <div class="theory-body-text">
-        <strong>DES (Data Encryption Standard)</strong> là thuật toán mã hóa khối đối xứng kinh điển do IBM phát triển và được Chính phủ Mỹ phê chuẩn làm tiêu chuẩn năm 1977. Dù hiện nay đã lỗi thời do khóa quá ngắn (56-bit) và dễ bị tấn công vét cạn (brute-force), DES đóng vai trò là nền tảng lịch sử quan trọng định hình nên cấu trúc mã hóa khối hiện đại.
+        <strong>DES (Data Encryption Standard)</strong> là chuẩn mã hóa khối đối xứng kinh điển do IBM phát triển và được Chính phủ Mỹ phê chuẩn năm 1977. Dù hiện nay đã lỗi thời do chiều dài khóa quá ngắn (56-bit) khiến máy tính hiện đại dễ dàng vét cạn (brute-force), DES đóng vai trò là nền tảng lịch sử quan trọng định hình nên cấu trúc mã hóa khối hiện đại.
     </div>
-    <div class="theory-subheading">Nguyên lý hoạt động & Mạng Feistel:</div>
+    <div class="theory-subheading">1. Kiến trúc tổng quan & Cấu trúc mạng Feistel:</div>
     <ul class="theory-ul">
-        <li><strong>Xử lý khối 64-bit:</strong> Dữ liệu đầu vào được chia thành các khối 64-bit và trải qua phép hoán vị ban đầu (Initial Permutation - IP).</li>
-        <li><strong>Cấu trúc Mạng Feistel 16 vòng:</strong> Khối dữ liệu được tách thành hai nửa (L và R). Qua mỗi vòng, nửa phải được đưa qua hàm Feistel (gồm bảng mở rộng E-box, kết hợp XOR với khóa con, đi qua các bảng thay thế S-box, và hoán vị P-box) rồi trộn lẫn với nửa trái.</li>
-        <li><strong>Hệ thống sinh khóa con (Key Schedule):</strong> Khóa chính 56-bit (thực tế nhập 64-bit tính cả bit chẵn lẻ) trải qua các phép dịch vòng và chọn lọc qua hai bảng PC-1 và PC-2 để sinh ra 16 khóa con độc lập ($k_1$ đến $k_{16}$) cho 16 vòng.</li>
+        <li><strong>Xử lý khối 64-bit:</strong> Dữ liệu bản rõ được chia thành các khối 64-bit và trải qua phép hoán vị ban đầu (Initial Permutation - IP) để xáo trộn vị trí các bit.</li>
+        <li><strong>Cấu trúc Mạng Feistel 16 vòng:</strong> Khối dữ liệu sau khi qua IP được tách thành hai nửa bằng nhau: Nửa trái ($L$) và Nửa phải ($R$). Qua mỗi vòng lặp, dữ liệu được biến đổi qua hàm Feistel sử dụng bảng mở rộng E-box, kết hợp XOR với khóa con, đi qua các bảng thay thế phi tuyến S-box, và hoán vị P-box.</li>
+        <li><strong>Hệ thống sinh khóa con (Key Schedule):</strong> Khóa chính 56-bit (nhập vào 64-bit tính cả bit chẵn lẻ) trải qua các phép dịch vòng dịch chuyển bit và chọn lọc qua hai bảng hoán vị PC-1 và PC-2 để sinh ra 16 khóa con độc lập ($k_1$ đến $k_{16}$) tương ứng cho 16 vòng mã hóa.</li>
     </ul>
-    <div class="theory-subheading">Ứng dụng thực tế & Hạn chế:</div>
+    <div class="theory-subheading">2. Ưu nhược điểm & Ứng dụng thực tế:</div>
     <div class="theory-body-text">
-        Từng được sử dụng rộng rãi trong hệ thống ngân hàng và thẻ ATM (dưới dạng 3DES). Tuy nhiên, với sức mạnh máy tính hiện đại, DES hoàn toàn không còn đủ an toàn để bảo mật dữ liệu nhạy cảm.
+        Mặc dù phiên bản DES đơn lẻ không còn an toàn, biến thể 3DES (Triple DES) đã kéo dài thời gian sống của thuật toán trong hệ thống ngân hàng nhiều thập kỷ. Hiện nay, DES chủ yếu được giảng dạy làm nền tảng vỡ lòng cho sinh viên chuyên ngành An toàn thông tin.
     </div>
 </div>
 
@@ -238,19 +238,25 @@
     <button class="back-btn" onclick="closeTheory()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
     <div class="theory-heading"><i class="fa-solid fa-shield-halved text-indigo"></i> Chi tiết Lý thuyết: Chuẩn Mã hóa AES</div>
     <div class="theory-body-text">
-        <strong>AES (Advanced Encryption Standard)</strong> là chuẩn mã hóa đối xứng hiện đại được Viện Tiêu chuẩn và Công nghệ Quốc gia Mỹ (NIST) ban hành năm 2001 để thay thế cho DES. AES hoạt động dựa trên cấu trúc <em>Mạng Thay thế - Hoán vị (SPN)</em> và không sử dụng mạng Feistel.
+        <strong>AES (Advanced Encryption Standard)</strong> là chuẩn mã hóa đối xứng hiện đại được Viện Tiêu chuẩn và Công nghệ Quốc gia Mỹ (NIST) ban hành năm 2001 sau một cuộc thi tuyển chọn toàn cầu để thay thế cho DES. AES hoạt động dựa trên cấu trúc <em>Mạng Thay thế - Hoán vị (SPN - Substitution-Permutation Network)</em> và không sử dụng mạng Feistel.
     </div>
-    <div class="theory-subheading">Cấu trúc ma trận State & 4 bước biến đổi cốt lõi:</div>
+    <div class="theory-subheading">1. Cấu trúc ma trận State & 4 phép biến đổi cốt lõi:</div>
     <ul class="theory-ul">
         <li><strong>Ma trận trạng thái (State Matrix):</strong> Khối dữ liệu 128-bit được sắp xếp thành một lưới vuông $4 \times 4$ byte.</li>
-        <li><strong>SubBytes:</strong> Phép thay thế phi tuyến tính độc lập cho từng byte thông qua bảng S-box chuẩn nhằm tạo độ hỗn loạn cao.</li>
-        <li><strong>ShiftRows:</strong> Phép dịch vòng các hàng của ma trận State (hàng 0 dịch 0 byte, hàng 1 dịch 1 byte, v.v.) để khuếch tán dữ liệu theo chiều ngang.</li>
-        <li><strong>MixColumns:</strong> Phép nhân ma trận cột trên trường hữu hạn Galois GF(2^8) nhằm khuếch tán dữ liệu theo chiều dọc.</li>
-        <li><strong>AddRoundKey:</strong> Phép toán XOR ma trận State hiện tại với khóa con (Round Key) của vòng tương ứng.</li>
+        <li><strong>SubBytes:</strong> Phép thay thế phi tuyến tính độc lập cho từng byte thông qua một bảng tra cứu cố định (S-box) nhằm phá vỡ tính quy luật tuyến tính.</li>
+        <li><strong>ShiftRows:</strong> Phép dịch vòng các hàng của ma trận State theo quy luật hàng 0 giữ nguyên, hàng 1 dịch trái 1 byte, hàng 2 dịch 2 byte, hàng 3 dịch 3 byte nhằm khuếch tán dữ liệu theo chiều ngang.</li>
+        <li><strong>MixColumns:</strong> Phép nhân ma trận cột trên trường hữu hạn Galois $GF(2^8)$ nhằm khuếch tán dữ liệu theo chiều dọc, đảm bảo 1 byte thay đổi ảnh hưởng đến toàn bộ cột.</li>
+        <li><strong>AddRoundKey:</strong> Phép toán XOR ma trận State hiện tại với khóa con vòng (Round Key) tương ứng được sinh từ thuật toán mở rộng khóa (Key Expansion).</li>
     </ul>
     <div class="theory-formula-box">
-        Số vòng lặp (Rounds) phụ thuộc vào độ dài khóa:<br>
-        - AES-128: 10 vòng | AES-192: 12 vòng | AES-256: 14 vòng
+        Số vòng lặp (Rounds) phụ thuộc vào chiều dài khóa:<br>
+        - AES-128: Sử dụng khóa 128-bit qua 10 vòng biến đổi.<br>
+        - AES-192: Sử dụng khóa 192-bit qua 12 vòng biến đổi.<br>
+        - AES-256: Sử dụng khóa 256-bit qua 14 vòng biến đổi.
+    </div>
+    <div class="theory-subheading">2. Ứng dụng thực tế:</div>
+    <div class="theory-body-text">
+        AES là tiêu chuẩn bảo mật toàn cầu, được tích hợp trong bảo mật Wifi (WPA2/WPA3), mã hóa phân vùng ổ cứng (BitLocker/FileVault), giao thức HTTPS/TLS trên Internet, và các ứng dụng nhắn tin bảo mật đầu cuối.
     </div>
 </div>
 
@@ -259,16 +265,16 @@
     <button class="back-btn" onclick="closeTheory()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
     <div class="theory-heading"><i class="fa-solid fa-hashtag text-emerald"></i> Chi tiết Lý thuyết: Hàm Băm MD5</div>
     <div class="theory-body-text">
-        <strong>MD5 (Message Digest 5)</strong> do Giáo sư Ronald Rivest thiết kế năm 1991. Đây là hàm băm mật mã nhận đầu vào có độ dài bất kỳ và tạo ra giá trị băm cố định <strong>128-bit (thường biểu diễn dưới dạng 32 ký tự Hex)</strong>.
+        <strong>MD5 (Message Digest 5)</strong> do Giáo sư Ronald Rivest thiết kế năm 1991 tại MIT. Đây là hàm băm mật mã phổ biến nhận đầu vào có độ dài bất kỳ và chuyển đổi thành một giá trị băm cố định <strong>128-bit (thường được biểu diễn dưới dạng 32 ký tự hệ Hex)</strong>.
     </div>
-    <div class="theory-subheading">Nguyên lý hoạt động:</div>
+    <div class="theory-subheading">1. Nguyên lý vận hành chi tiết:</div>
     <ul class="theory-ul">
-        <li><strong>Đệm thông điệp (Padding):</strong> Thêm các bit sao cho chiều dài thông điệp sau khi đệm đồng dư với 448 modulo 512, sau đó nối thêm 64-bit biểu diễn chiều dài gốc.</li>
-        <li><strong>Xử lý khối 512-bit & 4 Vòng logic:</strong> Chia thông điệp thành các khối 512-bit, đi qua 4 vòng tính toán liên tiếp (mỗi vòng 16 bước) sử dụng các hàm logic bitwise ($F, G, H, I$) và cộng modulo $2^{32}$.</li>
+        <li><strong>Đệm thông điệp (Padding):</strong> Thêm một bit 1 vào sau thông điệp, tiếp theo là các bit 0 sao cho tổng chiều dài chia 512 dư 448, sau đó gắn thêm 64-bit biểu diễn chiều dài gốc của thông điệp.</li>
+        <li><strong>Xử lý khối 512-bit qua 4 Vòng logic:</strong> Chia thông điệp thành các khối 512-bit, mỗi khối đi qua 4 vòng tính toán liên tiếp (mỗi vòng gồm 16 bước biến đổi). Các bước này sử dụng hàm logic bitwise ($F, G, H, I$), phép cộng modulo $2^{32}$, và các hằng số lượng giác độc lập.</li>
     </ul>
-    <div class="theory-subheading">Lỗ hổng bảo mật & Cảnh báo:</div>
+    <div class="theory-subheading">2. Lỗ hổng bảo mật & Khuyến cáo sử dụng:</div>
     <div class="theory-body-text">
-        MD5 hiện nay <strong>đã bị bẻ khóa hoàn toàn</strong> do các nhà nghiên cứu đã tìm ra phương pháp sinh đụng độ (collision attack) – nghĩa là hai tệp tin hoàn toàn khác nhau nhưng lại tạo ra cùng một mã băm MD5. Do đó, MD5 chỉ còn được dùng trong các tác vụ kiểm tra checksum tệp tin nhanh không đòi hỏi bảo mật cao.
+        MD5 hiện nay <strong>đã bị bẻ khóa hoàn toàn</strong> từ lâu bởi các nhà nghiên cứu đã thành công trong việc xây dựng thuật toán tấn công sinh đụng độ (collision attack) – cho phép tạo ra hai tệp tin hoàn toàn khác nhau nhưng cho ra cùng một mã MD5. Do đó, MD5 tuyệt đối không được sử dụng trong lưu trữ mật khẩu hay chữ ký số, mà chỉ dùng để kiểm tra tính toàn vẹn file nhanh ở mức cơ bản.
     </div>
 </div>
 
@@ -277,17 +283,17 @@
     <button class="back-btn" onclick="closeTheory()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
     <div class="theory-heading"><i class="fa-solid fa-fingerprint text-emerald"></i> Chi tiết Lý thuyết: Hàm Băm SHA-256</div>
     <div class="theory-body-text">
-        <strong>SHA-256 (Secure Hash Algorithm 256-bit)</strong> thuộc họ hàm băm SHA-2 do Cơ quan An ninh Quốc gia Mỹ (NSA) thiết kế. Nó tạo ra giá trị băm dài <strong>256-bit (64 ký tự Hex)</strong> và hiện là tiêu chuẩn an toàn cốt lõi trong ngành an ninh mạng.
+        <strong>SHA-256 (Secure Hash Algorithm 256-bit)</strong> thuộc nhóm hàm băm SHA-2 do Cơ quan An ninh Quốc gia Mỹ (NSA) thiết kế và NIST công bố năm 2001. Nó tạo ra giá trị băm có độ dài <strong>256-bit (64 ký tự Hex)</strong> và hiện là tiêu chuẩn vàng trong các hệ thống an ninh mạng tiên tiến.
     </div>
-    <div class="theory-subheading">Đặc tính kỹ thuật & Cấu trúc Merkle-Damgård:</div>
+    <div class="theory-subheading">1. Đặc tính toán học & Cấu trúc Merkle-Damgård:</div>
     <ul class="theory-ul">
-        <li><strong>Tính một chiều (One-way):</strong> Không thể tính ngược từ chuỗi mã băm ra văn bản gốc.</li>
-        <li><strong>Hiệu ứng tuyết lở (Avalanche Effect):</strong> Thay đổi duy nhất 1 bit ở đầu vào sẽ làm thay đổi khoảng 50% số bit ở đầu ra, khiến mã băm thay đổi hoàn toàn.</li>
-        <li><strong>Kháng đụng độ tuyệt đối:</strong> Vô cùng khó để tìm ra hai thông điệp khác nhau cho cùng một giá trị băm SHA-256.</li>
+        <li><strong>Tính một chiều (One-way):</strong> Từ chuỗi mã băm đầu ra, việc tính ngược lại tìm thông điệp ban đầu là bất khả thi về mặt tính toán.</li>
+        <li><strong>Hiệu ứng tuyết lở (Avalanche Effect):</strong> Khi thay đổi dù chỉ 1 bit duy nhất ở đầu vào, khoảng 50% số bit ở đầu ra sẽ bị đảo lộn, tạo ra mã băm hoàn toàn khác biệt.</li>
+        <li><strong>Cấu trúc Merkle-Damgård:</strong> Thông điệp được chia thành các khối 512-bit và xử lý tuần tự thông qua một hàm nén an toàn, đảm bảo tính kháng đụng độ tuyệt đối.</li>
     </ul>
-    <div class="theory-subheading">Ứng dụng thực tế:</div>
+    <div class="theory-subheading">2. Ứng dụng thực tế:</div>
     <div class="theory-body-text">
-        Được sử dụng rộng rãi trong công nghệ Blockchain (đào coin, cấu trúc khối Bitcoin), chứng chỉ SSL/TLS bảo mật website, và lưu trữ mật khẩu an toàn trong cơ sở dữ liệu.
+        SHA-256 đóng vai trò cốt lõi trong công nghệ Blockchain (cơ chế đào coin, tạo khối trong Bitcoin và Ethereum), xác thực chứng chỉ số SSL/TLS cho website, và mã hóa bảo vệ mật khẩu người dùng trong cơ sở dữ liệu hiện đại.
     </div>
 </div>
 
@@ -296,36 +302,47 @@
     <button class="back-btn" onclick="closeTheory()"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</button>
     <div class="theory-heading"><i class="fa-solid fa-key text-amber"></i> Chi tiết Lý thuyết: Thuật toán RSA</div>
     <div class="theory-body-text">
-        <strong>RSA</strong> là hệ mật mã khóa công khai (bất đối xứng) kinh điển được phát minh bởi Rivest, Shamir và Adleman vào năm 1977. Độ an toàn của RSA dựa trên độ khó của <em>bài toán phân tích thừa số nguyên tố</em> đối với các số cực lớn.
+        <strong>RSA</strong> là hệ mật mã khóa công khai (bất đối xứng) kinh điển được phát minh bởi Ron Rivest, Adi Shamir và Leonard Adleman vào năm 1977. Độ an toàn của RSA dựa trên độ khó của <em>bài toán phân tích thừa số nguyên tố</em> đối với các số nguyên rất lớn.
     </div>
-    <div class="theory-subheading">Quy trình toán học sinh khóa và vận hành:</div>
+    <div class="theory-subheading">1. Quy trình Toán học Sinh khóa & Vận hành:</div>
     <ul class="theory-ul">
-        <li><strong>Sinh khóa:</strong> Chọn hai số nguyên tố rất lớn $p$ và $q$. Tính modulus $n = p \times q$ và hàm Euler $\phi(n) = (p-1)(q-1)$. Chọn khóa công khai $e$ và tính khóa bí mật $d$ sao cho $d \times e \equiv 1 \pmod{\phi(n)}$.</li>
-        <li><strong>Khóa công khai (Public Key):</strong> Bộ đôi $(n, e)$ dùng để mã hóa thông điệp hoặc xác thực chữ ký.</li>
-        <li><strong>Khóa bí mật (Private Key):</strong> Bộ đôi $(n, d)$ được giữ kín tuyệt đối để giải mã thông điệp.</li>
+        <li><strong>Chọn số nguyên tố:</strong> Lựa chọn hai số nguyên tố ngẫu nhiên phân biệt, có kích thước rất lớn là $p$ và $q$.</li>
+        <li><strong>Tính Modulus (n):</strong> Tính $n = p \times q$. Giá trị $n$ đóng vai trò là độ dài khóa và được công bố công khai.</li>
+        <li><strong>Tính hàm Euler Totient $\phi(n)$:</strong> $\phi(n) = (p - 1)(q - 1)$.</li>
+        <li><strong>Chọn khóa công khai (e):</strong> Chọn số nguyên $e$ sao cho $1 < e < \phi(n)$ và $\text{gcd}(e, \phi(n)) = 1$ (thường chọn $e = 65537$). Bộ đôi $(n, e)$ là Khóa công khai.</li>
+        <li><strong>Tính khóa bí mật (d):</strong> Tính $d$ sao cho $d \times e \equiv 1 \pmod{\phi(n)}$. Bộ đôi $(n, d)$ là Khóa bí mật được giữ kín tuyệt đối.</li>
     </ul>
     <div class="theory-formula-box">
-        Công thức vận hành:<br>
-        - Mã hóa: $C = M^e \pmod n$<br>
-        - Giải mã: $M = C^d \pmod n$
+        Công thức mã hóa và giải mã thông điệp:<br>
+        - Bản mã hóa: $C = M^e \pmod n$<br>
+        - Giải mã phục hồi: $M = C^d \pmod n$
+    </div>
+    <div class="theory-subheading">2. Ứng dụng thực tế:</div>
+    <div class="theory-body-text">
+        RSA được ứng dụng rộng rãi trong việc trao đổi khóa phiên an toàn cho giao thức HTTPS/TLS, cơ chế Chữ ký số chống chối bỏ, và trong các mô hình truyền tin bảo mật hỗn hợp.
     </div>
 </div>
 
 <!-- ElGamal Theory -->
 <div class="theory-view" id="view-elgamal">
-    <button class="back-btn" onclick="closeTheory()"><i class="fa-solid fa-network-wired text-rose"></i> Chi tiết Lý thuyết: Hệ mật mã ElGamal</div>
+    <button class="back-btn" onclick="closeTheory()"><i class="fa-solid fa-network-wired text-rose"></i> Chi tiết Lý thuyết: Hệ mật mã ElGamal</button>
+    <div class="theory-heading"><i class="fa-solid fa-network-wired text-rose"></i> Chi tiết Lý thuyết: Hệ mật mã ElGamal</div>
     <div class="theory-body-text">
-        <strong>ElGamal</strong> là hệ mật mã khóa công khai do Taher Elgamal đề xuất năm 1985. Khác với RSA, độ an toàn của ElGamal dựa trên tính phức tạp của <em>bài toán Logarit rời rạc (Discrete Logarithm Problem)</em> trên trường hữu hạn $Z_p^*$.
+        <strong>ElGamal</strong> là hệ mật mã khóa công khai do Taher Elgamal đề xuất vào năm 1985. Khác với RSA dựa trên bài toán phân tích thừa số nguyên tố, độ an toàn của ElGamal dựa trên tính phức tạp của <em>bài toán Logarit rời rạc (Discrete Logarithm Problem)</em> trên trường hữu hạn $Z_p^*$.
     </div>
-    <div class="theory-subheading">Nguyên lý mã hóa ngẫu nhiên (Probabilistic Encryption):</div>
+    <div class="theory-subheading">1. Nguyên lý mã hóa ngẫu nhiên (Probabilistic Encryption):</div>
     <ul class="theory-ul">
-        <li><strong>Thiết lập:</strong> Chọn số nguyên tố $p$, phần tử sinh $g$, và khóa bí mật $x$. Khóa công khai là $y = g^x \pmod p$.</li>
-        <li><strong>Điểm đặc biệt:</strong> Khi mã hóa thông điệp $M$, hệ thống tự động sinh một số ngẫu nhiên $k$ mới cho mỗi lần gửi. Do đó, cùng một đoạn văn bản gửi đi nhiều lần sẽ tạo ra các cặp bản mã $(c_1, c_2)$ hoàn toàn khác nhau, ngăn chặn hiệu quả các cuộc tấn công nghe lén trên đường truyền.</li>
+        <li><strong>Thiết lập thông số:</strong> Chọn số nguyên tố lớn $p$, phần tử sinh nguyên thủy $g$, và khóa bí mật $x$. Khóa công khai là $y = g^x \pmod p$.</li>
+        <li><strong>Cơ chế sinh bản mã ngẫu nhiên:</strong> Khi mã hóa một thông điệp $M$, hệ thống tự động chọn một số ngẫu nhiên $k$ mới cho mỗi lần gửi. Do đó, cùng một thông điệp gửi đi nhiều lần sẽ tạo ra các cặp bản mã $(c_1, c_2)$ hoàn toàn khác nhau, giúp vô hiệu hóa các cuộc tấn công nghe lén thống kê trên đường truyền.</li>
     </ul>
     <div class="theory-formula-box">
-        Công thức mã hóa và giải mã:<br>
-        - Bản mã gồm cặp $(c_1, c_2)$: $c_1 = g^k \pmod p$ và $c_2 = (M \times y^k) \pmod p$<br>
-        - Giải mã khôi phục: $M = c_2 \times (c_1^x)^{-1} \pmod p$
+        Công thức mã hóa và giải mã ElGamal:<br>
+        - Sinh cặp bản mã $(c_1, c_2)$: $c_1 = g^k \pmod p$ và $c_2 = (M \times y^k) \pmod p$<br>
+        - Giải mã khôi phục bản rõ: $M = c_2 \times (c_1^x)^{-1} \pmod p$
+    </div>
+    <div class="theory-subheading">2. Ý nghĩa thực tiễn:</div>
+    <div class="theory-body-text">
+        ElGamal là nền tảng cốt lõi làm cơ sở phát triển cho thuật toán Chữ ký số tiêu chuẩn DSA (Digital Signature Algorithm) trong an toàn thông tin hiện đại.
     </div>
 </div>
 
