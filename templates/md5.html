@@ -19,7 +19,7 @@
     }
 </style>
 
-<!-- Nhúng thư viện CryptoJS tính MD5 thật real-time -->
+<!-- Nhúng thư viện CryptoJS tính MD5 real-time -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 <div class="hero-banner" style="margin-bottom: 24px;">
@@ -27,25 +27,40 @@
         <i class="fa-solid fa-hashtag text-cyan me-2"></i>Hàm Băm MD5 (Message Digest 5)
     </h1>
     <div style="color: var(--text-muted); font-size: 14px;">
-        Thuật toán băm một chiều sinh chuỗi đại diện Digest cố định 128-bit (32 ký tự Hex) từ bất kỳ văn bản đầu vào nào.
+        Thuật toán băm một chiều sinh chuỗi đại diện Digest cố định 128-bit (32 ký tự Hex) từ bất kỳ văn bản hoặc tệp tin nào.
     </div>
 </div>
 
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-calculator text-cyan"></i> Tính toán Giá trị Băm MD5 Real-time
+        <i class="fa-solid fa-calculator text-cyan"></i> Tính toán Giá trị Băm MD5 (Văn bản & Tệp tin)
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Nhập văn bản đầu vào):</label>
-    <textarea id="md5Input" rows="3" spellcheck="false" autocomplete="off" placeholder="Nhập văn bản bất kỳ để tính băm MD5..." oninput="calculateMD5()"></textarea>
+    <!-- Tab chuyển đổi giữa Băm Text và Băm File -->
+    <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+        <button type="button" id="tabTextBtn" onclick="switchTab('text')" style="background: var(--accent-cyan); color: #000; font-weight: 700; padding: 6px 14px; font-size: 13px;">Băm Văn Bản</button>
+        <button type="button" id="tabFileBtn" onclick="switchTab('file')" style="background: #334155; color: #fff; font-weight: 600; padding: 6px 14px; font-size: 13px;">Băm Tệp Tin (File)</button>
+    </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+    <!-- Khối nhập Văn bản -->
+    <div id="textInputSection">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Input Text (Nhập văn bản đầu vào):</label>
+        <textarea id="md5Input" rows="3" spellcheck="false" autocomplete="off" placeholder="Nhập văn bản bất kỳ để tính băm MD5..." oninput="calculateMD5Text()"></textarea>
+    </div>
+
+    <!-- Khối chọn File -->
+    <div id="fileInputSection" style="display: none;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Chọn Tệp Tin (File Upload):</label>
+        <input type="file" id="md5FileInput" onchange="calculateMD5File()" style="display: block; margin-top: 6px; color: #cbd5e1; background: #1e293b; padding: 10px; border-radius: 6px; border: 1px dashed #475569; width: 100%;">
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
         <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">MD5 Digest Output (32 Hex chars / 128 bit):</label>
         <button type="button" onclick="copyMD5()" style="padding: 4px 12px; font-size: 12px; background: #334155;">
             <i class="fa-solid fa-copy"></i> Copy MD5
         </button>
     </div>
-    <input type="text" id="md5Output" value="" readonly placeholder="Mã MD5 sẽ tự động tính toán từng phím gõ..." style="color: var(--accent-cyan) !important; font-weight: bold;">
+    <input type="text" id="md5Output" value="" readonly placeholder="Mã MD5 sẽ hiển thị tại đây..." style="color: var(--accent-cyan) !important; font-weight: bold;">
 
     <!-- Khối Mô phỏng Chi tiết Cấu trúc Nén MD5 -->
     <div class="step-trace-box" id="md5Visual" style="display: none; margin-top: 20px;">
@@ -55,6 +70,27 @@
 </div>
 
 <script>
+function switchTab(mode) {
+    if(mode === 'text') {
+        document.getElementById('textInputSection').style.display = 'block';
+        document.getElementById('fileInputSection').style.display = 'none';
+        document.getElementById('tabTextBtn').style.background = 'var(--accent-cyan)';
+        document.getElementById('tabTextBtn').style.color = '#000';
+        document.getElementById('tabFileBtn').style.background = '#334155';
+        document.getElementById('tabFileBtn').style.color = '#fff';
+        calculateMD5Text();
+    } else {
+        document.getElementById('textInputSection').style.display = 'none';
+        document.getElementById('fileInputSection').style.display = 'block';
+        document.getElementById('tabFileBtn').style.background = 'var(--accent-cyan)';
+        document.getElementById('tabFileBtn').style.color = '#000';
+        document.getElementById('tabTextBtn').style.background = '#334155';
+        document.getElementById('tabTextBtn').style.color = '#fff';
+        document.getElementById('md5Output').value = '';
+        document.getElementById('md5Visual').style.display = 'none';
+    }
+}
+
 function copyMD5() {
     let el = document.getElementById('md5Output');
     if(!el.value) { alert('Chưa có mã MD5 để Copy!'); return; }
@@ -63,7 +99,7 @@ function copyMD5() {
     alert('Đã Copy mã MD5 vào Clipboard!');
 }
 
-function calculateMD5() {
+function calculateMD5Text() {
     let text = document.getElementById('md5Input').value;
     if(!text) {
         document.getElementById('md5Output').value = '';
@@ -79,15 +115,41 @@ function calculateMD5() {
 
     document.getElementById('md5Visual').style.display = 'block';
     document.getElementById('md5TraceText').innerHTML = `
-        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[PHÂN TÍCH QUÁ TRÌNH BĂM THỰC TẾ]</div>
+        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[PHÂN TÍCH QUÁ TRÌNH BĂM VĂN BẢN]</div>
         <div>• <strong>Dữ liệu đầu vào:</strong> "${text}" (${byteLength} bytes / ${bitLength} bits)</div>
         <div>• <strong>Đệm bit (Padding):</strong> Thêm 1 bit '1' và các bit '0' sao cho độ dài ≡ 448 mod 512 bits.</div>
         <div>• <strong>Khởi tạo Thanh ghi 32-bit:</strong> A = 0x67452301, B = 0xefcdab89, C = 0x98badcfe, D = 0x10325476.</div>
-        <div>• <strong>Thực thi 64 bước nén (4 Vòng lặp x 16 phép toán):</strong> Sử dụng hàm phi tuyến $F(B,C,D)$, $G(B,C,D)$, $H(B,C,D)$, $I(B,C,D)$.</div>
+        <div>• <strong>Thực thi 64 bước nén (4 Vòng lặp x 16 phép toán):</strong> Sử dụng hàm phi tuyến F(B,C,D), G(B,C,D), H(B,C,D), I(B,C,D).</div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
             ➔ MD5 DIGEST 128-BIT (32 HEX): <span style="color:#06b6d4">${hash}</span>
         </div>
     `;
+}
+
+function calculateMD5File() {
+    let fileInput = document.getElementById('md5FileInput');
+    if(fileInput.files.length === 0) return;
+    let file = fileInput.files[0];
+
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        let arrayBuffer = e.target.result;
+        let wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
+        let hash = CryptoJS.MD5(wordArray).toString();
+        
+        document.getElementById('md5Output').value = hash;
+        document.getElementById('md5Visual').style.display = 'block';
+        document.getElementById('md5TraceText').innerHTML = `
+            <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[PHÂN TÍCH QUÁ TRÌNH BĂM TỆP TIN (FILE HASHING)]</div>
+            <div>• <strong>Tên tệp tin:</strong> ${file.name} (${file.size} bytes)</div>
+            <div>• <strong>Định dạng nhị phân:</strong> Đọc trực tiếp qua ArrayBuffer vào khối 512-bit.</div>
+            <div>• <strong>Thực thi 64 bước nén MD5:</strong> Hoàn tất xử lý toàn bộ các khối dữ liệu của file.</div>
+            <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+                ➔ MD5 FILE DIGEST (32 HEX): <span style="color:#06b6d4">${hash}</span>
+            </div>
+        `;
+    };
+    reader.readAsArrayBuffer(file);
 }
 </script>
 {% endblock %}
