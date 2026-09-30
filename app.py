@@ -19,33 +19,33 @@ app.register_blueprint(crypto_bp, url_prefix='/api')
 app.register_blueprint(file_bp, url_prefix='/api')
 app.register_blueprint(demo_bp, url_prefix='/api')
 
-# HTML Page routes
+# HTML Page routes (Khớp chính xác tên endpoint với index.html)
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/des')
-def des_page():
+def des_route():
     return render_template('des.html')
 
 @app.route('/aes')
-def aes_page():
+def aes_route():
     return render_template('aes.html')
 
 @app.route('/md5')
-def md5_page():
+def md5_route():
     return render_template('md5.html')
 
 @app.route('/sha256')
-def sha256_page():
+def sha256_route():
     return render_template('sha256.html')
 
 @app.route('/rsa')
-def rsa_page():
+def rsa_route():
     return render_template('rsa.html')
 
 @app.route('/elgamal')
-def elgamal_page():
+def elgamal_route():
     return render_template('elgamal.html')
 
 @app.route('/integrity')
@@ -80,13 +80,11 @@ def chat_api():
     prompt = f"Bạn là Trợ lý AI chuyên gia về Mật mã học (Cryptography) cho ứng dụng SecureCrypt. Hãy giải đáp ngắn gọn, dễ hiểu và chính xác bằng tiếng Việt câu hỏi sau: {user_message}"
     
     try:
-        # 1. Tự động lấy danh sách model hỗ trợ sinh nội dung từ Google API
         available_models = []
         for m in genai.list_models():
             if 'generateContent' in m.supported_generation_methods:
                 available_models.append(m.name)
         
-        # 2. Thử gọi từng model khả dụng
         for model_name in available_models:
             try:
                 model = genai.GenerativeModel(model_name)
@@ -96,7 +94,6 @@ def chat_api():
             except Exception:
                 continue
 
-        # 3. Fallback danh sách tên chuẩn nếu list_models không trả về
         fallback_models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro']
         for m_name in fallback_models:
             try:
@@ -107,7 +104,7 @@ def chat_api():
             except Exception:
                 continue
 
-        return jsonify({'reply': 'API Key hợp lệ nhưng không thể khởi tạo Model. Vui lòng kiểm tra lại quyền API Key.'})
+        return jsonify({'reply': 'API Key hợp lệ nhưng không thể khởi tạo Model.'})
     except Exception as e:
         return jsonify({'reply': f'Lỗi kết nối Gemini API: {str(e)}'})
 
