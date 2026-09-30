@@ -82,7 +82,7 @@
         gap: 10px;
     }
 
-    /* Spec Code Box (Giống hình Daxipher) */
+    /* Spec Code Box */
     .spec-box {
         background: #0d1322;
         border: 1px solid #1e2d4a;
@@ -98,7 +98,7 @@
     .spec-box .val { color: #38bdf8; }
     .spec-box .comment { color: #64748b; font-style: italic; }
 
-    /* Security Callout Box (Giống hình Daxipher) */
+    /* Security Callout Box */
     .callout-warning {
         background: rgba(245, 158, 11, 0.08);
         border-left: 4px solid var(--accent-amber);
@@ -131,7 +131,7 @@
     <a href="#rsa-detail" class="topic-card">
         <div class="topic-info">
             <h4>1. Thuật toán Mã hóa Bất đối xứng RSA & Bài toán Số nguyên lớn</h4>
-            <p>Khóa Public/Private, chu kỳ sinh khóa p & q, công thức $C = M^e \pmod n$ và tấn công giải thừa số.</p>
+            <p>Khóa Public/Private, chu kỳ sinh khóa p & q, công thức $C = M^e \pmod n$ và tấn công giải thừa số[cite: 34].</p>
         </div>
         <div class="read-time">8 min read</div>
     </a>
@@ -139,15 +139,15 @@
     <a href="#aes-detail" class="topic-card">
         <div class="topic-info">
             <h4>2. Chuẩn mã hóa hiện đại AES (Advanced Encryption Standard)</h4>
-            <p>Cấu trúc ma trận State 4x4, các vòng biến đổi SubBytes, ShiftRows, MixColumns và chế độ AES-GCM.</p>
+            <p>Cấu trúc ma trận State 4x4, các vòng biến đổi SubBytes, ShiftRows, MixColumns và chế độ AES-GCM[cite: 34].</p>
         </div>
         <div class="read-time">10 min read</div>
     </a>
 
     <a href="#hash-detail" class="topic-card">
         <div class="topic-info">
-            <h4>3. Hàm Băm Mật mã (Hash Functions) & Chống Đụng độ</h4>
-            <p>Nguyên lý một chiều của SHA-256, MD5, cấu trúc Merkle-Damgård và ứng dụng trong Chữ ký số.</p>
+            <h4>3. Hàm Băm Mật mã (Hash Functions) & Chữ ký số</h4>
+            <p>Nguyên lý một chiều của SHA-256, MD5, tính toàn vẹn, chống chối bỏ và ứng dụng trong Chữ ký số[cite: 34, 35].</p>
         </div>
         <div class="read-time">6 min read</div>
     </a>
@@ -157,10 +157,9 @@
 <div class="article-section" id="rsa-detail">
     <div class="article-title"><i class="fa-solid fa-key text-indigo"></i> Chi tiết Lý thuyết: Thuật toán RSA</div>
     <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
-        RSA là thuật toán mã hóa khóa công khai đầu tiên thích hợp cho việc ký cũng như mã hóa. Độ an toàn dựa trên độ khó của bài toán phân tích số nguyên lớn thành tích hai số nguyên tố.
+        RSA là thuật toán mã hóa khóa công khai đầu tiên thích hợp cho việc ký cũng như mã hóa[cite: 34]. Độ an toàn dựa trên độ khó của bài toán phân tích số nguyên lớn thành tích hai số nguyên tố[cite: 34].
     </p>
 
-    <!-- Spec Box -->
     <div class="spec-box">
         <span class="comment">// Quy trình Toán học sinh khóa RSA (2048-bit)</span><br>
         <span class="key">Input p, q:</span> <span class="val">2 số nguyên tố ngẫu nhiên rất lớn</span><br>
@@ -168,11 +167,10 @@
         <span class="key">Euler Phi:</span> <span class="val">φ(n) = (p - 1) × (q - 1)</span><br>
         <span class="key">Public Key e:</span> <span class="val">Thường chọn e = 65537</span> <span class="comment">(gcd(e, φ(n)) = 1)</span><br>
         <span class="key">Private Key d:</span> <span class="val">d ≡ e⁻¹ (mod φ(n))</span> <span class="comment">(Nghịch đảo nhân mod)</span><br><br>
-        <span class="key">Encryption:</span> <span class="val">Ciphertext C = Mᵉ (mod n)</span><br>
+        <span class="key">Encryption:</span> <span class="val">Ciphertext C = Mᵉ (mod n)[cite: 34]</span><br>
         <span class="key">Decryption:</span> <span class="val">Plaintext  M = Cᵈ (mod n)</span>
     </div>
 
-    <!-- Security Warning Callout -->
     <div class="callout-warning">
         <h5><i class="fa-solid fa-triangle-exclamation me-1"></i> Lưu ý An toàn (Security Callout)</h5>
         <p>Tuyệt đối không sử dụng độ dài khóa RSA nhỏ hơn 2048-bit trong các ứng dụng thực tế. Khóa RSA 512-bit và 768-bit đã bị phá vỡ hoàn toàn bằng thuật toán Siv-Number Field Sieve trên máy tính hiệu năng cao.</p>
@@ -183,7 +181,7 @@
 <div class="article-section" id="aes-detail">
     <div class="article-title"><i class="fa-solid fa-lock text-emerald"></i> Chi tiết Lý thuyết: Chuẩn Mã hóa AES</div>
     <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
-        AES hoạt động trên mạng thay thế-hoán vị (Substitution-Permutation Network). Dữ liệu 128-bit được chia thành ma trận trạng thái $4 \times 4$ byte (State matrix) và trải qua 10, 12, hoặc 14 vòng lặp tùy độ dài khóa.
+        AES hoạt động trên mạng thay thế-hoán vị (Substitution-Permutation Network). Dữ liệu 128-bit được chia thành ma trận trạng thái $4 \times 4$ byte (State matrix)[cite: 34] và trải qua 10, 12, hoặc 14 vòng lặp tùy độ dài khóa.
     </p>
 
     <div class="spec-box">
@@ -192,6 +190,24 @@
         <span class="key">2. ShiftRows:</span> <span class="val">Dịch chuyển các hàng của ma trận State theo chu kỳ.</span><br>
         <span class="key">3. MixColumns:</span> <span class="val">Nhân ma trận cột trên trường hữu hạn Galois GF(2⁸).</span><br>
         <span class="key">4. AddRoundKey:</span> <span class="val">XOR trạng thái hiện tại với khóa con (Round Key).</span>
+    </div>
+</div>
+
+<!-- Article 3: Hash & Digital Signature Theory -->
+<div class="article-section" id="hash-detail">
+    <div class="article-title"><i class="fa-solid fa-file-signature text-amber"></i> Chi tiết Lý thuyết: Hàm Băm & Chữ ký số</div>
+    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
+        Hàm băm (như SHA-256) biến đổi một thông điệp bất kỳ thành chuỗi cố định theo nguyên lý một chiều[cite: 35]. Chữ ký số kết hợp hàm băm với khóa bí mật để đảm bảo tính toàn vẹn và chống chối bỏ[cite: 35].
+    </p>
+
+    <div class="spec-box">
+        <span class="comment">// Ba đặc tính cốt lõi của Chữ ký số</span><br>
+        <span class="key">1. Authenticity:</span> <span class="val">Khẳng định chính xác chủ nhân khóa bí mật đã ký[cite: 35].</span><br>
+        <span class="key">2. Integrity:</span> <span class="val">Phát hiện ngay lập tức nếu thông điệp bị thay đổi dù 1 byte[cite: 35].</span><br>
+        <span class="key">3. Non-repudiation:</span> <span class="val">Người ký không thể chối bỏ trách nhiệm về thông điệp[cite: 35].</span><br><br>
+        <span class="comment">// Quy trình ký và xác thực cơ bản</span><br>
+        <span class="key">Signing:</span> <span class="val">Sig = (SHA-256(msg))ᵈ mod n[cite: 36]</span><br>
+        <span class="key">Verification:</span> <span class="val">H = Sigᵉ mod n == SHA-256(msg)[cite: 36]</span>
     </div>
 </div>
 {% endblock %}
