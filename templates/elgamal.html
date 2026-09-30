@@ -35,16 +35,16 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 257):</label>
-            <input type="text" id="elgP" value="" placeholder="Nhập p...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Lớn hơn 255):</label>
+            <input type="text" id="elgP" value="257" placeholder="Nhập p...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g (Ví dụ: 5):</label>
-            <input type="text" id="elgG" value="" placeholder="Nhập g...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
+            <input type="text" id="elgG" value="5" placeholder="Nhập g...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x (Ví dụ: 6):</label>
-            <input type="text" id="elgX" value="" placeholder="Nhập x (0 < x < p)...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
+            <input type="text" id="elgX" value="6" placeholder="Nhập x...">
         </div>
     </div>
 
@@ -75,7 +75,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc cần mã hóa (Plaintext):</label>
-    <textarea id="elgMsg" rows="2" placeholder="Nhập thông điệp chữ hoặc số..."></textarea>
+    <textarea id="elgMsg" rows="2" placeholder="Nhập văn bản tùy ý (ví dụ: huy)..."></textarea>
 
     <div style="margin-top: 10px;">
         <button type="button" onclick="runElGamalEncrypt()" style="background: var(--accent-indigo);">
@@ -137,11 +137,11 @@
 <!-- KHỐI 4: CHỮ KÝ SỐ ELGAMAL -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-file-signature text-amber"></i> 4. Tạo & Xác thực Chữ ký số ElGamal (Digital Signature)
+        <i class="fa-solid fa-file-signature text-amber"></i> 4. Tạo & Xác thực Chữ ký số ElGamal
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản/Thông điệp cần ký (M):</label>
-    <input type="text" id="elgSigMsg" value="" placeholder="Nhập thông điệp cần ký...">
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản/Thông điệp cần ký:</label>
+    <input type="text" id="elgSigMsg" value="" placeholder="Nhập văn bản cần ký số...">
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
         <div>
@@ -260,7 +260,7 @@ function runElGamalEncrypt() {
 
     for(let i=0; i<text.length; i++) {
         let asciiVal = BigInt(text.charCodeAt(i));
-        // Tự động thu gọn nếu p nhỏ để không bị tràn số
+        // Đảm bảo thông điệp M nhỏ hơn p, nếu p nhỏ thì tự động lấy dư
         let m = (lastP <= 255n) ? (asciiVal % (lastP - 1n) + 1n) : asciiVal;
         if(m === 0n) m = 1n;
 
@@ -269,7 +269,7 @@ function runElGamalEncrypt() {
         let c2 = (m * yk) % lastP;
 
         cipherPairs.push(`(${c1},${c2})`);
-        mathSteps.push(`Ký tự '<strong>${text[i]}</strong>' (Giá trị M = ${m}) ➔ Chọn k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}³ mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
+        mathSteps.push(`Ký tự '<strong>${text[i]}</strong>' (Mã quy đổi M = ${m}) ➔ Chọn k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}³ mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
     }
 
     let ciphertextStr = cipherPairs.join(' ');
@@ -302,7 +302,6 @@ function runElGamalDecrypt() {
     let x = BigInt(xStr);
     let p = BigInt(pStr);
 
-    // Hỗ trợ bắt regex linh hoạt chấp nhận cả khoảng trắng bên trong cặp bản mã (c1, c2)
     let matches = cipherText.match(/\(\s*(\d+)\s*,\s*(\d+)\s*\)/g);
     if(!matches) {
         alert('Định dạng bản mã không hợp lệ! Bản mã phải có dạng cặp (c1,c2)');
@@ -352,7 +351,7 @@ function runElGamalSign() {
     if(!mStr || !kStr) { alert('Vui lòng nhập thông điệp và số ngẫu nhiên k!'); return; }
     if(lastP === 0n) { alert('Vui lòng thiết lập khóa ở Bước 1 trước khi tạo chữ ký!'); return; }
 
-    let m = BigInt(mStr.length > 0 ? mStr.charCodeAt(0) : 5);
+    let m = BigInt(mStr.charCodeAt(0));
     let k = BigInt(kStr);
     let pMinus1 = lastP - 1n;
 
@@ -374,7 +373,7 @@ function runElGamalSign() {
     document.getElementById('elgSigVisualStep').style.display = 'block';
     document.getElementById('elgSigTraceText').innerHTML = `
         <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">[BƯỚC 4: TẠO CHỮ KÝ SỐ ELGAMAL]</div>
-        <div>• <strong>Thông điệp M:</strong> ${m}</div>
+        <div>• <strong>Thông điệp M:</strong> "${mStr}" (Mã ASCII: ${m})</div>
         <div>• <strong>Số ngẫu nhiên k:</strong> ${k}</div>
         <div>• <strong>Thành phần r:</strong> r = gᵏ mod p = ${lastG}^${k} mod ${lastP} = <strong>${r}</strong></div>
         <div>• <strong>Thành phần s:</strong> s = (M - x·r) × k⁻¹ mod (p-1) = <strong>${s}</strong></div>
