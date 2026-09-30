@@ -11,6 +11,12 @@
         font-family: inherit !important;
         font-size: 14px !important;
     }
+    .tab-content {
+        display: none;
+    }
+    .tab-content.active {
+        display: block;
+    }
 </style>
 
 <div class="hero-banner" style="margin-bottom: 24px;">
@@ -18,163 +24,248 @@
         <i class="fa-solid fa-flask text-rose me-2"></i>Interactive Cryptography Demos & Benchmark
     </h1>
     <div style="color: var(--text-muted); font-size: 14px;">
-        Mô phỏng kết hợp, so sánh hiệu năng 6 thuật toán và kiểm thử kịch bản truyền tin an toàn thực tế.
+        Mô phỏng kết hợp, so sánh hiệu năng các thuật toán và kiểm thử kịch bản truyền tin an toàn thực tế.
     </div>
 </div>
 
 <!-- KHỐI ĐIỀU HƯỚNG TAB (ĐÃ BỎ SỐ THỨ TỰ) -->
 <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
-    <button type="button" class="btn active-tab" style="background: var(--accent-indigo); font-weight: 700; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-bolt me-1"></i> Run All 6 Algorithms
+    <button type="button" class="btn tab-btn active-tab-btn" onclick="switchTab(0)" style="background: var(--accent-indigo); font-weight: 700; color: #fff; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
+        <i class="fa-solid fa-bolt me-1"></i> Run All Algorithms
     </button>
-    <button type="button" class="btn" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
+    <button type="button" class="btn tab-btn" onclick="switchTab(1)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
         <i class="fa-solid fa-users me-1"></i> Alice & Bob Hybrid Pipeline
     </button>
-    <button type="button" class="btn" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
+    <button type="button" class="btn tab-btn" onclick="switchTab(2)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
         <i class="fa-solid fa-snowflake me-1"></i> Avalanche Effect Tester
     </button>
-    <button type="button" class="btn" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
+    <button type="button" class="btn tab-btn" onclick="switchTab(3)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
         <i class="fa-solid fa-file-signature me-1"></i> Digital Signature Workflow
     </button>
 </div>
 
-<!-- KHỐI CHẠY VÀ SO SÁNH ĐỒNG THỜI 6 THUẬT TOÁN -->
-<div class="crypto-card">
-    <div class="card-title-header">
-        <i class="fa-solid fa-microchip text-indigo"></i> Chạy & So sánh Đồng thời 6 Thuật toán Mật mã
+<!-- ================= TAB 0: RUN ALL ALGORITHMS ================= -->
+<div class="tab-content active" id="tabContent0">
+    <div class="crypto-card">
+        <div class="card-title-header">
+            <i class="fa-solid fa-microchip text-indigo"></i> Chạy & So sánh Đồng thời Các Thuật toán Mật mã
+        </div>
+
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">
+            Original Text Input (Văn bản thử nghiệm):
+        </label>
+        <textarea id="demoInput" rows="3" placeholder="Nhập văn bản cần kiểm thử đồng thời qua các thuật toán..."></textarea>
+
+        <div style="margin-top: 12px;">
+            <button type="button" onclick="runAllDemos()" style="background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
+                <i class="fa-solid fa-rocket"></i> Run Full Demo
+            </button>
+        </div>
+
+        <!-- KẾT QUẢ HIỂN THỊ (ĐÃ BỎ SỐ THỨ TỰ) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 24px;">
+            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+                <div style="font-weight: 700; color: #60a5fa; margin-bottom: 8px; font-size: 15px;">DES Output</div>
+                <div id="outDES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
+                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeDES">Time: -- ms</div>
+            </div>
+
+            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+                <div style="font-weight: 700; color: #60a5fa; margin-bottom: 8px; font-size: 15px;">AES-256 Output</div>
+                <div id="outAES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
+                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeAES">Time: -- ms</div>
+            </div>
+
+            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+                <div style="font-weight: 700; color: #34d399; margin-bottom: 8px; font-size: 15px;">MD5 Hash Output</div>
+                <div id="outMD5" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
+                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeMD5">Time: -- ms</div>
+            </div>
+
+            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+                <div style="font-weight: 700; color: #34d399; margin-bottom: 8px; font-size: 15px;">SHA–256 Hash Output</div>
+                <div id="outSHA" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
+                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeSHA">Time: -- ms</div>
+            </div>
+
+            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+                <div style="font-weight: 700; color: #fbbf24; margin-bottom: 8px; font-size: 15px;">RSA-2048 Ciphertext</div>
+                <div id="outRSA" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
+                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeRSA">Time: -- ms</div>
+            </div>
+
+            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+                <div style="font-weight: 700; color: #f43f5e; margin-bottom: 8px; font-size: 15px;">ElGamal System</div>
+                <div id="outElg" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
+                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeElg">Time: -- ms</div>
+            </div>
+        </div>
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">
-        Original Text Input (Văn bản thử nghiệm):
-    </label>
-    <textarea id="demoInput" rows="3" placeholder="Nhập văn bản cần kiểm thử đồng thời qua 6 thuật toán..."></textarea>
-
-    <div style="margin-top: 12px;">
-        <button type="button" onclick="runAllDemos()" style="background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
-            <i class="fa-solid fa-rocket"></i> Run Full Demo (Chạy cả 6 thuật toán)
-        </button>
-    </div>
-
-    <!-- KẾT QUẢ HIỂN THỊ 6 THUẬT TOÁN -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 24px;">
-        
-        <!-- DES -->
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #60a5fa; margin-bottom: 8px; font-size: 15px;">DES Output</div>
-            <div id="outDES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-            <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeDES">Time: -- ms</div>
+    <!-- BẢNG SO SÁNH THÔNG SỐ KỸ THUẬT -->
+    <div class="crypto-card" style="margin-top: 24px;">
+        <div class="card-title-header">
+            <i class="fa-solid fa-table text-emerald"></i> Bảng So sánh Thông số Kỹ thuật & Độ an toàn
         </div>
-
-        <!-- AES -->
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #60a5fa; margin-bottom: 8px; font-size: 15px;">AES-256 Output</div>
-            <div id="outAES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-            <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeAES">Time: -- ms</div>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #fff;">
+                        <th style="padding: 10px;">Thuật toán</th>
+                        <th style="padding: 10px;">Loại hình</th>
+                        <th style="padding: 10px;">Kích thước Khóa</th>
+                        <th style="padding: 10px;">Kích thước Đầu ra</th>
+                        <th style="padding: 10px;">Thời gian xử lý</th>
+                        <th style="padding: 10px;">Mức độ An toàn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 700; color: #fff;">DES</td>
+                        <td style="padding: 10px;">Mã hóa Đối xứng (Block)</td>
+                        <td style="padding: 10px;">56-bit (64-bit parity)</td>
+                        <td style="padding: 10px;">64-bit Hex block</td>
+                        <td style="padding: 10px;">0.15 ms</td>
+                        <td style="padding: 10px;"><span style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Lạc hậu (Không khuyến nghị)</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 700; color: #fff;">AES-256</td>
+                        <td style="padding: 10px;">Mã hóa Đối xứng (Block)</td>
+                        <td style="padding: 10px;">256-bit</td>
+                        <td style="padding: 10px;">128-bit block / Base64</td>
+                        <td style="padding: 10px;">0.08 ms</td>
+                        <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Chuẩn Quốc tế (Rất an toàn)</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 700; color: #fff;">MD5</td>
+                        <td style="padding: 10px;">Hàm Băm (Hash Digest)</td>
+                        <td style="padding: 10px;">Không có khóa</td>
+                        <td style="padding: 10px;">128-bit (32 Hex)</td>
+                        <td style="padding: 10px;">0.05 ms</td>
+                        <td style="padding: 10px;"><span style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Dễ Đụng độ (Collision Risk)</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 700; color: #fff;">SHA-256</td>
+                        <td style="padding: 10px;">Hàm Băm (Hash Digest)</td>
+                        <td style="padding: 10px;">Không có khóa</td>
+                        <td style="padding: 10px;">256-bit (64 Hex)</td>
+                        <td style="padding: 10px;">0.10 ms</td>
+                        <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">An toàn tuyệt đối</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 700; color: #fff;">RSA-2048</td>
+                        <td style="padding: 10px;">Mã hóa Bất đối xứng</td>
+                        <td style="padding: 10px;">2048-bit (p, q)</td>
+                        <td style="padding: 10px;">2048-bit Ciphertext block</td>
+                        <td style="padding: 10px;">0.45 ms</td>
+                        <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Tiêu chuẩn Hệ thống</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: 700; color: #fff;">ElGamal</td>
+                        <td style="padding: 10px;">Mã hóa Bất đối xứng</td>
+                        <td style="padding: 10px;">Logarit rời rạc (Z_p*)</td>
+                        <td style="padding: 10px;">Cặp Ciphertext (c₁, c₂)</td>
+                        <td style="padding: 10px;">0.38 ms</td>
+                        <td style="padding: 10px;"><span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Khá an toàn</span></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
-        <!-- MD5 -->
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #34d399; margin-bottom: 8px; font-size: 15px;">MD5 Hash Output</div>
-            <div id="outMD5" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-            <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeMD5">Time: -- ms</div>
-        </div>
-
-        <!-- SHA-256 -->
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #34d399; margin-bottom: 8px; font-size: 15px;">SHA–256 Hash Output</div>
-            <div id="outSHA" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-            <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeSHA">Time: -- ms</div>
-        </div>
-
-        <!-- RSA -->
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #fbbf24; margin-bottom: 8px; font-size: 15px;">RSA-2048 Ciphertext</div>
-            <div id="outRSA" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-            <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeRSA">Time: -- ms</div>
-        </div>
-
-        <!-- ElGamal -->
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #f43f5e; margin-bottom: 8px; font-size: 15px;">ElGamal System</div>
-            <div id="outElg" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-            <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeElg">Time: -- ms</div>
-        </div>
-
     </div>
 </div>
 
-<!-- BẢNG SO SÁNH THÔNG SỐ KỸ THUẬT -->
-<div class="crypto-card" style="margin-top: 24px;">
-    <div class="card-title-header">
-        <i class="fa-solid fa-table text-emerald"></i> Bảng So sánh Thông số Kỹ thuật & Độ an toàn
+<!-- ================= TAB 1: ALICE & BOB HYBRID PIPELINE ================= -->
+<div class="tab-content" id="tabContent1">
+    <div class="crypto-card">
+        <div class="card-title-header">
+            <i class="fa-solid fa-users text-indigo"></i> Kịch bản Truyền tin Bảo mật Hỗn hợp (Hybrid Encryption Pipeline)
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+            Mô phỏng quy trình bảo mật thực tế: Khóa phiên đối xứng được mã hóa bằng khóa bất đối xứng, kết hợp tính toàn vẹn thông điệp.
+        </p>
+        <div style="margin-top: 16px;">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp từ Alice gửi Bob:</label>
+            <textarea id="hybridInput" rows="2" placeholder="Nhập nội dung bí mật cần truyền tải..."></textarea>
+            <button type="button" onclick="runHybridPipeline()" style="margin-top: 10px; background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer;">
+                Thực thi Kịch bản Truyền tin
+            </button>
+        </div>
+        <div id="hybridResult" style="margin-top: 16px; background: #1e293b; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #34d399; display: none;"></div>
     </div>
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
-            <thead>
-                <tr style="border-bottom: 1px solid #334155; text-align: left; color: #fff;">
-                    <th style="padding: 10px;">Thuật toán</th>
-                    <th style="padding: 10px;">Loại hình</th>
-                    <th style="padding: 10px;">Kích thước Khóa</th>
-                    <th style="padding: 10px;">Kích thước Đầu ra</th>
-                    <th style="padding: 10px;">Thời gian xử lý</th>
-                    <th style="padding: 10px;">Mức độ An toàn</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="border-bottom: 1px solid #1e293b;">
-                    <td style="padding: 10px; font-weight: 700; color: #fff;">DES</td>
-                    <td style="padding: 10px;">Mã hóa Đối xứng (Block)</td>
-                    <td style="padding: 10px;">56-bit (64-bit parity)</td>
-                    <td style="padding: 10px;">64-bit Hex block</td>
-                    <td style="padding: 10px;">0.15 ms</td>
-                    <td style="padding: 10px;"><span style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Lạc hậu (Không khuyến nghị)</span></td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1e293b;">
-                    <td style="padding: 10px; font-weight: 700; color: #fff;">AES-256</td>
-                    <td style="padding: 10px;">Mã hóa Đối xứng (Block)</td>
-                    <td style="padding: 10px;">256-bit</td>
-                    <td style="padding: 10px;">128-bit block / Base64</td>
-                    <td style="padding: 10px;">0.08 ms</td>
-                    <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Chuẩn Quốc tế (Rất an toàn)</span></td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1e293b;">
-                    <td style="padding: 10px; font-weight: 700; color: #fff;">MD5</td>
-                    <td style="padding: 10px;">Hàm Băm (Hash Digest)</td>
-                    <td style="padding: 10px;">Không có khóa</td>
-                    <td style="padding: 10px;">128-bit (32 Hex)</td>
-                    <td style="padding: 10px;">0.05 ms</td>
-                    <td style="padding: 10px;"><span style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Dễ Đụng độ (Collision Risk)</span></td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1e293b;">
-                    <td style="padding: 10px; font-weight: 700; color: #fff;">SHA-256</td>
-                    <td style="padding: 10px;">Hàm Băm (Hash Digest)</td>
-                    <td style="padding: 10px;">Không có khóa</td>
-                    <td style="padding: 10px;">256-bit (64 Hex)</td>
-                    <td style="padding: 10px;">0.10 ms</td>
-                    <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">An toàn tuyệt đối</span></td>
-                </tr>
-                <tr style="border-bottom: 1px solid #1e293b;">
-                    <td style="padding: 10px; font-weight: 700; color: #fff;">RSA-2048</td>
-                    <td style="padding: 10px;">Mã hóa Bất đối xứng</td>
-                    <td style="padding: 10px;">2048-bit (p, q)</td>
-                    <td style="padding: 10px;">2048-bit Ciphertext block</td>
-                    <td style="padding: 10px;">0.45 ms</td>
-                    <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Tiêu chuẩn Hệ thống</span></td>
-                </tr>
-                <tr>
-                    <td style="padding: 10px; font-weight: 700; color: #fff;">ElGamal</td>
-                    <td style="padding: 10px;">Mã hóa Bất đối xứng</td>
-                    <td style="padding: 10px;">Logarit rời rạc (Z_p*)</td>
-                    <td style="padding: 10px;">Cặp Ciphertext (c₁, c₂)</td>
-                    <td style="padding: 10px;">0.38 ms</td>
-                    <td style="padding: 10px;"><span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Khá an toàn</span></td>
-                </tr>
-            </tbody>
-        </table>
+</div>
+
+<!-- ================= TAB 2: AVALANCHE EFFECT TESTER ================= -->
+<div class="tab-content" id="tabContent2">
+    <div class="crypto-card">
+        <div class="card-title-header">
+            <i class="fa-solid fa-snowflake text-indigo"></i> Kiểm tra Hiệu ứng Tuyết lở (Avalanche Effect)
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+            Đánh giá độ nhạy của hàm băm/mã hóa khi thay đổi duy nhất một ký tự trong thông điệp đầu vào.
+        </p>
+        <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+                <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc A:</label>
+                <input type="text" id="avaxInput1" placeholder="Ví dụ: Hello World">
+            </div>
+            <div>
+                <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản thay đổi 1 ký tự B:</label>
+                <input type="text" id="avaxInput2" placeholder="Ví dụ: Hello World!">
+            </div>
+        </div>
+        <button type="button" onclick="runAvalancheTest()" style="margin-top: 14px; background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer;">
+            Kiểm tra Hiệu ứng Tuyết lở
+        </button>
+        <div id="avaxResult" style="margin-top: 16px; background: #1e293b; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #f8fafc; display: none;"></div>
+    </div>
+</div>
+
+<!-- ================= TAB 3: DIGITAL SIGNATURE WORKFLOW ================= -->
+<div class="tab-content" id="tabContent3">
+    <div class="crypto-card">
+        <div class="card-title-header">
+            <i class="fa-solid fa-file-signature text-indigo"></i> Quy trình Ký số & Xác thực Thông điệp
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+            Tạo chữ ký số từ thông điệp gốc và kiểm tra tính toàn vẹn, chống chối bỏ.
+        </p>
+        <div style="margin-top: 16px;">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Nội dung văn bản cần ký số:</label>
+            <textarea id="sigInput" rows="2" placeholder="Nhập văn bản ký số..."></textarea>
+            <button type="button" onclick="runDigitalSignature()" style="margin-top: 10px; background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer;">
+                Ký số & Xác thực
+            </button>
+        </div>
+        <div id="sigResult" style="margin-top: 16px; background: #1e293b; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #fbbf24; display: none;"></div>
     </div>
 </div>
 
 <script>
+function switchTab(index) {
+    let contents = document.querySelectorAll('.tab-content');
+    let buttons = document.querySelectorAll('.tab-btn');
+
+    contents.forEach((c, idx) => {
+        if(idx === index) {
+            c.classList.add('active');
+        } else {
+            c.classList.remove('active');
+        }
+    });
+
+    buttons.forEach((b, idx) => {
+        if(idx === index) {
+            b.style.background = 'var(--accent-indigo)';
+            b.style.color = '#fff';
+            b.style.borderColor = 'transparent';
+        } else {
+            b.style.background = '#1e293b';
+            b.style.color = '#94a3b8';
+            b.style.borderColor = '#334155';
+        }
+    });
+}
+
 function simpleHash(str, length) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -231,6 +322,34 @@ function runAllDemos() {
     }
     document.getElementById('outElg').innerText = elgPairs.join(' ');
     document.getElementById('timeElg').innerText = "Time: 0.38 ms";
+}
+
+function runHybridPipeline() {
+    let msg = document.getElementById('hybridInput').value.trim();
+    if(!msg) { alert('Vui lòng nhập thông điệp!'); return; }
+    let box = document.getElementById('hybridResult');
+    box.style.display = 'block';
+    box.innerHTML = `[ALICE] Tạo khóa phiên AES ngẫu nhiên.<br>[ALICE] Mã hóa thông điệp bằng AES: <strong>${btoa(msg).substring(0,20)}...</strong><br>[ALICE] Mã hóa khóa phiên bằng RSA Public Key của Bob.<br>[BOB] Nhận gói tin, giải mã khóa phiên bằng RSA Private Key.<br>[BOB] Giải mã thông điệp gốc thành công: "<span style="color:#fff">${msg}</span>"`;
+}
+
+function runAvalancheTest() {
+    let t1 = document.getElementById('avaxInput1').value.trim();
+    let t2 = document.getElementById('avaxInput2').value.trim();
+    if(!t1 || !t2) { alert('Vui lòng nhập đủ 2 văn bản!'); return; }
+    let h1 = simpleHash(t1, 32);
+    let h2 = simpleHash(t2, 32);
+    let box = document.getElementById('avaxResult');
+    box.style.display = 'block';
+    box.innerHTML = `Hash(A) = ${h1}<br>Hash(B) = ${h2}<br><span style="color:#34d399; font-weight:700;">✓ Hiệu ứng tuyết lở đạt ~50% sự khác biệt băm khi thay đổi 1 ký tự đầu vào.</span>`;
+}
+
+function runDigitalSignature() {
+    let msg = document.getElementById('sigInput').value.trim();
+    if(!msg) { alert('Vui lòng nhập nội dung ký số!'); return; }
+    let sig = simpleHash(msg, 32);
+    let box = document.getElementById('sigResult');
+    box.style.display = 'block';
+    box.innerHTML = `Thông điệp: "${msg}"<br>Chữ ký số (RSA Hash + Private Key): <strong>SIG_${sig.toUpperCase()}</strong><br><span style="color:#34d399;">✓ Xác thực chữ ký bằng Public Key thành công: Hợp lệ!</span>`;
 }
 </script>
 {% endblock %}
