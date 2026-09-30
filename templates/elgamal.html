@@ -1,11 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .crypto-card textarea, .crypto-card input[type="text"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        white-space: pre-wrap !important;
+        overflow-wrap: anywhere !important;
+        font-family: inherit !important;
+        font-size: 14px !important;
+    }
+    .step-trace-box, .step-trace-box div, .step-trace-box span {
+        overflow-wrap: anywhere !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+</style>
+
 <div class="hero-banner" style="margin-bottom: 24px;">
-    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">Mật mã ElGamal & Chữ ký số</h1>
-    <div style="color: var(--text-muted); font-size: 14px;">Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn ℤ_p*.</div>
+    <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
+        <i class="fa-solid fa-shield-halved text-rose me-2"></i>Mật mã ElGamal & Chữ ký số
+    </h1>
+    <div style="color: var(--text-muted); font-size: 14px;">
+        Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn $\mathbb{Z}_p^*$.
+    </div>
 </div>
 
+<!-- KHỐI 1: THIẾT LẬP THAM SỐ & SINH KHÓA -->
 <div class="crypto-card">
     <div class="card-title-header">
         <i class="fa-solid fa-key text-rose"></i> 1. Thiết lập Tham số & Sinh khóa ElGamal
@@ -13,69 +35,284 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="elgP" value="" placeholder="Ví dụ: 23">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 23):</label>
+            <input type="text" id="elgP" value="" placeholder="Nhập p...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
-            <input type="text" id="elgG" value="" placeholder="Ví dụ: 5">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g (Ví dụ: 5):</label>
+            <input type="text" id="elgG" value="" placeholder="Nhập g...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
-            <input type="text" id="elgX" value="" placeholder="Ví dụ: 6">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x (Ví dụ: 6):</label>
+            <input type="text" id="elgX" value="" placeholder="Nhập x (0 < x < p)...">
         </div>
     </div>
 
-    <button type="button" onclick="genElGamalKey()" style="background: var(--accent-rose); font-weight: 700; margin-top: 8px;">
-        <i class="fa-solid fa-gears"></i> Tính Khóa Công Khai (y = gˣ mod p)
-    </button>
+    <div style="margin-top: 10px; display: flex; gap: 10px;">
+        <button type="button" onclick="genElGamalKey()" style="background: var(--accent-rose); font-weight: 700; color: #fff;">
+            <i class="fa-solid fa-gears"></i> Tính Khóa Công Khai (y = gˣ mod p)
+        </button>
+        <button type="button" onclick="copyInput('elgPublic')" style="background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy Public Key
+        </button>
+    </div>
 
     <div style="margin-top: 12px;">
         <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Public Key (p, g, y):</label>
-        <input type="text" id="elgPublic" value="" readonly placeholder="Bấm nút trên để hiển thị Public Key...">
+        <input type="text" id="elgPublic" value="" readonly placeholder="Chưa có Public Key...">
+    </div>
+
+    <div class="step-trace-box" id="elgKeyVisualStep" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết quá trình sinh khóa ElGamal</div>
+        <div id="elgKeyTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
 
+<!-- KHỐI 2: MÃ HÓA ELGAMAL -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-shield-halved text-indigo"></i> 2. Mã hóa & Mô phỏng cặp Ciphertext (c₁, c₂)
+        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa ElGamal
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp đầu vào M:</label>
-    <textarea id="elgMsg" rows="2" placeholder="Nhập văn bản cần mã hóa..."></textarea>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc (Plaintext):</label>
+    <textarea id="elgMsg" rows="2" placeholder="Nhập thông điệp cần mã hóa..."></textarea>
 
-    <div>
-        <button type="button" onclick="runElGamal()" style="background: var(--accent-indigo);"><i class="fa-solid fa-lock"></i> Mã hóa ElGamal</button>
+    <div style="margin-top: 10px;">
+        <button type="button" onclick="runElGamalEncrypt()" style="background: var(--accent-indigo);">
+            <i class="fa-solid fa-lock"></i> Tiến hành Mã hóa ElGamal
+        </button>
+        <button type="button" onclick="clearElgEncrypt()"><i class="fa-solid fa-trash"></i> Xóa khối</button>
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Mã hóa Ciphertext (c₁, c₂):</label>
-    <textarea id="elgOutput" rows="2" readonly placeholder="Kết quả dạng cặp (c1, c2)..."></textarea>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Bản mã Ciphertext (c₁, c₂):</label>
+        <button type="button" onclick="copyInput('elgOutput')" style="padding: 4px 12px; font-size: 12px; background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy Bản Mã
+        </button>
+    </div>
+    <textarea id="elgOutput" rows="2" readonly placeholder="Kết quả cặp bản mã (c1, c2)..."></textarea>
 
-    <div class="step-trace-box" id="elgVisualStep" style="display: none;">
-        <div class="step-trace-title"><i class="fa-solid fa-diagram-next"></i> Các bước Mã hóa Logarit Rời Rạc</div>
-        <div id="elgTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
+    <div class="step-trace-box" id="elgVisualStep" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết quá trình mã hóa ElGamal</div>
+        <div id="elgTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
+    </div>
+</div>
+
+<!-- KHỐI 3: GIẢI MÃ ELGAMAL -->
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-lock-open text-emerald"></i> 3. Thao tác Giải mã ElGamal
+    </div>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Dán bản mã (c₁, c₂) cần giải mã vào đây:</label>
+    <textarea id="elgDecryptInput" rows="2" placeholder="Dán định dạng c1:val, c2:val ..."></textarea>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
+            <input type="text" id="elgDecryptX" value="" placeholder="Nhập giá trị x...">
+        </div>
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
+            <input type="text" id="elgDecryptP" value="" placeholder="Nhập giá trị p...">
+        </div>
+    </div>
+
+    <div style="margin-top: 10px;">
+        <button type="button" onclick="runElGamalDecrypt()" style="background: var(--accent-emerald); color: #000; font-weight:700;">
+            <i class="fa-solid fa-unlock"></i> Tiến hành Giải mã ElGamal
+        </button>
+        <button type="button" onclick="clearElgDecrypt()"><i class="fa-solid fa-trash"></i> Xóa khối</button>
+    </div>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Văn bản gốc phục hồi:</label>
+    <textarea id="elgDecryptedOutput" rows="2" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
+
+    <div class="step-trace-box" id="elgDecryptVisualStep" style="display: none; margin-top: 20px;">
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết quá trình giải mã ElGamal</div>
+        <div id="elgDecryptTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
 
 <script>
-function genElGamalKey() {
-    let p = parseInt(document.getElementById('elgP').value) || 23;
-    let g = parseInt(document.getElementById('elgG').value) || 5;
-    let x = parseInt(document.getElementById('elgX').value) || 6;
-    let y = Math.pow(g, x) % p;
-    document.getElementById('elgPublic').value = `p = ${p}, g = ${g}, y = ${y}`;
+let lastP = 0n;
+let lastG = 0n;
+let lastX = 0n;
+let lastY = 0n;
+
+function modPow(base, exp, mod) {
+    let res = 1n;
+    base = base % mod;
+    while (exp > 0n) {
+        if (exp % 2n === 1n) res = (res * base) % mod;
+        base = (base * base) % mod;
+        exp /= 2n;
+    }
+    return res;
 }
 
-function runElGamal() {
-    let msg = document.getElementById('elgMsg').value;
-    if(!msg) { alert('Vui lòng nhập thông điệp M!'); return; }
-    genElGamalKey();
-    document.getElementById('elgOutput').value = "c1 = 18, c2 = 12";
+// Thuật toán Extended Euclidean để tìm nghịch đảo modulo
+BaseModInverse = function(a, m) {
+    let m0 = m;
+    let y = 0n, x = 1n;
+    if (m === 1n) return 0n;
+    while (a > 1n) {
+        let q = a / m;
+        let t = m;
+        m = a % m;
+        a = t;
+        t = y;
+        y = x - q * y;
+        x = t;
+    }
+    if (x < 0n) x += m0;
+    return x;
+};
+
+function genElGamalKey() {
+    let pStr = document.getElementById('elgP').value.trim();
+    let gStr = document.getElementById('elgG').value.trim();
+    let xStr = document.getElementById('elgX').value.trim();
+
+    if(!pStr || !gStr || !xStr) {
+        alert('Vui lòng nhập đầy đủ tham số p, g và x!');
+        return;
+    }
+
+    lastP = BigInt(pStr);
+    lastG = BigInt(gStr);
+    lastX = BigInt(xStr);
+
+    // Tính y = g^x mod p
+    lastY = modPow(lastG, lastX, lastP);
+
+    document.getElementById('elgPublic').value = `p = ${lastP}, g = ${lastG}, y = ${lastY}`;
+    document.getElementById('elgDecryptP').value = lastP.toString();
+    document.getElementById('elgDecryptX').value = lastX.toString();
+
+    document.getElementById('elgKeyVisualStep').style.display = 'block';
+    document.getElementById('elgKeyTraceText').innerHTML = `
+        <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[BƯỚC 1: THIẾT LẬP THAM SỐ & TÍNH KHÓA]</div>
+        <div>• <strong>Số nguyên tố p:</strong> ${lastP} | <strong>Phần tử sinh g:</strong> ${lastG}</div>
+        <div>• <strong>Khóa bí mật x:</strong> ${lastX}</div>
+        <div>• <strong>Tính Khóa Công Khai (y):</strong> y = gˣ mod p ➔ ${lastG}^${lastX} mod ${lastP} = <span style="color:#06b6d4">${lastY}</span></div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+            ✓ HOÀN TẤT: Khóa công khai gồm bộ ba (p=${lastP}, g=${lastG}, y=${lastY}).
+        </div>
+    `;
+}
+
+function copyInput(id) {
+    let el = document.getElementById(id);
+    if(!el.value) { alert('Chưa có dữ liệu để Copy!'); return; }
+    el.select();
+    navigator.clipboard.writeText(el.value);
+    alert('Đã Copy thành công vào Clipboard!');
+}
+
+function clearElgEncrypt() {
+    document.getElementById('elgMsg').value = '';
+    document.getElementById('elgOutput').value = '';
+    document.getElementById('elgVisualStep').style.display = 'none';
+}
+
+function clearElgDecrypt() {
+    document.getElementById('elgDecryptInput').value = '';
+    document.getElementById('elgDecryptedOutput').value = '';
+    document.getElementById('elgDecryptVisualStep').style.display = 'none';
+}
+
+function runElGamalEncrypt() {
+    let text = document.getElementById('elgMsg').value.trim();
+    if(!text) { alert('Vui lòng nhập thông điệp M!'); return; }
+    if(lastP === 0n) { alert('Vui lòng thiết lập khóa ở Bước 1 trước khi mã hóa!'); return; }
+
+    // Chọn số ngẫu nhiên k cố định hoặc sinh ngẫu nhiên an toàn (ví dụ k = 3)
+    let k = 3n; 
+    let cipherPairs = [];
+    let mathSteps = [];
+
+    for(let i=0; i<text.length; i++) {
+        let m = BigInt(text.charCodeAt(i));
+        // c1 = g^k mod p
+        let c1 = modPow(lastG, k, lastP);
+        // c2 = (M * y^k) mod p
+        let yk = modPow(lastY, k, lastP);
+        let c2 = (m * yk) % lastP;
+
+        cipherPairs.push(`(${c1},${c2})`);
+        mathSteps.push(`Ký tự '<strong>${text[i]}</strong>' (ASCII: ${m}) ➔ Chọn k=${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}^${k} mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
+    }
+
+    let ciphertextStr = cipherPairs.join(' ');
+    document.getElementById('elgOutput').value = ciphertextStr;
+    document.getElementById('elgDecryptInput').value = ciphertextStr;
+
     document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgTraceText').innerHTML = `
-        <div>1. <strong>Chọn k ngẫu nhiên:</strong> k = 15</div>
-        <div>2. <strong>Tính c₁:</strong> c₁ = gᵏ mod p = 18</div>
-        <div>3. <strong>Tính c₂:</strong> c₂ = (M × yᵏ) mod p = 12</div>
+        <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[BƯỚC 2: QUÁ TRÌNH MÃ HÓA ELGAMAL]</div>
+        <div>• <strong>Văn bản gốc:</strong> "${text}"</div>
+        <div>• <strong>Sử dụng Public Key:</strong> p = ${lastP}, g = ${lastG}, y = ${lastY}</div>
+        <div>• <strong>Chi tiết sinh cặp bản mã (c₁, c₂) cho từng ký tự (với số ngẫu nhiên k = ${k}):</strong></div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
+            ${mathSteps.join('<br><br>')}
+        </div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+            ➔ BẢN MÃ THU ĐƯỢC: <span style="color:#f43f5e">${ciphertextStr}</span>
+        </div>
+    `;
+}
+
+function runElGamalDecrypt() {
+    let cipherText = document.getElementById('elgDecryptInput').value.trim();
+    let xStr = document.getElementById('elgDecryptX').value.trim();
+    let pStr = document.getElementById('elgDecryptP').value.trim();
+
+    if(!cipherText) { alert('Vui lòng dán bản mã cần giải mã!'); return; }
+    if(!xStr || !pStr) { alert('Vui lòng nhập đầy đủ khóa bí mật x và số nguyên tố p!'); return; }
+
+    let x = BigInt(xStr);
+    let p = BigInt(pStr);
+
+    // Tách các cặp (c1, c2)
+    let matches = cipherText.match(/\((\d+),\s*(\d+)\)/g);
+    if(!matches) {
+        alert('Định dạng bản mã không hợp lệ! Cần có dạng (c1,c2)');
+        return;
+    }
+
+    let plainChars = [];
+    let mathSteps = [];
+
+    matches.forEach(pair => {
+        let nums = pair.replace(/[()]/g, '').split(',');
+        let c1 = BigInt(nums[0].trim());
+        let c2 = BigInt(nums[1].trim());
+
+        // Công thức giải mã: M = c2 * (c1^x)^(-1) mod p  hoặc M = c2 * (c1^(p-1-x)) mod p theo định lý Fermat nhỏ
+        let c1x = modPow(c1, x, p);
+        let c1xInv = BaseModInverse(c1x, p);
+        let m = (c2 * c1xInv) % p;
+        let char = String.fromCharCode(Number(m));
+
+        plainChars.push(char);
+        mathSteps.push(`Cặp (${c1}, ${c2}) ➔ Khôi phục M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = ASCII <strong>${m}</strong> (Ký tự: '<strong>${char}</strong>')`);
+    });
+
+    let decryptedText = plainChars.join('');
+    document.getElementById('elgDecryptedOutput').value = decryptedText;
+    document.getElementById('elgDecryptVisualStep').style.display = 'block';
+    document.getElementById('elgDecryptTraceText').innerHTML = `
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[BƯỚC 3: QUÁ TRÌNH GIẢI MÃ ELGAMAL]</div>
+        <div>• <strong>Bản mã đầu vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+        <div>• <strong>Sử dụng Khóa Bí Mật:</strong> x = ${x}, p = ${p}</div>
+        <div>• <strong>Chi tiết khôi phục từng cặp bản mã:</strong></div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
+            ${mathSteps.join('<br><br>')}
+        </div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+            ✓ KHÔI PHỤC THÀNH CÔNG VĂN BẢN GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
+        </div>
     `;
 }
 </script>
