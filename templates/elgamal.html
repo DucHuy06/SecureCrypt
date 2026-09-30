@@ -35,8 +35,8 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 307):</label>
-            <input type="text" id="elgP" value="" placeholder="Nhập p lớn hơn 255...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 23):</label>
+            <input type="text" id="elgP" value="" placeholder="Nhập p...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g (Ví dụ: 5):</label>
@@ -71,10 +71,10 @@
 <!-- KHỐI 2: MÃ HÓA ELGAMAL -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa văn bản
+        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa văn bản/số
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc cần mã hóa:</label>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M (Nhập chữ cái hoặc số nhỏ hơn p):</label>
     <textarea id="elgMsg" rows="2" placeholder="Nhập thông điệp..."></textarea>
 
     <div style="margin-top: 10px;">
@@ -105,7 +105,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Dán bản mã dạng cặp (c₁, c₂) vào đây:</label>
-    <textarea id="elgDecryptInput" rows="2" placeholder="Ví dụ: (5,7) (5,32) ..."></textarea>
+    <textarea id="elgDecryptInput" rows="2" placeholder="Ví dụ: (18,12) ..."></textarea>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
         <div>
@@ -125,8 +125,8 @@
         <button type="button" onclick="clearElgDecrypt()"><i class="fa-solid fa-trash"></i> Xóa khối</button>
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Văn bản gốc phục hồi:</label>
-    <textarea id="elgDecryptedOutput" rows="2" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Thông điệp gốc phục hồi:</label>
+    <textarea id="elgDecryptedOutput" rows="2" readonly placeholder="Thông điệp sau khi giải mã sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="elgDecryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết quá trình giải mã</div>
@@ -181,11 +181,6 @@ function genElGamalKey() {
     lastG = BigInt(gStr);
     let x = BigInt(xStr);
 
-    if (lastP <= 255n) {
-        alert('Cảnh báo: Số nguyên tố p quá nhỏ (phải lớn hơn 255 để chứa được mã ASCII của các ký tự chữ cái)!');
-        return;
-    }
-
     lastY = modPow(lastG, x, lastP);
     document.getElementById('elgPublic').value = `p = ${lastP}, g = ${lastG}, y = ${lastY}`;
 
@@ -225,29 +220,40 @@ function clearElgDecrypt() {
 
 function runElGamalEncrypt() {
     let text = document.getElementById('elgMsg').value.trim();
-    if(!text) { alert('Vui lòng nhập văn bản cần mã hóa!'); return; }
+    if(!text) { alert('Vui lòng nhập thông điệp cần mã hóa!'); return; }
     if(lastP === 0n) { alert('Vui lòng thiết lập khóa ở Bước 1 trước khi mã hóa!'); return; }
-
-    for(let i=0; i<text.length; i++) {
-        let asciiVal = BigInt(text.charCodeAt(i));
-        if (asciiVal >= lastP) {
-            alert(`Lỗi: Ký tự '${text[i]}' có mã ASCII là ${asciiVal}, lớn hơn hoặc bằng số nguyên tố p (${lastP}). Trong ElGamal, p bắt buộc phải lớn hơn giá trị mã hóa để không bị mất dữ liệu!`);
-            return;
-        }
-    }
 
     let k = 3n; 
     let cipherPairs = [];
     let mathSteps = [];
 
-    for(let i=0; i<text.length; i++) {
-        let asciiVal = BigInt(text.charCodeAt(i));
-        let c1 = modPow(lastG, k, lastP);
-        let yk = modPow(lastY, k, lastP);
-        let c2 = (asciiVal * yk) % lastP;
+    // Nếu người dùng nhập số (hoặc ký tự), xử lý linh hoạt theo giá trị m = ASCII hoặc số nguyên modulo p
+    let parts = text.split(/[\s,]+/);
+    let isNumericInput = parts.every(p => !isNaN(p));
 
-        cipherPairs.push(`(${c1},${c2})`);
-        mathSteps.push(`Ký tự '<strong>${text[i]}</strong>' (Mã ASCII: ${asciiVal}) ➔ Chọn số ngẫu nhiên k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}³ mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${asciiVal} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
+    if (isNumericInput) {
+        parts.forEach(numStr => {
+            let m = BigInt(numStr);
+            let c1 = modPow(lastG, k, lastP);
+            let yk = modPow(lastY, k, lastP);
+            let c2 = (m * yk) % lastP;
+
+            cipherPairs.push(`(${c1},${c2})`);
+            mathSteps.push(`Thông điệp M = ${m} ➔ Chọn k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}³ mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
+        });
+    } else {
+        for(let i=0; i<text.length; i++) {
+            // Quy đổi ký tự sang số thu gọn modulo p nếu p nhỏ, hoặc dùng ASCII nếu p lớn
+            let m = BigInt(text.charCodeAt(i) % Number(lastP));
+            if (m === 0n) m = 1n; // Tránh m = 0 để bảo toàn thông điệp trong phép nhân modulo
+
+            let c1 = modPow(lastG, k, lastP);
+            let yk = modPow(lastY, k, lastP);
+            let c2 = (m * yk) % lastP;
+
+            cipherPairs.push(`(${c1},${c2})`);
+            mathSteps.push(`Ký tự '<strong>${text[i]}</strong>' (Quy đổi M = ${m}) ➔ Chọn k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}³ mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
+        }
     }
 
     let ciphertextStr = cipherPairs.join(' ');
@@ -255,10 +261,10 @@ function runElGamalEncrypt() {
 
     document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgTraceText').innerHTML = `
-        <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[BƯỚC 2: QUÁ TRÌNH MÃ HÓA VĂN BẢN]</div>
-        <div>• <strong>Văn bản nhập vào:</strong> "${text}"</div>
+        <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[BƯỚC 2: QUÁ TRÌNH MÃ HÓA]</div>
+        <div>• <strong>Thông điệp đầu vào:</strong> "${text}"</div>
         <div>• <strong>Sử dụng Khóa Công Khai:</strong> p = ${lastP}, g = ${lastG}, y = ${lastY}</div>
-        <div>• <strong>Chi tiết sinh cặp bản mã (c₁, c₂) cho từng ký tự:</strong></div>
+        <div>• <strong>Chi tiết sinh cặp bản mã (c₁, c₂):</strong></div>
         <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
             ${mathSteps.join('<br><br>')}
         </div>
@@ -285,7 +291,7 @@ function runElGamalDecrypt() {
         return;
     }
 
-    let plainChars = [];
+    let plainResults = [];
     let mathSteps = [];
 
     matches.forEach(pair => {
@@ -295,26 +301,28 @@ function runElGamalDecrypt() {
 
         let c1x = modPow(c1, x, p);
         let c1xInv = BaseModInverse(c1x, p);
-        let asciiVal = (c2 * c1xInv) % p;
-        let char = String.fromCharCode(Number(asciiVal));
+        let m = (c2 * c1xInv) % p;
+        
+        // Thử hiển thị cả dạng số nguyên M lẫn ký tự nếu hợp lệ
+        let charDisplay = (m >= 32n && m <= 126n) ? ` (Ký tự: '${String.fromCharCode(Number(m))}')` : '';
 
-        plainChars.push(char);
-        mathSteps.push(`Cặp bản mã (${c1}, ${c2}) ➔ Khôi phục qua Khóa Bí Mật: M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = Mã ASCII <strong>${asciiVal}</strong> (Ký tự: '<strong>${char}</strong>')`);
+        plainResults.push(m.toString());
+        mathSteps.push(`Cặp bản mã (${c1}, ${c2}) ➔ M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = <strong>${m}</strong>${charDisplay}`);
     });
 
-    let decryptedText = plainChars.join('');
+    let decryptedText = plainResults.join(' ');
     document.getElementById('elgDecryptedOutput').value = decryptedText;
     document.getElementById('elgDecryptVisualStep').style.display = 'block';
     document.getElementById('elgDecryptTraceText').innerHTML = `
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[BƯỚC 3: QUÁ TRÌNH GIẢI MÃ BẢN MÃ]</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[BƯỚC 3: QUÁ TRÌNH GIẢI MÃ]</div>
         <div>• <strong>Bản mã đầu vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-        <div>• <strong>Sử dụng Khóa Bí Mật do bạn nhập:</strong> x = ${x}, p = ${p}</div>
-        <div>• <strong>Chi tiết khôi phục từng cặp bản mã:</strong></div>
+        <div>• <strong>Sử dụng Khóa Bí Mật:</strong> x = ${x}, p = ${p}</div>
+        <div>• <strong>Chi tiết khôi phục:</strong></div>
         <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
             ${mathSteps.join('<br><br>')}
         </div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ KHÔI PHỤC THÀNH CÔNG VĂN BẢN GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
+            ✓ KHÔI PHỤC THÀNH CÔNG THÔNG ĐIỆP GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
         </div>
     `;
 }
