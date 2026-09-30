@@ -1,190 +1,124 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-    .hero-banner {
-        margin-bottom: 30px;
-    }
-    .hero-title {
-        font-size: 32px;
-        font-weight: 800;
-        color: #ffffff;
-        margin-bottom: 8px;
-    }
-    .hero-subtitle {
-        font-size: 15px;
-        color: var(--text-muted);
-    }
-
-    .tools-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-        gap: 20px;
-    }
-
-    .tool-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: 14px;
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: all 0.25s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    .tool-card:hover {
-        border-color: var(--accent-indigo);
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.5);
-    }
-
-    .badge-tag {
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .badge-ai { background: rgba(217, 70, 239, 0.15); color: var(--accent-purple); }
-    .badge-sym { background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo); }
-    .badge-hash { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
-    .badge-asym { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
-
-    .card-header-flex {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 12px;
-    }
-
-    .tool-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #ffffff;
-        margin: 0;
-    }
-
-    .tool-desc {
-        font-size: 13.5px;
-        color: var(--text-muted);
-        line-height: 1.6;
-        margin-bottom: 24px;
-    }
-
-    .btn-action {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        width: 100%;
-        padding: 11px 0;
-        border-radius: 8px;
-        font-size: 13.5px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.2s;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-indigo { background: #222e48; color: #ffffff; }
-    .btn-indigo:hover { background: var(--accent-indigo); }
-
-    .btn-purple { background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%); color: #ffffff; }
-    .btn-purple:hover { opacity: 0.9; }
-</style>
-
-<div class="hero-banner">
-    <h1 class="hero-title">Cryptography Playground & Tools</h1>
-    <div class="hero-subtitle">Nền tảng thực thi, trực quan hóa và thử nghiệm các thuật toán mật mã học hiện đại.</div>
+<div class="hero-banner" style="margin-bottom: 32px; text-align: center;">
+    <h1 style="font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 10px;">
+        Cryptography Playground & Tools
+    </h1>
+    <p style="color: var(--text-muted); font-size: 15px;">
+        Nền tảng thực thi, trực quan hóa và thử nghiệm các thuật toán mật mã học hiện đại.
+    </p>
 </div>
 
-<div class="tools-grid">
-    <!-- Thẻ Crypto AI -->
-    <div class="tool-card">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+    
+    <!-- DES Cryptosystem -->
+    <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-            <div class="card-header-flex">
-                <h3 class="tool-title">Crypto AI Assistant</h3>
-                <span class="badge-tag badge-ai">Trợ lý AI</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 20px; color: #fff;">DES Cryptosystem</h3>
+                <span style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">ĐỐI XỨNG</span>
             </div>
-            <p class="tool-desc">Trợ lý AI chuyên sâu về Mật mã học. Giải đáp thắc mắc công thức toán, cách tạo khóa và kiểm tra bài tập An toàn thông tin cho sinh viên.</p>
+            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+                Mã hóa khối đối xứng chuẩn 64–bit block. Minh họa quá trình hoán vị PC-1, PC-2 và các vòng Feistel biến đổi dữ liệu.
+            </p>
         </div>
-        <a href="/ai-chat" class="btn-action btn-purple">Hỏi đáp ngay với Crypto AI <i class="fa-solid fa-arrow-right"></i></a>
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('des_route') }}" style="display: inline-block; background: var(--accent-indigo); color: #fff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px;">
+                Thao tác DES &rarr;
+            </a>
+        </div>
     </div>
 
-    <!-- Thẻ DES -->
-    <div class="tool-card">
+    <!-- AES Cryptosystem -->
+    <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-            <div class="card-header-flex">
-                <h3 class="tool-title">DES Cryptosystem</h3>
-                <span class="badge-tag badge-sym">Đối xứng</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 20px; color: #fff;">AES Cryptosystem</h3>
+                <span style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">ĐỐI XỨNG</span>
             </div>
-            <p class="tool-desc">Mã hóa khối đối xứng chuẩn 64-bit block. Minh họa quá trình hoán vị PC-1, PC-2 và các vòng Feistel biến đổi dữ liệu.</p>
+            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+                Chuẩn mã hóa cao cấp Advanced Encryption Standard hỗ trợ chế độ GCM/CBC, hiển thị Ma trận SubBytes và ShiftRows.
+            </p>
         </div>
-        <a href="/des" class="btn-action btn-indigo">Thao tác DES <i class="fa-solid fa-arrow-right"></i></a>
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('aes_route') }}" style="display: inline-block; background: var(--accent-indigo); color: #fff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px;">
+                Thao tác AES &rarr;
+            </a>
+        </div>
     </div>
 
-    <!-- Thẻ AES -->
-    <div class="tool-card">
+    <!-- MD5 Hash -->
+    <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-            <div class="card-header-flex">
-                <h3 class="tool-title">AES Cryptosystem</h3>
-                <span class="badge-tag badge-sym">Đối xứng</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 20px; color: #fff;">MD5 Hash</h3>
+                <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">HÀM BĂM</span>
             </div>
-            <p class="tool-desc">Chuẩn mã hóa cao cấp Advanced Encryption Standard hỗ trợ chế độ GCM/CBC, hiển thị Ma trận SubBytes và ShiftRows.</p>
+            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+                Tính toán giá trị băm MD5 128–bit (32 ký tự Hex). Thử nghiệm nén khối dữ liệu qua 4 vòng logic F, G, H, I.
+            </p>
         </div>
-        <a href="/aes" class="btn-action btn-indigo">Thao tác AES <i class="fa-solid fa-arrow-right"></i></a>
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('md5_route') }}" style="display: inline-block; background: var(--accent-emerald); color: #000; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                Thao tác MD5 &rarr;
+            </a>
+        </div>
     </div>
 
-    <!-- Thẻ MD5 -->
-    <div class="tool-card">
+    <!-- SHA-256 Hash -->
+    <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-            <div class="card-header-flex">
-                <h3 class="tool-title">MD5 Hash</h3>
-                <span class="badge-tag badge-hash">Hàm Băm</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 20px; color: #fff;">SHA–256 Hash</h3>
+                <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">HÀM BĂM</span>
             </div>
-            <p class="tool-desc">Tính toán giá trị băm MD5 128-bit (32 ký tự Hex). Thử nghiệm nén khối dữ liệu qua 4 vòng logic F, G, H, I.</p>
+            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+                Hàm băm an toàn SHA–256 (64 ký tự Hex). Kiểm tra tính toàn vẹn dữ liệu và tính chất chống đụng độ (Collision Resistance).
+            </p>
         </div>
-        <a href="/md5" class="btn-action btn-indigo">Thao tác MD5 <i class="fa-solid fa-arrow-right"></i></a>
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('sha256_route') }}" style="display: inline-block; background: var(--accent-emerald); color: #000; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                Thao tác SHA-256 &rarr;
+            </a>
+        </div>
     </div>
 
-    <!-- Thẻ SHA-256 -->
-    <div class="tool-card">
+    <!-- RSA Cryptosystem -->
+    <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-            <div class="card-header-flex">
-                <h3 class="tool-title">SHA-256 Hash</h3>
-                <span class="badge-tag badge-hash">Hàm Băm</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 20px; color: #fff;">RSA Cryptosystem</h3>
+                <span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">BẤT ĐỐI XỨNG</span>
             </div>
-            <p class="tool-desc">Hàm băm an toàn SHA-256 (64 ký tự Hex). Kiểm tra tính toàn vẹn dữ liệu và tính chất chống đụng độ (Collision Resistance).</p>
+            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+                Mã hóa khóa công khai dựa trên độ khó phân tích số nguyên lớn. Minh họa từng bước sinh cặp khóa p, q, n, e, d.
+            </p>
         </div>
-        <a href="/sha256" class="btn-action btn-indigo">Thao tác SHA-256 <i class="fa-solid fa-arrow-right"></i></a>
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('rsa_route') }}" style="display: inline-block; background: var(--accent-amber); color: #000; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                Thao tác RSA &rarr;
+            </a>
+        </div>
     </div>
 
-    <!-- Thẻ RSA -->
-    <div class="tool-card">
+    <!-- ElGamal Cryptosystem -->
+    <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
-            <div class="card-header-flex">
-                <h3 class="tool-title">RSA Cryptosystem</h3>
-                <span class="badge-tag badge-asym">Bất Đối Xứng</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="margin: 0; font-size: 20px; color: #fff;">ElGamal System</h3>
+                <span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">BẤT ĐỐI XỨNG</span>
             </div>
-            <p class="tool-desc">Mã hóa khóa công khai dựa trên độ khó phân tích số nguyên lớn. Minh họa từng bước sinh cặp khóa p, q, n, e, d.</p>
+            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
+                Hệ thống mật mã dựa trên bài toán Logarit rời rạc trên trường hữu hạn Z_p*. Hỗ trợ Mã hóa và Giải mã số nguyên M.
+            </p>
         </div>
-        <a href="/rsa" class="btn-action btn-indigo">Thao tác RSA <i class="fa-solid fa-arrow-right"></i></a>
+        <div style="margin-top: 20px;">
+            <a href="{{ url_for('elgamal_route') }}" style="display: inline-block; background: var(--accent-amber); color: #000; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                Thao tác ElGamal &rarr;
+            </a>
+        </div>
     </div>
 
-    <!-- Thẻ ElGamal -->
-    <div class="tool-card">
-        <div>
-            <div class="card-header-flex">
-                <h3 class="tool-title">ElGamal System</h3>
-                <span class="badge-tag badge-asym">Bất Đối Xứng</span>
-            </div>
-            <p class="tool-desc">Hệ thống mật mã dựa trên bài toán Logarit rời rạc trên trường hữu hạn $\mathbb{Z}_p^*$. Hỗ trợ mã hóa và tạo Chữ ký số.</p>
-        </div>
-        <a href="/elgamal" class="btn-action btn-indigo">Thao tác ElGamal <i class="fa-solid fa-arrow-right"></i></a>
-    </div>
 </div>
 {% endblock %}
