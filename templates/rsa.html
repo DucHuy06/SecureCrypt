@@ -27,10 +27,10 @@
     </div>
 </div>
 
-<!-- PHẦN 0: SINH CẶP KHÓA CHUNG -->
+<!-- KHỐI 1: SINH CẶP KHÓA -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-gears text-amber"></i> 0. Sinh cặp khóa Public / Private Key
+        <i class="fa-solid fa-gears text-amber"></i> 1. Sinh cặp khóa Public / Private Key
     </div>
     
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -65,10 +65,10 @@
     </div>
 </div>
 
-<!-- KHỐI 1: THAO TÁC MÃ HÓA RSA (ENCRYPTION) -->
+<!-- KHỐI 2: THAO TÁC MÃ HÓA RSA (ENCRYPTION) -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock text-indigo"></i> 1. Thao tác Mã hóa RSA (Encryption)
+        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa RSA (Encryption)
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Plaintext (Thông điệp rõ M):</label>
@@ -95,10 +95,10 @@
     </div>
 </div>
 
-<!-- KHỐI 2: THAO TÁC GIẢI MÃ RSA (DECRYPTION) -->
+<!-- KHỐI 3: THAO TÁC GIẢI MÃ RSA (DECRYPTION) -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock-open text-emerald"></i> 2. Thao tác Giải mã RSA (Decryption)
+        <i class="fa-solid fa-lock-open text-emerald"></i> 3. Thao tác Giải mã RSA (Decryption)
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext cần giải mã (Dán dữ liệu mã hóa C vào đây):</label>
@@ -137,7 +137,7 @@ function generateRSAKeys() {
     let n = p * q;
     let phi = (p - 1) * (q - 1);
     let e = 17;
-    let d = 2753; // Giả lập chuẩn cho p=61, q=53
+    let d = 2753;
 
     globalN = n;
     globalE = e;
@@ -146,12 +146,10 @@ function generateRSAKeys() {
     document.getElementById('rsaPublic').value = `e = ${e}, n = ${n}`;
     document.getElementById('rsaPrivate').value = `d = ${d}, n = ${n}`;
     
-    // Tự động điền sẵn vào ô giải mã để tiện test
     document.getElementById('rsaDecryptKeyD').value = d;
     document.getElementById('rsaDecryptKeyN').value = n;
 }
 
-// Chạy khởi tạo sẵn khi load trang
 window.onload = function() {
     generateRSAKeys();
 };
@@ -186,7 +184,6 @@ function encryptRSA() {
     let e = globalE;
     let phi = (p - 1) * (q - 1);
 
-    // Giả lập mã hóa từng ký tự sang số ASCII rồi tính C = M^e mod n
     let cipherArr = [];
     for(let i=0; i<text.length; i++) {
         let m = text.charCodeAt(i);
@@ -196,7 +193,7 @@ function encryptRSA() {
     let ciphertext = cipherArr.join(' ');
 
     document.getElementById('rsaCiphertext').value = ciphertext;
-    document.getElementById('rsaDecryptCiphertext').value = ciphertext; // Đồng bộ sang ô giải mã
+    document.getElementById('rsaDecryptCiphertext').value = ciphertext;
 
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
@@ -219,13 +216,11 @@ function decryptRSA() {
     if(!cipherText) { alert('Vui lòng nhập Ciphertext cần giải mã!'); return; }
     if(!d || !n) { alert('Vui lòng nhập đầy đủ khóa d và n!'); return; }
 
-    // Giải mã giả lập từ chuỗi số C
     let cipherArr = cipherText.split(' ');
     let plainChars = [];
     for(let cStr of cipherArr) {
         let c = parseInt(cStr);
         if(!isNaN(c)) {
-            // M = C^d mod n (Dùng BigInt để tính toán chính xác số lớn)
             let mBig = (BigInt(c) ** BigInt(d)) % BigInt(n);
             plainChars.push(String.fromCharCode(Number(mBig)));
         }
