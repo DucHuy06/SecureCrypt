@@ -35,12 +35,12 @@
     
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="rsaP" value="" placeholder="Ví dụ: 61">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 61):</label>
+            <input type="text" id="rsaP" value="" placeholder="Nhập số nguyên tố p...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố q:</label>
-            <input type="text" id="rsaQ" value="" placeholder="Ví dụ: 53">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố q (Ví dụ: 53):</label>
+            <input type="text" id="rsaQ" value="" placeholder="Nhập số nguyên tố q...">
         </div>
     </div>
 
@@ -65,7 +65,7 @@
     </div>
 
     <div class="step-trace-box" id="rsaKeyVisualStep" style="display: none; margin-top: 20px;">
-        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Trực quan hóa Quá trình Sinh Khóa RSA</div>
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết Quá trình Sinh Khóa RSA</div>
         <div id="rsaKeyTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
@@ -95,7 +95,7 @@
     <textarea id="rsaCiphertext" rows="2" readonly placeholder="Kết quả mã hóa sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="rsaEncryptVisualStep" style="display: none; margin-top: 20px;">
-        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Trực quan hóa Chi tiết Luồng Mã Hóa RSA</div>
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết Quá trình Mã Hóa (M ➔ C)</div>
         <div id="rsaEncryptTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
@@ -131,21 +131,33 @@
     <textarea id="rsaDecryptedPlaintext" rows="2" readonly placeholder="Văn bản sau khi giải mã sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="rsaDecryptVisualStep" style="display: none; margin-top: 20px;">
-        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Trực quan hóa Chi tiết Luồng Giải Mã RSA</div>
+        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết Quá trình Giải Mã (C ➔ M)</div>
         <div id="rsaDecryptTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
 
 <script>
-let lastGeneratedN = 0;
-let lastGeneratedE = 17;
-let lastGeneratedD = 0;
+let lastN = 0n;
+let lastE = 17n;
+let lastD = 0n;
+
+function gcd(a, b) {
+    return b === 0n ? a : gcd(b, a % b);
+}
+
+function isPrime(num) {
+    if (num <= 1n) return false;
+    for (let i = 2n; i * i <= num; i++) {
+        if (num % i === 0n) return false;
+    }
+    return true;
+}
 
 function modInverse(e, phi) {
-    let t = 0, newt = 1;
+    let t = 0n, newt = 1n;
     let r = phi, newr = e;
-    while (newr !== 0) {
-        let quotient = Math.floor(r / newr);
+    while (newr !== 0n) {
+        let quotient = r / newr;
         let tempT = t - quotient * newt;
         t = newt;
         newt = tempT;
@@ -153,8 +165,8 @@ function modInverse(e, phi) {
         r = newr;
         newr = tempR;
     }
-    if (r > 1) return -1;
-    if (t < 0) t += phi;
+    if (r > 1n) return -1n;
+    if (t < 0n) t += phi;
     return t;
 }
 
@@ -167,38 +179,45 @@ function generateRSAKeys() {
         return;
     }
 
-    let p = parseInt(pVal);
-    let q = parseInt(qVal);
+    let p = BigInt(pVal);
+    let q = BigInt(qVal);
+
+    if (!isPrime(p) || !isPrime(q)) {
+        alert('Cảnh báo: p hoặc q không phải là số nguyên tố! Vui lòng nhập lại số nguyên tố hợp lệ (ví dụ: 61, 53, 11, 13...).');
+        return;
+    }
 
     let n = p * q;
-    let phi = (p - 1) * (q - 1);
-    let e = 17;
-    if(phi <= e) e = 3;
+    let phi = (p - 1n) * (q - 1n);
+
+    // Tự động tìm số e hợp lệ (1 < e < phi và gcd(e, phi) == 1)
+    let e = 3n;
+    while (e < phi) {
+        if (gcd(e, phi) === 1n) break;
+        e += 2n;
+    }
 
     let d = modInverse(e, phi);
-    if(d === -1) {
+    if(d === -1n) {
         alert('Không tìm thấy nghịch đảo modular hợp lệ. Hãy thử cặp p, q khác!');
         return;
     }
 
-    lastGeneratedN = n;
-    lastGeneratedE = e;
-    lastGeneratedD = d;
+    lastN = n;
+    lastE = e;
+    lastD = d;
 
-    document.getElementById('rsaPublic').value = `e = ${e}, n = ${n}`;
-    document.getElementById('rsaPrivate').value = `d = ${d}, n = ${n}`;
+    document.getElementById('rsaPublic').value = `e = ${e.toString()}, n = ${n.toString()}`;
+    document.getElementById('rsaPrivate').value = `d = ${d.toString()}, n = ${n.toString()}`;
 
     document.getElementById('rsaKeyVisualStep').style.display = 'block';
     document.getElementById('rsaKeyTraceText').innerHTML = `
-        <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">[QUÁ TRÌNH SINH KHÓA BẤT ĐỐI XỨNG RSA]</div>
-        <div>1. <strong>Chọn 2 số nguyên tố:</strong> p = ${p}, q = ${q}</div>
-        <div>2. <strong>Tính Modulus (n):</strong> n = p × q = ${p} × ${q} = <span style="color:#06b6d4">${n}</span></div>
-        <div>3. <strong>Tính hàm Euler Phi:</strong> φ(n) = (p - 1)(q - 1) = (${p}-1)×(${q}-1) = <span style="color:#06b6d4">${phi}</span></div>
-        <div>4. <strong>Chọn khóa công khai e:</strong> e = ${e} (thỏa mãn điều kiện nguyên tố cùng nhau với φ(n))</div>
-        <div>5. <strong>Tính khóa bí mật d:</strong> d = e⁻¹ mod φ(n) ➔ d = <span style="color:#10b981">${d}</span></div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ➔ KẾT QUẢ: Public Key (e=${e}, n=${n}) | Private Key (d=${d}, n=${n})
-        </div>
+        <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">[GIẢI THÍCH CHI TIẾT SINH KHÓA]</div>
+        <div>1. <strong>Chọn 2 số nguyên tố p, q:</strong> p = ${p.toString()}, q = ${q.toString()} (Đã kiểm tra hợp lệ).</div>
+        <div>2. <strong>Tính Modulus (n):</strong> n = p × q = ${p.toString()} × ${q.toString()} = <span style="color:#06b6d4">${n.toString()}</span>.</div>
+        <div>3. <strong>Tính hàm Euler Phi:</strong> φ(n) = (p - 1) × (q - 1) = <span style="color:#06b6d4">${phi.toString()}</span>.</div>
+        <div>4. <strong>Chọn khóa công khai e:</strong> Hệ thống tự tìm số e = ${e.toString()} thỏa mãn nguyên tố cùng nhau với φ(n). Cặp <strong>(e=${e.toString()}, n=${n.toString()})</strong> là <strong>Public Key</strong>.</div>
+        <div>5. <strong>Tính khóa bí mật d:</strong> d = e⁻¹ mod φ(n) ➔ Thuật toán tính ra d = <span style="color:#10b981">${d.toString()}</span>. Cặp <strong>(d, n)</strong> là <strong>Private Key</strong>.</div>
     `;
 }
 
@@ -227,57 +246,72 @@ function clearDecryptFields() {
 function encryptRSA() {
     let text = document.getElementById('rsaPlaintext').value.trim();
     if(!text) { alert('Vui lòng nhập văn bản Plaintext cần mã hóa!'); return; }
-    if(!lastGeneratedN) { alert('Vui lòng tạo cặp khóa ở Bước 1 trước khi mã hóa!'); return; }
+    if(lastN === 0n) { alert('Vui lòng tạo cặp khóa ở Bước 1 trước khi mã hóa!'); return; }
 
     let cipherArr = [];
+    let mathSteps = [];
     for(let i=0; i<text.length; i++) {
-        let m = text.charCodeAt(i);
-        let c = Number((BigInt(m) ** BigInt(lastGeneratedE)) % BigInt(lastGeneratedN));
-        cipherArr.push(c);
+        let m = BigInt(text.charCodeAt(i));
+        // Công thức mã hóa: C = M^e mod n
+        let c = (m ** lastE) % lastN;
+        cipherArr.push(c.toString());
+        mathSteps.push(`Ký tự '<strong>${text[i]}</strong>' ➔ Chuyển sang mã ASCII: <strong>M = ${m.toString()}</strong> ➔ Tính C = ${m.toString()}^${lastE.toString()} mod ${lastN.toString()} = <span style="color:#f43f5e">${c.toString()}</span>`);
     }
     let ciphertext = cipherArr.join(' ');
 
     document.getElementById('rsaCiphertext').value = ciphertext;
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
-        <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[CHI TIẾT LUỒNG MÃ HÓA RSA]</div>
-        <div>• <strong>Văn bản gốc (Plaintext):</strong> "${text}"</div>
-        <div>• <strong>Mã hóa qua Khóa công khai:</strong> e = ${lastGeneratedE}, n = ${lastGeneratedN}</div>
-        <div>• <strong>Công thức:</strong> C = Mᵉ mod n</div>
+        <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[GIẢI THÍCH CHI TIẾT QUÁ TRÌNH MÃ HÓA M ➔ C]</div>
+        <div>• <strong>Văn bản gốc (Plaintext M):</strong> "${text}"</div>
+        <div>• <strong>Sử dụng Khóa công khai:</strong> e = ${lastE.toString()}, n = ${lastN.toString()}</div>
+        <div>• <strong>Áp dụng công thức C = Mᵉ mod n cho từng ký tự:</strong></div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
+            ${mathSteps.join('<br><br>')}
+        </div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ➔ CIPHERTEXT ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
+            ➔ KẾT QUẢ CIPHERTEXT C ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
         </div>
     `;
 }
 
 function decryptRSA() {
     let cipherText = document.getElementById('rsaDecryptCiphertext').value.trim();
-    let d = document.getElementById('rsaDecryptKeyD').value.trim();
-    let n = document.getElementById('rsaDecryptKeyN').value.trim();
+    let dStr = document.getElementById('rsaDecryptKeyD').value.trim();
+    let nStr = document.getElementById('rsaDecryptKeyN').value.trim();
 
     if(!cipherText) { alert('Vui lòng dán Ciphertext vào ô giải mã!'); return; }
-    if(!d || !n) { alert('Vui lòng nhập thủ công Khóa bí mật d và Modulus n ở Bước 3!'); return; }
+    if(!dStr || !nStr) { alert('Vui lòng nhập đầy đủ Khóa bí mật d và Modulus n ở Bước 3!'); return; }
+
+    let d = BigInt(dStr);
+    let n = BigInt(nStr);
 
     let cipherArr = cipherText.split(' ');
     let plainChars = [];
+    let mathSteps = [];
+
     for(let cStr of cipherArr) {
-        let c = parseInt(cStr);
-        if(!isNaN(c)) {
-            let mBig = (BigInt(c) ** BigInt(d)) % BigInt(n);
-            plainChars.push(String.fromCharCode(Number(mBig)));
-        }
+        let c = BigInt(cStr);
+        // Công thức giải mã: M = C^d mod n
+        let m = (c ** d) % n;
+        let char = String.fromCharCode(Number(m));
+        plainChars.push(char);
+        mathSteps.push(`Khối mã C = ${c.toString()} ➔ Tính M = ${c.toString()}^${d.toString()} mod ${n.toString()} = ASCII <strong>${m.toString()}</strong> (Ký tự: '<strong>${char}</strong>')`);
     }
-    let decryptedText = plainChars.join('') || "";
+    let decryptedText = plainChars.join('');
 
     document.getElementById('rsaDecryptedPlaintext').value = decryptedText;
     document.getElementById('rsaDecryptVisualStep').style.display = 'block';
     document.getElementById('rsaDecryptTraceText').innerHTML = `
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[CHI TIẾT LUỒNG GIẢI MÃ RSA]</div>
-        <div>• <strong>Ciphertext:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-        <div>• <strong>Sử dụng Khóa bí mật do người dùng nhập:</strong> d = ${d}, n = ${n}</div>
-        <div>• <strong>Công thức:</strong> M = Cᵈ mod n</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[GIẢI THÍCH CHI TIẾT QUÁ TRÌNH GIẢI MÃ C ➔ M]</div>
+        <div>• <strong>Ciphertext C đầu vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+        <div>• <strong>Sử dụng Khóa bí mật do người dùng nhập:</strong> d = ${d.toString()}, n = ${n.toString()}</div>
+        <div>• <strong>Áp dụng công thức M = Cᵈ mod n cho từng khối mã hóa:</strong></div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
+            ${mathSteps.join('<br><br>')}
+        </div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ ĐÃ KHÔI PHỤC PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
+            ✓ KHÔI PHỤC HOÀN TOÀN VĂN BẢN GỐC M: "<span style="color:#ffffff">${decryptedText}</span>"
         </div>
     `;
 }
