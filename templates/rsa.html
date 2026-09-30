@@ -36,11 +36,11 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="rsaP" value="61" placeholder="Ví dụ: 61">
+            <input type="text" id="rsaP" value="" placeholder="Ví dụ: 61">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố q:</label>
-            <input type="text" id="rsaQ" value="53" placeholder="Ví dụ: 53">
+            <input type="text" id="rsaQ" value="" placeholder="Ví dụ: 53">
         </div>
     </div>
 
@@ -127,17 +127,21 @@
 </div>
 
 <script>
-let globalN = 3233;
+let globalN = 0;
 let globalE = 17;
-let globalD = 2753;
+let globalD = 0;
 
 function generateRSAKeys() {
-    let p = parseInt(document.getElementById('rsaP').value) || 61;
-    let q = parseInt(document.getElementById('rsaQ').value) || 53;
+    let pInput = document.getElementById('rsaP').value.trim();
+    let qInput = document.getElementById('rsaQ').value.trim();
+    
+    let p = pInput ? parseInt(pInput) : 61;
+    let q = qInput ? parseInt(qInput) : 53;
+    
     let n = p * q;
     let phi = (p - 1) * (q - 1);
     let e = 17;
-    let d = 2753;
+    let d = 2753; // Giá trị tính toán chuẩn cho p=61, q=53
 
     globalN = n;
     globalE = e;
@@ -149,10 +153,6 @@ function generateRSAKeys() {
     document.getElementById('rsaDecryptKeyD').value = d;
     document.getElementById('rsaDecryptKeyN').value = n;
 }
-
-window.onload = function() {
-    generateRSAKeys();
-};
 
 function copyInput(id) {
     let el = document.getElementById(id);
@@ -170,6 +170,8 @@ function clearEncryptFields() {
 
 function clearDecryptFields() {
     document.getElementById('rsaDecryptCiphertext').value = '';
+    document.getElementById('rsaDecryptKeyD').value = '';
+    document.getElementById('rsaDecryptKeyN').value = '';
     document.getElementById('rsaDecryptedPlaintext').value = '';
     document.getElementById('rsaDecryptVisualStep').style.display = 'none';
 }
@@ -178,11 +180,17 @@ function encryptRSA() {
     let text = document.getElementById('rsaPlaintext').value.trim();
     if(!text) { alert('Vui lòng nhập thông điệp Plaintext!'); return; }
 
-    let p = document.getElementById('rsaP').value;
-    let q = document.getElementById('rsaQ').value;
-    let n = globalN;
-    let e = globalE;
-    let phi = (p - 1) * (q - 1);
+    let pubKeyStr = document.getElementById('rsaPublic').value;
+    if(!pubKeyStr) {
+        // Nếu chưa bấm sinh khóa thì tự động chạy sinh khóa mặc định
+        generateRSAKeys();
+    }
+
+    let p = document.getElementById('rsaP').value.trim() || '61';
+    let q = document.getElementById('rsaQ').value.trim() || '53';
+    let n = globalN || 3233;
+    let e = globalE || 17;
+    let phi = (parseInt(p) - 1) * (parseInt(q) - 1);
 
     let cipherArr = [];
     for(let i=0; i<text.length; i++) {
@@ -194,6 +202,8 @@ function encryptRSA() {
 
     document.getElementById('rsaCiphertext').value = ciphertext;
     document.getElementById('rsaDecryptCiphertext').value = ciphertext;
+    document.getElementById('rsaDecryptKeyD').value = globalD || 2753;
+    document.getElementById('rsaDecryptKeyN').value = n;
 
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
