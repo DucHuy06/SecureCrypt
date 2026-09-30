@@ -17,63 +17,57 @@
         line-height: 1.6;
     }
 
-    /* List of Topics (Style Daxipher) */
-    .topics-list {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        margin-bottom: 40px;
+    /* Danh sách 6 module thuật toán */
+    .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+        margin-bottom: 30px;
     }
-    .topic-card {
+    .module-card {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 12px;
-        padding: 18px 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-decoration: none;
-        transition: all 0.2s ease;
+        padding: 20px;
         cursor: pointer;
+        transition: all 0.2s ease;
     }
-    .topic-card:hover {
+    .module-card:hover, .module-card.active {
         border-color: var(--accent-indigo);
-        transform: translateX(4px);
         background: #1a2436;
+        transform: translateY(-2px);
     }
-    .topic-info h4 {
-        margin: 0 0 6px 0;
-        font-size: 17px;
+    .module-card h4 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
         font-weight: 700;
-        color: #ffffff;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
-    .topic-info p {
+    .module-card p {
         margin: 0;
         font-size: 13px;
         color: var(--text-muted);
-    }
-    .read-time {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--accent-indigo);
-        background: rgba(99, 102, 241, 0.1);
-        padding: 4px 12px;
-        border-radius: 20px;
-        white-space: nowrap;
+        line-height: 1.5;
     }
 
-    /* Detailed Theory Article Section */
-    .article-section {
+    /* Khung hiển thị nội dung chi tiết */
+    .theory-content-box {
         background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 16px;
         padding: 30px;
-        margin-top: 30px;
+        display: none;
     }
-    .article-title {
+    .theory-content-box.active {
+        display: block;
+    }
+    .theory-title {
         font-size: 22px;
         font-weight: 700;
-        color: #ffffff;
+        color: #fff;
         margin-bottom: 16px;
         padding-bottom: 12px;
         border-bottom: 1px solid var(--border-color);
@@ -81,133 +75,219 @@
         align-items: center;
         gap: 10px;
     }
-
-    /* Spec Code Box */
-    .spec-box {
-        background: #0d1322;
-        border: 1px solid #1e2d4a;
-        border-radius: 10px;
-        padding: 18px;
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 13px;
+    .theory-subtitle {
+        color: #60a5fa;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 20px;
+        margin-bottom: 8px;
+    }
+    .theory-text {
+        font-size: 14px;
         color: #cbd5e1;
         line-height: 1.7;
-        margin: 16px 0;
+        margin-bottom: 12px;
     }
-    .spec-box .key { color: #f472b6; font-weight: bold; }
-    .spec-box .val { color: #38bdf8; }
-    .spec-box .comment { color: #64748b; font-style: italic; }
-
-    /* Security Callout Box */
-    .callout-warning {
-        background: rgba(245, 158, 11, 0.08);
-        border-left: 4px solid var(--accent-amber);
+    .formula-box {
+        background: #0f172a;
+        border-left: 4px solid var(--accent-indigo);
+        padding: 14px 18px;
+        margin: 14px 0;
+        font-family: 'Courier New', Courier, monospace;
+        color: #34d399;
         border-radius: 0 8px 8px 0;
-        padding: 16px 20px;
-        margin: 20px 0;
-    }
-    .callout-warning h5 {
-        margin: 0 0 6px 0;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--accent-amber);
-    }
-    .callout-warning p {
-        margin: 0;
+        line-height: 1.6;
         font-size: 13px;
+        overflow-x: auto;
+    }
+    .theory-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 10px 0;
+    }
+    .theory-list li {
+        margin-bottom: 8px;
+        position: relative;
+        padding-left: 20px;
+        font-size: 14px;
         color: #cbd5e1;
-        line-height: 1.5;
+    }
+    .theory-list li::before {
+        content: "•";
+        color: #60a5fa;
+        position: absolute;
+        left: 0;
+        font-weight: bold;
     }
 </style>
 
-<!-- Top Learn Banner -->
+<!-- Top Banner -->
 <div class="learn-header">
-    <h1 class="learn-title">Learn Cryptography & Theory</h1>
-    <div class="learn-desc">Hướng dẫn lý thuyết chuyên sâu về Mật mã học dành cho sinh viên và lập trình viên. Kết nối lý thuyết toán học với ứng dụng thực tế.</div>
+    <h1 class="learn-title">Cổng Tri thức Mật mã học (Cryptography Learning Hub)</h1>
+    <div class="learn-desc">Tài liệu học tập chuyên sâu hệ thống hóa toàn bộ 6 thuật toán mật mã: Nguyên lý toán học, cấu trúc vòng lặp, sơ đồ khối và ứng dụng thực tế trong an toàn thông tin.</div>
 </div>
 
-<!-- List of Learning Guides -->
-<div class="topics-list">
-    <a href="#rsa-detail" class="topic-card">
-        <div class="topic-info">
-            <h4>1. Thuật toán Mã hóa Bất đối xứng RSA & Bài toán Số nguyên lớn</h4>
-            <p>Khóa Public/Private, chu kỳ sinh khóa p & q, công thức $C = M^e \pmod n$ và tấn công giải thừa số[cite: 34].</p>
-        </div>
-        <div class="read-time">8 min read</div>
-    </a>
-
-    <a href="#aes-detail" class="topic-card">
-        <div class="topic-info">
-            <h4>2. Chuẩn mã hóa hiện đại AES (Advanced Encryption Standard)</h4>
-            <p>Cấu trúc ma trận State 4x4, các vòng biến đổi SubBytes, ShiftRows, MixColumns và chế độ AES-GCM[cite: 34].</p>
-        </div>
-        <div class="read-time">10 min read</div>
-    </a>
-
-    <a href="#hash-detail" class="topic-card">
-        <div class="topic-info">
-            <h4>3. Hàm Băm Mật mã (Hash Functions) & Chữ ký số</h4>
-            <p>Nguyên lý một chiều của SHA-256, MD5, tính toàn vẹn, chống chối bỏ và ứng dụng trong Chữ ký số[cite: 34, 35].</p>
-        </div>
-        <div class="read-time">6 min read</div>
-    </a>
-</div>
-
-<!-- Article 1: RSA Theory -->
-<div class="article-section" id="rsa-detail">
-    <div class="article-title"><i class="fa-solid fa-key text-indigo"></i> Chi tiết Lý thuyết: Thuật toán RSA</div>
-    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
-        RSA là thuật toán mã hóa khóa công khai đầu tiên thích hợp cho việc ký cũng như mã hóa[cite: 34]. Độ an toàn dựa trên độ khó của bài toán phân tích số nguyên lớn thành tích hai số nguyên tố[cite: 34].
-    </p>
-
-    <div class="spec-box">
-        <span class="comment">// Quy trình Toán học sinh khóa RSA (2048-bit)</span><br>
-        <span class="key">Input p, q:</span> <span class="val">2 số nguyên tố ngẫu nhiên rất lớn</span><br>
-        <span class="key">Modulus n:</span> <span class="val">n = p × q</span> <span class="comment">(Công khai độ dài 2048 bit)</span><br>
-        <span class="key">Euler Phi:</span> <span class="val">φ(n) = (p - 1) × (q - 1)</span><br>
-        <span class="key">Public Key e:</span> <span class="val">Thường chọn e = 65537</span> <span class="comment">(gcd(e, φ(n)) = 1)</span><br>
-        <span class="key">Private Key d:</span> <span class="val">d ≡ e⁻¹ (mod φ(n))</span> <span class="comment">(Nghịch đảo nhân mod)</span><br><br>
-        <span class="key">Encryption:</span> <span class="val">Ciphertext C = Mᵉ (mod n)[cite: 34]</span><br>
-        <span class="key">Decryption:</span> <span class="val">Plaintext  M = Cᵈ (mod n)</span>
+<!-- 6 Thẻ chọn Module lý thuyết -->
+<div class="modules-grid">
+    <div class="module-card active" onclick="showTheory(0)" id="card0">
+        <h4><i class="fa-solid fa-lock text-blue"></i> 1. Thuật toán DES</h4>
+        <p>Mã hóa khối đối xứng 64-bit, mạng Feistel 16 vòng và hệ thống hoán vị PC-1, PC-2.</p>
     </div>
-
-    <div class="callout-warning">
-        <h5><i class="fa-solid fa-triangle-exclamation me-1"></i> Lưu ý An toàn (Security Callout)</h5>
-        <p>Tuyệt đối không sử dụng độ dài khóa RSA nhỏ hơn 2048-bit trong các ứng dụng thực tế. Khóa RSA 512-bit và 768-bit đã bị phá vỡ hoàn toàn bằng thuật toán Siv-Number Field Sieve trên máy tính hiệu năng cao.</p>
+    <div class="module-card" onclick="showTheory(1)" id="card1">
+        <h4><i class="fa-solid fa-shield-halved text-indigo"></i> 2. Thuật toán AES</h4>
+        <p>Chuẩn mã hóa cao cấp, ma trận State 4x4, các phép biến đổi SubBytes, ShiftRows, MixColumns.</p>
+    </div>
+    <div class="module-card" onclick="showTheory(2)" id="card2">
+        <h4><i class="fa-solid fa-hashtag text-emerald"></i> 3. Hàm băm MD5</h4>
+        <p>Thuật toán băm 128-bit, 4 vòng hàm logic phi tuyến F, G, H, I và bài toán đụng độ.</p>
+    </div>
+    <div class="module-card" onclick="showTheory(3)" id="card3">
+        <h4><i class="fa-solid fa-fingerprint text-emerald"></i> 4. Hàm băm SHA-256</h4>
+        <p>Hàm băm an toàn 256-bit thuộc chuẩn FIPS, cấu trúc Merkle-Damgård và tính kháng đụng độ.</p>
+    </div>
+    <div class="module-card" onclick="showTheory(4)" id="card4">
+        <h4><i class="fa-solid fa-key text-amber"></i> 5. Thuật toán RSA</h4>
+        <p>Hệ mật mã khóa công khai bất đối xứng, bài toán phân tích số nguyên lớn và sinh cặp khóa p, q.</p>
+    </div>
+    <div class="module-card" onclick="showTheory(5)" id="card5">
+        <h4><i class="fa-solid fa-network-wired text-rose"></i> 6. Hệ mật mã ElGamal</h4>
+        <p>Mật mã dựa trên bài toán logarit rời rạc trên trường hữu hạn $Z_p^*$, mã hóa ngẫu nhiên k.</p>
     </div>
 </div>
 
-<!-- Article 2: AES Theory -->
-<div class="article-section" id="aes-detail">
-    <div class="article-title"><i class="fa-solid fa-lock text-emerald"></i> Chi tiết Lý thuyết: Chuẩn Mã hóa AES</div>
-    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
-        AES hoạt động trên mạng thay thế-hoán vị (Substitution-Permutation Network). Dữ liệu 128-bit được chia thành ma trận trạng thái $4 \times 4$ byte (State matrix)[cite: 34] và trải qua 10, 12, hoặc 14 vòng lặp tùy độ dài khóa.
-    </p>
+<!-- ================= NỘI DUNG CHI TIẾT HIỂN THỊ KHI BẤM ================= -->
 
-    <div class="spec-box">
-        <span class="comment">// 4 bước biến đổi cốt lõi trong mỗi vòng AES (Round)</span><br>
-        <span class="key">1. SubBytes:</span> <span class="val">Thay thế phi tuyến từng byte qua bảng S-Box.</span><br>
-        <span class="key">2. ShiftRows:</span> <span class="val">Dịch chuyển các hàng của ma trận State theo chu kỳ.</span><br>
-        <span class="key">3. MixColumns:</span> <span class="val">Nhân ma trận cột trên trường hữu hạn Galois GF(2⁸).</span><br>
-        <span class="key">4. AddRoundKey:</span> <span class="val">XOR trạng thái hiện tại với khóa con (Round Key).</span>
+<!-- 1. DES -->
+<div class="theory-content-box active" id="theoryBox0">
+    <div class="theory-title"><i class="fa-solid fa-lock text-blue"></i> Chi tiết Lý thuyết: Thuật toán DES (Data Encryption Standard)</div>
+    <div class="theory-text">
+        DES là thuật toán mã hóa khối đối xứng kinh điển do IBM phát triển và được chính phủ Mỹ chuẩn hóa năm 1977. Dù hiện nay đã lạc hậu do khóa quá ngắn (56-bit), DES là nền tảng đặt móng cho cấu trúc mạng Feistel trong mật mã hiện đại.
     </div>
+    <div class="theory-subtitle">Nguyên lý hoạt động & Kiến trúc Feistel:</div>
+    <ul class="theory-list">
+        <li><strong>Xử lý khối:</strong> Nhận đầu vào là khối dữ liệu 64-bit và khóa chính 56-bit (kèm 8-bit kiểm tra chẵn lẻ).</li>
+        <li><strong>Mạng Feistel (16 vòng):</strong> Chia khối 64-bit thành 2 nửa (Left 32-bit và Right 32-bit), trải qua 16 vòng biến đổi hoán vị và thay thế (S-box).</li>
+        <li><strong>Sinh khóa con (Key Schedule):</strong> Khóa 56-bit được rút gọn và dịch vòng qua các bảng hoán vị PC-1 và PC-2 để sinh ra 16 khóa con cho 16 vòng.</li>
+    </ul>
+    <div class="theory-subtitle">Ứng dụng thực tế:</div>
+    <div class="theory-text">Từng dùng trong hệ thống ngân hàng (3DES), ATM đời cũ. Hiện nay chủ yếu mang ý nghĩa giáo dục và nghiên cứu cấu trúc mã hóa khối.</div>
 </div>
 
-<!-- Article 3: Hash & Digital Signature Theory -->
-<div class="article-section" id="hash-detail">
-    <div class="article-title"><i class="fa-solid fa-file-signature text-amber"></i> Chi tiết Lý thuyết: Hàm Băm & Chữ ký số</div>
-    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;">
-        Hàm băm (như SHA-256) biến đổi một thông điệp bất kỳ thành chuỗi cố định theo nguyên lý một chiều[cite: 35]. Chữ ký số kết hợp hàm băm với khóa bí mật để đảm bảo tính toàn vẹn và chống chối bỏ[cite: 35].
-    </p>
-
-    <div class="spec-box">
-        <span class="comment">// Ba đặc tính cốt lõi của Chữ ký số</span><br>
-        <span class="key">1. Authenticity:</span> <span class="val">Khẳng định chính xác chủ nhân khóa bí mật đã ký[cite: 35].</span><br>
-        <span class="key">2. Integrity:</span> <span class="val">Phát hiện ngay lập tức nếu thông điệp bị thay đổi dù 1 byte[cite: 35].</span><br>
-        <span class="key">3. Non-repudiation:</span> <span class="val">Người ký không thể chối bỏ trách nhiệm về thông điệp[cite: 35].</span><br><br>
-        <span class="comment">// Quy trình ký và xác thực cơ bản</span><br>
-        <span class="key">Signing:</span> <span class="val">Sig = (SHA-256(msg))ᵈ mod n[cite: 36]</span><br>
-        <span class="key">Verification:</span> <span class="val">H = Sigᵉ mod n == SHA-256(msg)[cite: 36]</span>
+<!-- 2. AES -->
+<div class="theory-content-box" id="theoryBox1">
+    <div class="theory-title"><i class="fa-solid fa-shield-halved text-indigo"></i> Chi tiết Lý thuyết: Chuẩn Mã hóa AES (Advanced Encryption Standard)</div>
+    <div class="theory-text">
+        AES là chuẩn mã hóa đối xứng quốc đại diện hiện nay (thay thế DES từ 2001). Khác với DES dùng mạng Feistel, AES sử dụng cấu trúc <strong>Mạng Thay thế - Hoán vị (SPN - Substitution-Permutation Network)</strong> trên trường hữu hạn Galois.
     </div>
+    <div class="theory-subtitle">Cấu trúc và 4 bước biến đổi trong mỗi vòng:</div>
+    <ul class="theory-list">
+        <li><strong>Ma trận trạng thái (State Matrix):</strong> Khối 128-bit được xếp thành ma trận vuông $4 \times 4$ byte.</li>
+        <li><strong>SubBytes:</strong> Thay thế phi tuyến từng byte độc lập thông qua bảng S-box chuẩn để phá vỡ tính quy luật.</li>
+        <li><strong>ShiftRows:</strong> Dịch vòng các hàng của ma trận theo thứ tự hàng 0 dịch 0, hàng 1 dịch 1 byte, v.v.</li>
+        <li><strong>MixColumns:</strong> Nhân ma trận cột với một đa thức cố định trên trường Galois $GF(2^8)$ để khuếch tán dữ liệu.</li>
+        <li><strong>AddRoundKey:</strong> Phép toán XOR ma trận State hiện tại với khóa con của vòng tương ứng.</li>
+    </ul>
+    <div class="formula-box">
+        Số vòng lặp (Rounds) theo chiều dài khóa:<br>
+        - AES-128: 10 vòng | AES-192: 12 vòng | AES-256: 14 vòng
+    </div>
+    <div class="theory-subtitle">Ứng dụng thực tế:</div>
+    <div class="theory-text">Bảo mật wifi (WPA2/WPA3), mã hóa ổ cứng (BitLocker), giao thức HTTPS/TLS, ứng dụng nhắn tin bảo mật (Zalo, Telegram).</div>
 </div>
+
+<!-- 3. MD5 -->
+<div class="theory-content-box" id="theoryBox2">
+    <div class="theory-title"><i class="fa-solid fa-hashtag text-emerald"></i> Chi tiết Lý thuyết: Hàm băm MD5 (Message Digest 5)</div>
+    <div class="theory-text">
+        MD5 là hàm băm mật mã do Ronald Rivest thiết kế năm 1991, biến đổi một thông điệp có độ dài bất kỳ thành một chuỗi giá trị băm cố định <strong>128-bit (32 ký tự Hex)</strong>.
+    </div>
+    <div class="theory-subtitle">Nguyên lý hoạt động:</div>
+    <ul class="theory-list">
+        <li><strong>Đệm dữ liệu (Padding):</strong> Thêm bit sao cho chiều dài thông điệp chia hết cho 512-bit.</li>
+        <li><strong>4 Vòng logic (Rounds):</strong> Khối 512-bit trải qua 64 bước tính toán (chia làm 4 vòng, mỗi vòng 16 bước) sử dụng các hàm logic bitwise phức tạp $F, G, H, I$ kết hợp cộng modulo $2^{32}$.</li>
+    </ul>
+    <div class="theory-subtitle">Nhược điểm & Ứng dụng:</div>
+    <div class="theory-text">MD5 hiện nay <strong>đã bị bẻ khóa (dễ sinh đụng độ - collision)</strong>, nghĩa là hai tệp tin khác nhau có thể cho ra cùng một mã MD5. Do đó, MD5 chỉ còn dùng để kiểm tra tính toàn vẹn file tải về nhanh ở mức cơ bản (checksum), tuyệt đối không dùng trong bảo mật mật khẩu hay chữ ký số.</div>
+</div>
+
+<!-- 4. SHA-256 -->
+<div class="theory-content-box" id="theoryBox3">
+    <div class="theory-title"><i class="fa-solid fa-fingerprint text-emerald"></i> Chi tiết Lý thuyết: Hàm băm an toàn SHA-256</div>
+    <div class="theory-text">
+        SHA-256 thuộc họ hàm băm SHA-2 do Cơ quan An ninh Quốc gia Mỹ (NSA) phát triển. Nó tạo ra giá trị băm <strong>256-bit (64 ký tự Hex)</strong> và là tiêu chuẩn vàng trong các hệ thống bảo mật hiện đại nhờ tính chống đụng độ tuyệt đối.
+    </div>
+    <div class="theory-subtitle">Đặc tính toán học cốt lõi:</div>
+    <ul class="theory-list">
+        <li><strong>Tính một chiều (One-way):</strong> Từ mã băm đầu ra, hoàn toàn không thể tính ngược lại ra thông điệp gốc.</li>
+        <li><strong>Hiệu ứng tuyết lở (Avalanche Effect):</strong> Thay đổi dù chỉ 1 ký tự nhỏ ở đầu vào sẽ làm thay đổi khoảng 50% số bit ở chuỗi băm đầu ra.</li>
+        <li><strong>Cấu trúc Merkle-Damgård:</strong> Chia nhỏ thông điệp thành các khối 512-bit và xử lý tuần tự qua hàm nén an toàn.</li>
+    </ul>
+    <div class="theory-subtitle">Ứng dụng thực tế:</div>
+    <div class="theory-text">Công nghệ Blockchain (Bitcoin, Ethereum), ký số chứng chỉ SSL/TLS, lưu trữ mật khẩu mã hóa an toàn trong cơ sở dữ liệu.</div>
+</div>
+
+<!-- 5. RSA -->
+<div class="theory-content-box" id="theoryBox4">
+    <div class="theory-title"><i class="fa-solid fa-key text-amber"></i> Chi tiết Lý thuyết: Thuật toán RSA</div>
+    <div class="theory-text">
+        RSA là hệ mật mã khóa công khai (bất đối xứng) đầu tiên đặt nền mỏng cho thương mại điện tử an toàn, được phát minh bởi Rivest, Shamir và Adleman năm 1977.
+    </div>
+    <div class="theory-subtitle">Nguyên lý toán học & Sinh khóa:</div>
+    <ul class="theory-list">
+        <li>Chọn hai số nguyên tố rất lớn $p$ và $q$. Tính modulus $n = p \times q$.</li>
+        <li>Tính hàm Euler $\phi(n) = (p-1)(q-1)$.</li>
+        <li>Chọn khóa công khai $e$ sao cho $\text{gcd}(e, \phi(n)) = 1$.</li>
+        <li>Tính khóa bí mật $d$ là nghịch đảo modulo: $d \times e \equiv 1 \pmod{\phi(n)}$.</li>
+    </ul>
+    <div class="formula-box">
+        Công thức mã hóa và giải mã:<br>
+        - Bản mã: $C = M^e \pmod n$<br>
+        - Giải mã: $M = C^d \pmod n$
+    </div>
+    <div class="theory-subtitle">Ứng dụng thực tế:</div>
+    <div class="theory-text">Trao đổi khóa phiên an toàn trong giao thức HTTPS, cơ chế Chữ ký số chống chối bỏ, và mô hình trò chuyện bảo mật hỗn hợp (Hybrid Encryption).</div>
+</div>
+
+<!-- 6. ElGamal -->
+<div class="theory-content-box" id="theoryBox5">
+    <div class="theory-title"><i class="fa-solid fa-network-wired text-rose"></i> Chi tiết Lý thuyết: Hệ mật mã ElGamal</div>
+    <div class="theory-text">
+        Hệ mật mã ElGamal do Taher Elgamal đề xuất năm 1985, dựa trên độ khó của <strong>bài toán Logarit rời rạc (Discrete Logarithm Problem)</strong> trên trường hữu hạn $Z_p^*$.
+    </div>
+    <div class="theory-subtitle">Nguyên lý hoạt động:</div>
+    <ul class="theory-list">
+        <li><strong>Thiết lập tham số:</strong> Chọn số nguyên tố $p$, phần tử sinh $g$, và khóa bí mật $x$. Khóa công khai là $y = g^x \pmod p$.</li>
+        <li><strong>Mã hóa ngẫu nhiên (Probabilistic Encryption):</strong> Khi mã hóa một thông điệp $M$, hệ thống tự động sinh một số ngẫu nhiên $k$ mới cho mỗi lần nhắn tin. Do đó, cùng một thông điệp gửi đi nhiều lần sẽ sinh ra các bản mã $(c_1, c_2)$ khác nhau hoàn toàn, tăng cường chống nghe lén.</li>
+    </ul>
+    <div class="formula-box">
+        Công thức mã hóa và giải mã:<br>
+        - Sinh cặp bản mã: $c_1 = g^k \pmod p$ và $c_2 = (M \times y^k) \pmod p$<br>
+        - Giải mã khôi phục: $M = c_2 \times (c_1^x)^{-1} \pmod p$
+    </div>
+    <div class="theory-subtitle">Ứng dụng thực tế:</div>
+    <div class="theory-text">Nền tảng của thuật toán Chữ ký số DSA (Digital Signature Algorithm) và các giao thức bảo mật mật mã tiên tiến.</div>
+</div>
+
+<script>
+function showTheory(index) {
+    let boxes = document.querySelectorAll('.theory-content-box');
+    let cards = document.querySelectorAll('.module-card');
+
+    boxes.forEach((box, idx) => {
+        if(idx === index) {
+            box.classList.add('active');
+        } else {
+            box.classList.remove('active');
+        }
+    });
+
+    cards.forEach((card, idx) => {
+        if(idx === index) {
+            card.classList.add('active');
+        } else {
+            card.classList.remove('active');
+        }
+    });
+}
+</script>
 {% endblock %}
