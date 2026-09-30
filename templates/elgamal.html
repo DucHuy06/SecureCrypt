@@ -35,15 +35,15 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 67):</label>
-            <input type="text" id="elgP" value="" placeholder="Nhập p...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 307):</label>
+            <input type="text" id="elgP" value="" placeholder="Nhập p lớn hơn 255...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g (Ví dụ: 45):</label>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g (Ví dụ: 5):</label>
             <input type="text" id="elgG" value="" placeholder="Nhập g...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x (Ví dụ: 13):</label>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x (Ví dụ: 6):</label>
             <input type="text" id="elgX" value="" placeholder="Nhập x (0 < x < p)...">
         </div>
     </div>
@@ -181,11 +181,13 @@ function genElGamalKey() {
     lastG = BigInt(gStr);
     let x = BigInt(xStr);
 
+    if (lastP <= 255n) {
+        alert('Cảnh báo: Số nguyên tố p quá nhỏ (phải lớn hơn 255 để chứa được mã ASCII của các ký tự chữ cái)!');
+        return;
+    }
+
     lastY = modPow(lastG, x, lastP);
-
     document.getElementById('elgPublic').value = `p = ${lastP}, g = ${lastG}, y = ${lastY}`;
-
-    // KHÔNG tự động điền vào phần 3 nữa, để người dùng tự nhập thủ công
 
     document.getElementById('elgKeyVisualStep').style.display = 'block';
     document.getElementById('elgKeyTraceText').innerHTML = `
@@ -225,6 +227,14 @@ function runElGamalEncrypt() {
     let text = document.getElementById('elgMsg').value.trim();
     if(!text) { alert('Vui lòng nhập văn bản cần mã hóa!'); return; }
     if(lastP === 0n) { alert('Vui lòng thiết lập khóa ở Bước 1 trước khi mã hóa!'); return; }
+
+    for(let i=0; i<text.length; i++) {
+        let asciiVal = BigInt(text.charCodeAt(i));
+        if (asciiVal >= lastP) {
+            alert(`Lỗi: Ký tự '${text[i]}' có mã ASCII là ${asciiVal}, lớn hơn hoặc bằng số nguyên tố p (${lastP}). Trong ElGamal, p bắt buộc phải lớn hơn giá trị mã hóa để không bị mất dữ liệu!`);
+            return;
+        }
+    }
 
     let k = 3n; 
     let cipherPairs = [];
