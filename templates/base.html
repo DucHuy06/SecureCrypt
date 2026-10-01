@@ -80,7 +80,6 @@
         }
         .nav-tab-item:hover { color: var(--text-main); }
         .nav-tab-item.active { background: var(--accent-indigo); color: #ffffff; }
-        .nav-tab-item.ai-tab.active { background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%); color: #ffffff; }
 
         .right-header-placeholder { min-width: 80px; }
         .app-container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
@@ -188,9 +187,6 @@
             </a>
             <a href="/demo" class="nav-tab-item {% if request.path == '/demo' or request.path == '/demos' %}active{% endif %}">
                 <i class="fa-solid fa-flask"></i> Demos
-            </a>
-            <a href="/ai-chat" class="nav-tab-item ai-tab {% if request.path == '/ai-chat' %}active{% endif %}">
-                <i class="fa-solid fa-robot"></i> Crypto AI
             </a>
             <a href="/about" class="nav-tab-item {% if request.path == '/about' %}active{% endif %}">
                 <i class="fa-solid fa-graduation-cap"></i> Learn
