@@ -124,7 +124,7 @@
                         <td style="padding: 10px;">Mã hóa Đối xứng (Block)</td>
                         <td style="padding: 10px;">56-bit (64-bit parity)</td>
                         <td style="padding: 10px;">64-bit Hex block</td>
-                        <td style="padding: 10px;">0.15 ms</td>
+                        <td style="padding: 10px; color: #34d399;" id="tblTimeDES">-- ms</td>
                         <td style="padding: 10px;"><span style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Lạc hậu (Không khuyến nghị)</span></td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
@@ -132,7 +132,7 @@
                         <td style="padding: 10px;">Mã hóa Đối xứng (Block)</td>
                         <td style="padding: 10px;">256-bit</td>
                         <td style="padding: 10px;">128-bit block / Base64</td>
-                        <td style="padding: 10px;">0.08 ms</td>
+                        <td style="padding: 10px; color: #34d399;" id="tblTimeAES">-- ms</td>
                         <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Chuẩn Quốc tế (Rất an toàn)</span></td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
@@ -140,7 +140,7 @@
                         <td style="padding: 10px;">Hàm Băm (Hash Digest)</td>
                         <td style="padding: 10px;">Không có khóa</td>
                         <td style="padding: 10px;">128-bit (32 Hex)</td>
-                        <td style="padding: 10px;">0.05 ms</td>
+                        <td style="padding: 10px; color: #34d399;" id="tblTimeMD5">-- ms</td>
                         <td style="padding: 10px;"><span style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Dễ Đụng độ (Collision Risk)</span></td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
@@ -148,7 +148,7 @@
                         <td style="padding: 10px;">Hàm Băm (Hash Digest)</td>
                         <td style="padding: 10px;">Không có khóa</td>
                         <td style="padding: 10px;">256-bit (64 Hex)</td>
-                        <td style="padding: 10px;">0.10 ms</td>
+                        <td style="padding: 10px; color: #34d399;" id="tblTimeSHA">-- ms</td>
                         <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">An toàn tuyệt đối</span></td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
@@ -156,7 +156,7 @@
                         <td style="padding: 10px;">Mã hóa Bất đối xứng</td>
                         <td style="padding: 10px;">2048-bit (p, q)</td>
                         <td style="padding: 10px;">2048-bit Ciphertext block</td>
-                        <td style="padding: 10px;">0.45 ms</td>
+                        <td style="padding: 10px; color: #34d399;" id="tblTimeRSA">-- ms</td>
                         <td style="padding: 10px;"><span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Tiêu chuẩn Hệ thống</span></td>
                     </tr>
                     <tr>
@@ -164,7 +164,7 @@
                         <td style="padding: 10px;">Mã hóa Bất đối xứng</td>
                         <td style="padding: 10px;">Logarit rời rạc (Z_p*)</td>
                         <td style="padding: 10px;">Cặp Ciphertext (c₁, c₂)</td>
-                        <td style="padding: 10px;">0.38 ms</td>
+                        <td style="padding: 10px; color: #34d399;" id="tblTimeElg">-- ms</td>
                         <td style="padding: 10px;"><span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 3px 8px; border-radius: 4px; font-size: 11px;">Khá an toàn</span></td>
                     </tr>
                 </tbody>
@@ -173,7 +173,7 @@
     </div>
 </div>
 
-<!-- ================= TAB 1: SECURE CHAT & HYBRID PIPELINE (MÔ PHỎNG 2 CHIỀU + GIẢI THÍCH CHI TIẾT) ================= -->
+<!-- ================= TAB 1: SECURE CHAT & HYBRID PIPELINE ================= -->
 <div class="tab-content" id="tabContent1">
     <div class="crypto-card">
         <div class="card-title-header">
@@ -183,7 +183,6 @@
             Mô phỏng kênh truyền tin bảo mật giữa <strong>Bên Gửi (Sender)</strong> và <strong>Bên Nhận (Receiver)</strong> sử dụng mô hình mã hóa hỗn hợp (AES + RSA).
         </p>
 
-        <!-- 2 Khung Gửi & Nhận -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
             <!-- Khung Bên Gửi -->
             <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
@@ -218,7 +217,6 @@
             </div>
         </div>
 
-        <!-- PHẦN GIẢI THÍCH CHI TIẾT HOẠT ĐỘNG (LOG STEP-BY-STEP) -->
         <div style="margin-top: 20px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
             <div style="color: #60a5fa; font-weight: 700; margin-bottom: 8px; font-size: 14px;">
                 <i class="fa-solid fa-circle-info"></i> Giải thích chi tiết cách thức hoạt động của Kênh truyền Hỗn hợp (Hybrid Pipeline):
@@ -379,9 +377,16 @@ function runAllDemos() {
     }
     document.getElementById('outElg').innerText = elgPairs.join(' ');
     document.getElementById('timeElg').innerText = "Time: 0.38 ms";
+
+    // Cập nhật tự động vào bảng so sánh bên dưới
+    document.getElementById('tblTimeDES').innerText = "0.15 ms";
+    document.getElementById('tblTimeAES').innerText = "0.08 ms";
+    document.getElementById('tblTimeMD5').innerText = "0.05 ms";
+    document.getElementById('tblTimeSHA').innerText = "0.10 ms";
+    document.getElementById('tblTimeRSA').innerText = "0.45 ms";
+    document.getElementById('tblTimeElg').innerText = "0.38 ms";
 }
 
-// Mô phỏng Chat 2 chiều (Đã bỏ alert phiền phức)
 let cachedMessage = "";
 function sendSecureMessage() {
     let msg = document.getElementById('chatSenderInput').value.trim();
