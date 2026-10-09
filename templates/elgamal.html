@@ -71,11 +71,18 @@
 <!-- KHỐI 2: MÃ HÓA ELGAMAL -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa số nguyên (M ➔ C)
+        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa số nguyên (M ➔ C) & Tùy chọn Khóa k
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M (Nhập số nguyên nhỏ hơn p, hoặc dãy số cách nhau bằng dấu cách):</label>
-    <textarea id="elgMsg" rows="2" placeholder="Ví dụ: 7 hoặc 12 15 8..."></textarea>
+    <div style="margin-bottom: 12px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M (Nhập số nguyên nhỏ hơn p, hoặc dãy số cách nhau bằng dấu cách):</label>
+        <textarea id="elgMsg" rows="2" placeholder="Ví dụ: 7 hoặc 12 15 8..."></textarea>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa ngẫu nhiên k (Tùy chọn - nếu để trống sẽ tự sinh ngẫu nhiên):</label>
+        <input type="text" id="elgK" value="" placeholder="Nhập k (ví dụ: 29)...">
+    </div>
 
     <div style="margin-top: 10px;">
         <button type="button" onclick="runElGamalEncrypt()" style="background: var(--accent-indigo);">
@@ -207,6 +214,7 @@ function copyInput(id) {
 
 function clearElgEncrypt() {
     document.getElementById('elgMsg').value = '';
+    document.getElementById('elgK').value = '';
     document.getElementById('elgOutput').value = '';
     document.getElementById('elgVisualStep').style.display = 'none';
 }
@@ -221,10 +229,11 @@ function clearElgDecrypt() {
 
 function runElGamalEncrypt() {
     let text = document.getElementById('elgMsg').value.trim();
+    let kStr = document.getElementById('elgK').value.trim();
+
     if(!text) { alert('Vui lòng nhập thông điệp M cần mã hóa!'); return; }
     if(lastP === 0n) { alert('Vui lòng thiết lập khóa ở Bước 1 trước khi mã hóa!'); return; }
 
-    let k = 3n; 
     let cipherPairs = [];
     let mathSteps = [];
 
@@ -236,17 +245,19 @@ function runElGamalEncrypt() {
             return;
         }
 
+        // Nếu người dùng nhập k, dùng k đó; nếu để trống, tự sinh ngẫu nhiên
+        let k = kStr ? BigInt(kStr) : (BigInt(Math.floor(Math.random() * Number(lastP - 3n))) + 2n);
+
         let c1 = modPow(lastG, k, lastP);
         let yk = modPow(lastY, k, lastP);
         let c2 = (m * yk) % lastP;
 
         cipherPairs.push(`(${c1},${c2})`);
-        mathSteps.push(`Thông điệp M = ${m} ➔ Chọn số ngẫu nhiên k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}³ mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
+        mathSteps.push(`Thông điệp M = ${m} ➔ Chọn số ngẫu nhiên k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}^${k} mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
     });
 
     let ciphertextStr = cipherPairs.join(' ');
     document.getElementById('elgOutput').value = ciphertextStr;
-    // Tuyệt đối không tự điền tự động sang bước 3 để tránh lỗi người dùng phàn nàn
 
     document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgTraceText').innerHTML = `
