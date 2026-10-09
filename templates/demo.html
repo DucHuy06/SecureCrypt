@@ -173,7 +173,7 @@
     </div>
 </div>
 
-<!-- ================= TAB 1: SECURE CHAT & ATTACK SANDBOX (TƯƠNG TÁC TỪNG BƯỚC THỰC TẾ) ================= -->
+<!-- ================= TAB 1: SECURE CHAT & ATTACK SANDBOX ================= -->
 <div class="tab-content" id="tabContent1">
     <div class="crypto-card">
         <div class="card-title-header">
@@ -318,40 +318,62 @@
     </div>
 </div>
 
-<!-- ================= TAB 3: DIGITAL SIGNATURE WORKFLOW ================= -->
+<!-- ================= TAB 3: DIGITAL SIGNATURE WORKFLOW (THỰC THI TOÁN HỌC RSA THỰC TẾ) ================= -->
 <div class="tab-content" id="tabContent3">
     <div class="crypto-card">
         <div class="card-title-header">
-            <i class="fa-solid fa-file-signature text-indigo"></i> Quy trình Ký số & Xác thực Thông điệp
+            <i class="fa-solid fa-file-signature text-indigo"></i> Mô phỏng Ký số & Xác thực RSA (Thực thi Toán học Thực tế)
         </div>
         <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
-            Sử dụng hàm băm kết hợp Khóa bí mật (Private Key) để tạo chữ ký chống chối bỏ, và dùng Khóa công khai (Public Key) để xác thực tính toàn vẹn.
+            Thực hiện ký số và xác thực dựa trên nền tảng toán học bất đối xứng RSA (Số học modulo lớn), loại bỏ hoàn toàn các chuỗi giả lập tĩnh để đảm bảo tính học thuật khi bảo vệ đồ án.
         </p>
-        <div style="margin-top: 16px;">
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">Nội dung văn bản cần ký số:</label>
-            <textarea id="sigInput" rows="2" placeholder="Nhập nội dung văn bản ký số..."></textarea>
-            <button type="button" onclick="runDigitalSignature()" style="margin-top: 10px; background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer;">
-                <i class="fa-solid fa-signature"></i> Ký số & Xác thực
+
+        <!-- 1. THIẾT LẬP KHÓA -->
+        <div style="margin-top: 16px; background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+            <div style="font-weight: 700; color: #60a5fa; margin-bottom: 10px; font-size: 13px;">
+                <i class="fa-solid fa-key"></i> Bước 1: Thiết lập tham số khóa RSA (p, q, e)
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label style="font-size: 11px; color: #cbd5e1; display: block; margin-bottom: 3px;">Số nguyên tố p:</label>
+                    <input type="text" id="sigP" value="61" placeholder="Nhập p...">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #cbd5e1; display: block; margin-bottom: 3px;">Số nguyên tố q:</label>
+                    <input type="text" id="sigQ" value="53" placeholder="Nhập q...">
+                </div>
+                <div>
+                    <label style="font-size: 11px; color: #cbd5e1; display: block; margin-bottom: 3px;">Khóa công khai e:</label>
+                    <input type="text" id="sigE" value="17" placeholder="Nhập e...">
+                </div>
+            </div>
+            <button type="button" onclick="computeSigKeys()" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                <i class="fa-solid fa-gears"></i> Sinh Khóa & Tính d (Private Key Exponent)
             </button>
+            <div id="sigKeyInfo" style="margin-top: 10px; font-family: monospace; font-size: 12px; color: #34d399; display: none;"></div>
         </div>
 
-        <div id="sigResultBox" style="margin-top: 20px; background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #334155; display: none;">
-            <div style="font-weight: 700; color: #60a5fa; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
-                <i class="fa-solid fa-key"></i> Kết quả Chữ ký số & Xác thực
+        <!-- 2. TẠO CHỮ KÝ & XÁC THỰC -->
+        <div style="margin-top: 16px; background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+            <div style="font-weight: 700; color: #34d399; margin-bottom: 10px; font-size: 13px;">
+                <i class="fa-solid fa-signature"></i> Bước 2: Ký số thông điệp & Kiểm tra Xác thực
             </div>
-            <div id="sigContentOutput" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.8;"></div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 11px; color: #cbd5e1; display: block; margin-bottom: 3px;">Thông điệp M (Số nguyên nhỏ hơn n):</label>
+                <input type="text" id="sigMessage" value="65" placeholder="Nhập thông điệp số...">
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" onclick="executeRealSignature()" style="background: var(--accent-emerald); color: #000; font-weight: 700; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                    <i class="fa-solid fa-pen-nib"></i> Tiến hành Ký số ($\sigma = M^d \pmod n$)
+                </button>
+                <button type="button" onclick="executeVerifySignature()" style="background: #334155; color: #fff; font-weight: 600; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                    <i class="fa-solid fa-check-double"></i> Xác thực Chữ ký ($M' = \sigma^e \pmod n$)
+                </button>
+            </div>
         </div>
 
-        <div id="sigExplainBox" style="margin-top: 16px; background: #131c2e; padding: 18px; border-radius: 12px; border: 1px dashed var(--accent-indigo); display: none;">
-            <div style="font-weight: 700; color: #34d399; margin-bottom: 10px; font-size: 14px;">
-                <i class="fa-solid fa-graduation-cap"></i> Giải thích chi tiết học thuật về Quy trình Ký số:
-            </div>
-            <div style="font-size: 13px; color: #cbd5e1; line-height: 1.8;">
-                1. <strong>Tạo giá trị băm (Hashing):</strong> Văn bản gốc được đưa qua hàm băm SHA-256.<br>
-                2. <strong>Ký số (Signing):</strong> Người gửi dùng Private Key mã hóa mã băm để tạo chữ ký chống chối bỏ.<br>
-                3. <strong>Xác thực (Verification):</strong> Bên nhận dùng Public Key xác thực tính toàn vẹn tài liệu.
-            </div>
-        </div>
+        <!-- 3. KẾT QUẢ VÀ TRACE CHI TIẾT -->
+        <div id="sigTraceBox" style="margin-top: 16px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; display: none; font-family: monospace; font-size: 12.5px; color: #cbd5e1; line-height: 1.7;"></div>
     </div>
 </div>
 
@@ -359,25 +381,10 @@
 function switchTab(index) {
     let contents = document.querySelectorAll('.tab-content');
     let buttons = document.querySelectorAll('.tab-btn');
-
-    contents.forEach((c, idx) => {
-        if(idx === index) {
-            c.classList.add('active');
-        } else {
-            c.classList.remove('active');
-        }
-    });
-
+    contents.forEach((c, idx) => c.classList.toggle('active', idx === index));
     buttons.forEach((b, idx) => {
-        if(idx === index) {
-            b.style.background = 'var(--accent-indigo)';
-            b.style.color = '#fff';
-            b.style.borderColor = 'transparent';
-        } else {
-            b.style.background = '#1e293b';
-            b.style.color = '#94a3b8';
-            b.style.borderColor = '#334155';
-        }
+        b.style.background = idx === index ? 'var(--accent-indigo)' : '#1e293b';
+        b.style.color = idx === index ? '#fff' : '#94a3b8';
     });
 }
 
@@ -390,6 +397,23 @@ function modPow(base, exp, mod) {
         exp /= 2n;
     }
     return res;
+}
+
+function BaseModInverse(a, m) {
+    let m0 = m;
+    let y = 0n, x = 1n;
+    if (m === 1n) return 0n;
+    while (a > 1n) {
+        let q = a / m;
+        let t = m;
+        m = a % m;
+        a = t;
+        t = y;
+        y = x - q * y;
+        x = t;
+    }
+    if (x < 0n) x += m0;
+    return x;
 }
 
 function simpleHash(str, length) {
@@ -593,23 +617,64 @@ function runAvalancheTest() {
     document.getElementById('badgeBitChange').innerText = `${shaDiff} BIT THAY ĐỔI`;
 }
 
-function runDigitalSignature() {
-    let msg = document.getElementById('sigInput').value.trim();
-    if(!msg) { alert('Vui lòng nhập nội dung văn bản ký số!'); return; }
-    
-    let sig = simpleHash(msg, 32).toUpperCase();
-    
-    document.getElementById('sigResultBox').style.display = 'block';
-    document.getElementById('sigExplainBox').style.display = 'block';
+let rsaN = 0n, rsaPhi = 0n, rsaD = 0n, rsaSig = 0n;
 
-    let contentOut = document.getElementById('sigContentOutput');
-    contentOut.innerHTML = `
-        <div style="margin-bottom: 6px;">• <strong>Nội dung gốc:</strong> "${msg}"</div>
-        <div style="margin-bottom: 6px;">• <strong>Mã băm thông điệp (SHA-256 Digest):</strong> <span style="color: #34d399;">${sig}</span></div>
-        <div style="margin-bottom: 6px;">• <strong>Chữ ký số tạo bởi Private Key:</strong> <span style="color: #60a5fa;">SIG_${sig}</span></div>
-        <div style="margin-top: 10px; color: #34d399; font-weight: bold; border-top: 1px dashed #334155; padding-top: 8px;">
-            ✓ Xác thực chữ ký bằng Public Key thành công: Chữ ký Hợp lệ, toàn vẹn dữ liệu và chống chối bỏ hoàn toàn!
-        </div>
+function computeSigKeys() {
+    let p = BigInt(document.getElementById('sigP').value);
+    let q = BigInt(document.getElementById('sigQ').value);
+    let e = BigInt(document.getElementById('sigE').value);
+
+    rsaN = p * q;
+    rsaPhi = (p - 1n) * (q - 1n);
+    rsaD = BaseModInverse(e, rsaPhi);
+
+    let infoBox = document.getElementById('sigKeyInfo');
+    infoBox.style.display = 'block';
+    infoBox.innerHTML = `
+        • Modulus n = p × q = ${p} × ${q} = <strong>${rsaN}</strong><br>
+        • Phi(n) = (p-1)(q-1) = <strong>${rsaPhi}</strong><br>
+        • Khóa công khai (Public Key): (n = ${rsaN}, e = ${e})<br>
+        • Khóa bí mật tính được (Private Key d = e⁻¹ mod Φ(n)) = <strong style="color:#f43f5e;">${rsaD}</strong>
+    `;
+}
+
+function executeRealSignature() {
+    if(rsaN === 0n) { computeSigKeys(); }
+    let m = BigInt(document.getElementById('sigMessage').value);
+
+    if (m >= rsaN) {
+        alert('Thông điệp M phải nhỏ hơn modulus n (' + rsaN + ')!');
+        return;
+    }
+
+    rsaSig = modPow(m, rsaD, rsaN);
+
+    let trace = document.getElementById('sigTraceBox');
+    trace.style.display = 'block';
+    trace.innerHTML = `
+        <div style="color: #60a5fa; font-weight: bold; margin-bottom: 6px;">[QUÁ TRÌNH TẠO CHỮ KÝ SỐ RSA]</div>
+        • Thông điệp gốc M = ${m}<br>
+        • Tính chữ ký số $\\sigma = M^d \\pmod n = ${m}^{${rsaD}} \\pmod{${rsaN}} = <strong style="color:#34d399">${rsaSig}</strong><br>
+        <span style="color:#34d399; font-weight:bold;">➔ CHỮ KÝ SỐ THU ĐƯỢC: $\\sigma = ${rsaSig}$</span>
+    `;
+}
+
+function executeVerifySignature() {
+    if(rsaSig === 0n) { alert('Chưa có chữ ký số nào được tạo!'); return; }
+    let mOriginal = BigInt(document.getElementById('sigMessage').value);
+    let e = BigInt(document.getElementById('sigE').value);
+
+    let mRecovered = modPow(rsaSig, e, rsaN);
+    let isValid = (mRecovered === mOriginal);
+
+    let trace = document.getElementById('sigTraceBox');
+    trace.style.display = 'block';
+    trace.innerHTML += `
+        <br><br>
+        <div style="color: #f43f5e; font-weight: bold; margin-bottom: 6px;">[QUÁ TRÌNH XÁC THỰC CHỮ KÝ SỐ]</div>
+        • Nhận chữ ký $\\sigma = ${rsaSig}$ và Khóa công khai (e = ${e}, n = ${rsaN})<br>
+        • Tính khôi phục thông điệp $M' = \\sigma^e \\pmod n = ${rsaSig}^{${e}} \\pmod{${rsaN}} = <strong style="color:#60a5fa">${mRecovered}</strong><br>
+        • So sánh: $M' (${mRecovered}) == M (${mOriginal})$ ➔ <strong style="${isValid ? 'color:#34d399' : 'color:#f87171'}">${isValid ? '✓ XÁC THỰC THÀNH CÔNG: Chữ ký hợp lệ, chống chối bỏ hoàn toàn!' : '✗ XÁC THỰC THẤT BẠI!'}</strong>
     `;
 }
 </script>
