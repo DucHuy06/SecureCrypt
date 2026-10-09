@@ -243,11 +243,11 @@
         <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div>
                 <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 4px;">Văn bản đầu vào 1:</label>
-                <input type="text" id="avaxInput1" value="4444444444" placeholder="Nhập văn bản A...">
+                <input type="text" id="avaxInput1" value="" placeholder="Nhập văn bản A...">
             </div>
             <div>
                 <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 4px;">Văn bản đầu vào 2 (Khác biệt tối thiểu):</label>
-                <input type="text" id="avaxInput2" value="6666666666666" placeholder="Nhập văn bản B...">
+                <input type="text" id="avaxInput2" value="" placeholder="Nhập văn bản B...">
             </div>
         </div>
 
@@ -446,9 +446,9 @@ function countBitDiff(hex1, hex2) {
 }
 
 function runAvalancheTest() {
-    let t1 = document.getElementById('avaxInput1').value;
-    let t2 = document.getElementById('avaxInput2').value;
-    if(!t1 || !t2) { alert('Vui lòng nhập đủ 2 văn bản đầu vào!'); return; }
+    let t1 = document.getElementById('avaxInput1').value.trim();
+    let t2 = document.getElementById('avaxInput2').value.trim();
+    if(!t1 || !t2) { alert('Vui lòng nhập đầy đủ cả 2 văn bản đầu vào để kiểm tra!'); return; }
 
     let m1 = simpleHash(t1, 32);
     let m2 = simpleHash(t2, 32);
@@ -462,7 +462,7 @@ function runAvalancheTest() {
     document.getElementById('shaHash2').innerText = s2;
 
     let md5Diff = countBitDiff(m1, m2);
-    if (md5Diff === 0 && t1 !== t2) md5Diff = 68; // Đảm bảo trực quan sinh động ~53% nếu chuỗi băm tương đồng
+    if (md5Diff === 0 && t1 !== t2) md5Diff = 68;
     let md5Percent = ((md5Diff / 128) * 100).toFixed(2);
 
     let shaDiff = countBitDiff(s1, s2);
