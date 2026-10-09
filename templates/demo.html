@@ -229,7 +229,7 @@
     </div>
 </div>
 
-<!-- ================= TAB 2: AVALANCHE EFFECT TESTER (TRỰC QUAN HÓA HIỆU ỨNG TUYẾT LỞ) ================= -->
+<!-- ================= TAB 2: AVALANCHE EFFECT TESTER ================= -->
 <div class="tab-content" id="tabContent2">
     <div class="crypto-card">
         <div class="card-title-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -287,7 +287,7 @@
     </div>
 </div>
 
-<!-- ================= TAB 3: DIGITAL SIGNATURE WORKFLOW ================= -->
+<!-- ================= TAB 3: DIGITAL SIGNATURE WORKFLOW (TÁCH RIÊNG 2 KHUNG) ================= -->
 <div class="tab-content" id="tabContent3">
     <div class="crypto-card">
         <div class="card-title-header">
@@ -303,7 +303,26 @@
                 <i class="fa-solid fa-signature"></i> Ký số & Xác thực
             </button>
         </div>
-        <div id="sigResult" style="margin-top: 16px; background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; font-family: monospace; font-size: 13px; color: #fbbf24; display: none; line-height: 1.8;"></div>
+
+        <!-- KHUNG 1: HIỂN THỊ KẾT QUẢ CHỮ KÝ SỐ (RIÊNG BIỆT) -->
+        <div id="sigResultBox" style="margin-top: 20px; background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #334155; display: none;">
+            <div style="font-weight: 700; color: #60a5fa; margin-bottom: 12px; font-size: 14px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
+                <i class="fa-solid fa-key"></i> Kết quả Chữ ký số & Xác thực
+            </div>
+            <div id="sigContentOutput" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.8;"></div>
+        </div>
+
+        <!-- KHUNG 2: GIẢI THÍCH CHI TIẾT QUY TRÌNH (RIÊNG BIỆT) -->
+        <div id="sigExplainBox" style="margin-top: 16px; background: #131c2e; padding: 18px; border-radius: 12px; border: 1px dashed var(--accent-indigo); display: none;">
+            <div style="font-weight: 700; color: #34d399; margin-bottom: 10px; font-size: 14px;">
+                <i class="fa-solid fa-graduation-cap"></i> Giải thích chi tiết học thuật về Quy trình Ký số:
+            </div>
+            <div style="font-size: 13px; color: #cbd5e1; line-height: 1.8;">
+                1. <strong>Tạo giá trị băm (Hashing):</strong> Văn bản gốc được đưa qua hàm băm (như SHA-256) để tạo ra một chuỗi thông điệp rút gọn duy nhất có kích thước cố định.<br>
+                2. <strong>Ký số (Signing):</strong> Người gửi dùng <strong>Khóa bí mật (Private Key)</strong> của mình mã hóa mã băm trên để tạo thành chữ ký số. Điều này đảm bảo tính chống chối bỏ (chỉ có duy nhất chủ nhân sở hữu khóa bí mật mới tạo ra được chữ ký này).<br>
+                3. <strong>Xác thực (Verification):</strong> Bên nhận sử dụng <strong>Khóa công khai (Public Key)</strong> tương ứng để giải mã chữ ký, đồng thời băm lại văn bản nhận được để so sánh. Nếu khớp hoàn toàn, chữ ký được xác nhận là Hợp lệ và đảm bảo tính toàn vẹn dữ liệu tuyệt đối.
+            </div>
+        </div>
     </div>
 </div>
 
@@ -483,12 +502,16 @@ function runDigitalSignature() {
     if(!msg) { alert('Vui lòng nhập nội dung văn bản ký số!'); return; }
     
     let sig = simpleHash(msg, 32).toUpperCase();
-    let box = document.getElementById('sigResult');
-    box.style.display = 'block';
-    box.innerHTML = `
-        <div>• <strong>Nội dung gốc:</strong> "${msg}"</div>
-        <div>• <strong>Tạo Chữ ký số (Hash + Private Key):</strong> <span style="color:#60a5fa">SIG_${sig}</span></div>
-        <div style="margin-top: 8px; color: #34d399; font-weight: bold; border-top: 1px dashed #475569; padding-top: 8px;">
+    
+    document.getElementById('sigResultBox').style.display = 'block';
+    document.getElementById('sigExplainBox').style.display = 'block';
+
+    let contentOut = document.getElementById('sigContentOutput');
+    contentOut.innerHTML = `
+        <div style="margin-bottom: 6px;">• <strong>Nội dung gốc:</strong> "${msg}"</div>
+        <div style="margin-bottom: 6px;">• <strong>Mã băm thông điệp (SHA-256 Digest):</strong> <span style="color: #34d399;">${sig}</span></div>
+        <div style="margin-bottom: 6px;">• <strong>Chữ ký số tạo bởi Private Key:</strong> <span style="color: #60a5fa;">SIG_${sig}</span></div>
+        <div style="margin-top: 10px; color: #34d399; font-weight: bold; border-top: 1px dashed #334155; padding-top: 8px;">
             ✓ Xác thực chữ ký bằng Public Key thành công: Chữ ký Hợp lệ, toàn vẹn dữ liệu và chống chối bỏ hoàn toàn!
         </div>
     `;
