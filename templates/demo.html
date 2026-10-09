@@ -34,7 +34,7 @@
         <i class="fa-solid fa-bolt me-1"></i> Run All Algorithms
     </button>
     <button type="button" class="btn tab-btn" onclick="switchTab(1)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-users me-1"></i> Secure Chat & Hybrid Pipeline
+        <i class="fa-solid fa-users me-1"></i> Secure Chat & Attack Simulation
     </button>
     <button type="button" class="btn tab-btn" onclick="switchTab(2)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 16px; border-radius: 8px; cursor: pointer;">
         <i class="fa-solid fa-snowflake me-1"></i> Avalanche Effect Tester
@@ -173,75 +173,77 @@
     </div>
 </div>
 
-<!-- ================= TAB 1: SECURE CHAT & HYBRID PIPELINE (NÂNG CẤP XỊN SÒ) ================= -->
+<!-- ================= TAB 1: SECURE CHAT & ATTACK SIMULATION (ALICE, BOB & EVE) ================= -->
 <div class="tab-content" id="tabContent1">
     <div class="crypto-card">
         <div class="card-title-header">
-            <i class="fa-solid fa-users text-indigo"></i> Mô phỏng Kênh Trò chuyện Bảo mật Hỗn hợp (Hybrid Crypto Chat Simulator)
+            <i class="fa-solid fa-users text-indigo"></i> Mô phỏng Kênh Trò chuyện Bảo mật & Tấn công Nghe lén (Alice, Bob & Eve)
         </div>
         <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
-            Mô phỏng cơ chế bảo mật của các ứng dụng nhắn tin thực tế (như HTTPS/TLS): Dùng <strong>AES</strong> mã hóa nội dung tin nhắn tốc độ cao và dùng <strong>RSA</strong> để đóng gói khóa phiên an toàn tuyệt đối.
+            Mô phỏng kịch bản truyền thông thực tế: <strong>Alice</strong> gửi tin nhắn mã hóa hỗn hợp cho <strong>Bob</strong> qua mạng công cộng, đồng thời có sự xuất hiện của kẻ tấn công <strong>Eve</strong> cố gắng nghe lén và giải mã gói tin.
         </p>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-            <!-- PHÍA BÊN GỬI -->
+            <!-- PHÍA ALICE (BÊN GỬI) -->
             <div style="background: #1e293b; padding: 18px; border-radius: 12px; border: 1px solid #334155;">
                 <div style="font-weight: 700; color: #60a5fa; margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-paper-plane"></i> Phía Bên Gửi (Alice)
+                    <i class="fa-solid fa-paper-plane"></i> Phía Alice (Bên Gửi)
                 </div>
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập tin nhắn bảo mật:</label>
-                <textarea id="chatSenderInput" rows="2" placeholder="Ví dụ: Bí mật quốc gia cần bảo vệ..."></textarea>
+                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập nội dung tin nhắn:</label>
+                <textarea id="chatSenderInput" rows="2" placeholder="Ví dụ: Kế hoạch mật lúc 20h tối nay..."></textarea>
                 
                 <button type="button" onclick="sendSecureMessage()" style="margin-top: 10px; background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 9px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px;">
                     <i class="fa-solid fa-lock"></i> Mã hóa hỗn hợp & Gửi đi ➔
                 </button>
 
                 <div style="margin-top: 14px;">
-                    <label style="font-size: 12px; color: #34d399; font-weight: 700; display: block; margin-bottom: 4px;">Gói tin truyền qua mạng (Network Payload):</label>
-                    <textarea id="chatCiphertext" rows="4" readonly placeholder="Gói tin AES encrypted msg + RSA encrypted key sẽ hiển thị tại đây..." style="background: #0f172a; color: #34d399; font-size: 12px;"></textarea>
+                    <label style="font-size: 12px; color: #34d399; font-weight: 700; display: block; margin-bottom: 4px;">Gói tin truyền qua mạng công cộng (Network Payload):</label>
+                    <textarea id="chatCiphertext" rows="4" readonly placeholder="Gói tin AES encrypted msg + RSA encrypted key..." style="background: #0f172a; color: #34d399; font-size: 12px;"></textarea>
                 </div>
             </div>
 
-            <!-- PHÍA BÊN NHẬN -->
+            <!-- PHÍA BOB (BÊN NHẬN) -->
             <div style="background: #1e293b; padding: 18px; border-radius: 12px; border: 1px solid #334155;">
                 <div style="font-weight: 700; color: #34d399; margin-bottom: 10px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-inbox"></i> Phía Bên Nhận (Bob)
+                    <i class="fa-solid fa-inbox"></i> Phía Bob (Bên Nhận hợp pháp)
                 </div>
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhận gói tin bảo mật qua kênh truyền:</label>
-                <textarea id="chatReceiverPacket" rows="4" readonly placeholder="Chờ nhận gói tin từ Bên Gửi..." style="background: #0f172a; color: #fbbf24; font-size: 12px;"></textarea>
+                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhận gói tin bảo mật từ kênh truyền:</label>
+                <textarea id="chatReceiverPacket" rows="4" readonly placeholder="Chờ nhận gói tin..." style="background: #0f172a; color: #fbbf24; font-size: 12px;"></textarea>
                 
                 <button type="button" onclick="decryptSecureMessage()" style="margin-top: 10px; background: var(--accent-emerald); font-weight: 700; color: #000; padding: 9px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px;">
-                    <i class="fa-solid fa-key"></i> 🔓 Dùng Private Key giải mã & Đọc Tin nhắn
+                    <i class="fa-solid fa-key"></i> 🔓 Bob dùng Private Key giải mã & Đọc Tin nhắn
                 </button>
 
                 <div style="margin-top: 14px;">
-                    <label style="font-size: 12px; color: #fff; font-weight: 700; display: block; margin-bottom: 4px;">Nội dung tin nhắn gốc phục hồi:</label>
-                    <textarea id="chatPlaintext" rows="2" readonly placeholder="Tin nhắn sau khi giải mã thành công..." style="background: #0f172a; color: #fff;"></textarea>
+                    <label style="font-size: 12px; color: #fff; font-weight: 700; display: block; margin-bottom: 4px;">Tin nhắn gốc phục hồi thành công:</label>
+                    <textarea id="chatPlaintext" rows="2" readonly placeholder="Tin nhắn sau giải mã..." style="background: #0f172a; color: #fff;"></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- KHUNG MÔ PHỎNG KẺ NGHE LÉN (EVE INTERCEPTOR) -->
-        <div style="margin-top: 20px; background: rgba(244, 63, 94, 0.08); border: 1px dashed var(--accent-rose); padding: 16px; border-radius: 12px;" id="eveBox">
-            <div style="color: #f43f5e; font-weight: 700; margin-bottom: 6px; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-user-secret"></i> Mô phỏng Kẻ nghe lén mạng (Attacker / Eve Interceptor):
+        <!-- KHUNG MÔ PHỎNG TẤN CÔNG THỰC TẾ (EVE ATTACK SIMULATOR) -->
+        <div style="margin-top: 20px; background: rgba(244, 63, 94, 0.08); border: 1px solid var(--accent-rose); padding: 18px; border-radius: 12px;" id="eveBox">
+            <div style="color: #f43f5e; font-weight: 700; margin-bottom: 8px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-user-secret"></i> Mô phỏng Kẻ tấn công / Nghe lén (Eve Interceptor & Attack Simulation):
             </div>
-            <div style="font-size: 12.5px; color: #cbd5e1; line-height: 1.6;">
-                Nếu kẻ tấn công (Eve) chặn được gói tin truyền tải trên mạng công cộng, Eve chỉ nhìn thấy dữ liệu mã hóa hỗn loạn (AES Ciphertext và RSA Encrypted Session Key). Do không sở hữu <strong>Khóa bí mật (Private Key)</strong> của Bên Nhận, Eve hoàn toàn không thể giải mã được nội dung tin nhắn!
+            <div style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin-bottom: 12px;">
+                Eve chặn bắt gói tin trên đường truyền công cộng nhưng <strong>không sở hữu Khóa bí mật (Private Key)</strong> của Bob. Hãy thử hành động của kẻ tấn công:
             </div>
+            <button type="button" onclick="simulateEveAttack()" style="background: var(--accent-rose); font-weight: 700; color: #fff; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                <i class="fa-solid fa-bomb"></i> Eve cố gắng giải mã trực tiếp gói tin chặn được
+            </button>
+            <div id="eveAttackResult" style="margin-top: 12px; font-family: monospace; font-size: 12.5px; color: #f87171; display: none; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px dashed var(--accent-rose); line-height: 1.6;"></div>
         </div>
 
-        <!-- KHUNG GIẢI THÍCH KỸ THUẬT -->
+        <!-- KHUNG GIẢI THÍCH HỌC THUẬT -->
         <div id="chatExplanationBox" style="margin-top: 16px; background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #334155; display: none;">
             <div style="color: #60a5fa; font-weight: 700; margin-bottom: 10px; font-size: 14px;">
-                <i class="fa-solid fa-circle-info"></i> Luồng xử lý chi tiết của Mô hình Mã hóa Hỗn hợp (Hybrid Cryptosystem):
+                <i class="fa-solid fa-circle-info"></i> Phân tích An toàn Bảo mật & Chống Tấn công:
             </div>
             <div style="font-size: 13px; color: #cbd5e1; line-height: 1.8;">
-                1. <strong>Sinh khóa phiên (Session Key):</strong> Alice tạo ngẫu nhiên một khóa đối xứng AES (256-bit) chỉ dùng riêng cho phiên chat này.<br>
-                2. <strong>Mã hóa dữ liệu (AES Encryption):</strong> Tin nhắn gốc được mã hóa bằng khóa AES giúp xử lý cực kỳ nhanh chóng.<br>
-                3. <strong>Bảo vệ khóa phiên (RSA Encryption):</strong> Khóa AES được mã hóa tiếp bằng Khóa công khai (Public Key) của Bob.<br>
-                4. <strong>Truyền gói tin an toàn:</strong> Gói tin gồm <code>[Encrypted_Message + Encrypted_Session_Key]</code> được truyền qua mạng.<br>
-                5. <strong>Giải mã phía nhận:</strong> Bob dùng Khóa bí mật (Private Key) để khôi phục khóa AES, sau đó dùng khóa AES để giải mã tin nhắn hoàn chỉnh.
+                1. <strong>Chống tấn công nghe lén (Eavesdropping):</strong> Nhờ mã hóa AES-256 đối xứng, nội dung tin nhắn bị che giấu hoàn toàn dưới dạng bản mã không có cấu trúc.<br>
+                2. <strong>Bảo vệ khóa phiên (Key Exchange Protection):</strong> Khóa phiên AES được khóa chặt bằng thuật toán RSA-2048 bất đối xứng. Kẻ tấn công Eve không thể giải mã khóa phiên nếu không có khóa bí mật riêng của Bob.<br>
+                3. <strong>Tính toàn vẹn & Xác thực:</strong> Hệ thống ngăn chặn tuyệt đối các hành vi giả mạo hoặc đọc trộm thông tin trên các kênh truyền thông không đáng tin cậy.
             </div>
         </div>
     </div>
@@ -436,7 +438,7 @@ function runAllDemos() {
 let cachedMessage = "";
 function sendSecureMessage() {
     let msg = document.getElementById('chatSenderInput').value.trim();
-    if(!msg) { alert('Vui lòng nhập tin nhắn từ Bên Gửi!'); return; }
+    if(!msg) { alert('Vui lòng nhập nội dung tin nhắn từ Alice!'); return; }
     cachedMessage = msg;
     
     let sessionKey = simpleHash(msg + Math.random(), 16).toUpperCase();
@@ -449,11 +451,24 @@ function sendSecureMessage() {
     document.getElementById('chatReceiverPacket').value = fullPacket;
     document.getElementById('chatPlaintext').value = "";
     document.getElementById('chatExplanationBox').style.display = 'block';
+    document.getElementById('eveAttackResult').style.display = 'none';
 }
 
 function decryptSecureMessage() {
-    if(!cachedMessage) { alert('Chưa có gói tin nào được truyền tới Bên Nhận!'); return; }
+    if(!cachedMessage) { alert('Chưa có gói tin nào được gửi đi từ Alice!'); return; }
     document.getElementById('chatPlaintext').value = cachedMessage;
+}
+
+function simulateEveAttack() {
+    if(!cachedMessage) { alert('Chưa có gói tin nào trên mạng để Eve chặn bắt! Hãy gửi tin nhắn từ Alice trước.'); return; }
+    let resBox = document.getElementById('eveAttackResult');
+    resBox.style.display = 'block';
+    resBox.innerHTML = `
+        <i class="fa-solid fa-triangle-exclamation"></i> <strong>Cảnh báo Tấn công Thất bại:</strong><br>
+        - Eve đã chặn bắt thành công gói tin truyền tải trên mạng.<br>
+        - Eve cố gắng giải mã bản mã AES và khóa RSA.<br>
+        - <strong>Kết quả:</strong> Thất bại hoàn toàn! Do thiếu <strong>Bob's Private Key</strong>, Eve chỉ nhận được chuỗi byte mã hóa hỗn loạn (Ciphertext). Nội dung tin nhắn của Alice được bảo vệ an toàn tuyệt đối!
+    `;
 }
 
 function hexToBin(hex) {
