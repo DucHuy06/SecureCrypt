@@ -207,6 +207,17 @@ function BaseModInverse(a, m) {
     return x;
 }
 
+// HÀM KIỂM TRA SỐ NGUYÊN TỐ (PRIMALITY TEST)
+function isPrime(n) {
+    if (n <= 1n) return false;
+    if (n <= 3n) return true;
+    if (n % 2n === 0n || n % 3n === 0n) return false;
+    for (let i = 5n; i * i <= n; i += 6n) {
+        if (n % i === 0n || n % (i + 2n) === 0n) return false;
+    }
+    return true;
+}
+
 function genElGamalKey() {
     let pStr = document.getElementById('elgP').value.trim();
     let gStr = document.getElementById('elgG').value.trim();
@@ -217,7 +228,16 @@ function genElGamalKey() {
         return;
     }
 
-    lastP = BigInt(pStr);
+    let pVal = BigInt(pStr);
+
+    // KIỂM TRA ĐIỀU KIỆN TOÁN HỌC BẮT BUỘC: p phải là số nguyên tố
+    if (!isPrime(pVal)) {
+        alert(`Lỗi toán học: p = ${pVal} không phải là số nguyên tố! Theo lý thuyết mật mã ElGamal, p bắt buộc phải là một số nguyên tố.`);
+        document.getElementById('elgKeyVisualStep').style.display = 'none';
+        return;
+    }
+
+    lastP = pVal;
     lastG = BigInt(gStr);
     lastX = BigInt(xStr);
 
@@ -227,7 +247,7 @@ function genElGamalKey() {
     document.getElementById('elgKeyVisualStep').style.display = 'block';
     document.getElementById('elgKeyTraceText').innerHTML = `
         <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[BƯỚC 1: THIẾT LẬP THAM SỐ & TÍNH KHÓA]</div>
-        <div>• <strong>Số nguyên tố p:</strong> ${lastP} | <strong>Phần tử sinh g:</strong> ${lastG}</div>
+        <div>• <strong>Số nguyên tố p:</strong> ${lastP} (✓ Hợp lệ) | <strong>Phần tử sinh g:</strong> ${lastG}</div>
         <div>• <strong>Khóa bí mật x:</strong> ${lastX}</div>
         <div>• <strong>Tính Khóa Công Khai (y):</strong> y = gˣ mod p ➔ ${lastG}^${lastX} mod ${lastP} = <span style="color:#06b6d4">${lastY}</span></div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
