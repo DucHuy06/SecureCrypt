@@ -76,7 +76,7 @@
 
     <div style="margin-bottom: 12px;">
         <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M:</label>
-        <textarea id="elgMsg" rows="2" placeholder="Nhập số nguyên nhỏ hơn p, hoặc dãy số cách nhau bằng dấu cách (VD: 7 hoặc 12 15 8)..."></textarea>
+        <textarea id="elgMsg" rows="2" placeholder="Nhập số nguyên M nhỏ hơn p, hoặc dãy số cách nhau bằng dấu cách..."></textarea>
     </div>
 
     <div style="margin-bottom: 12px;">
@@ -133,7 +133,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Thông điệp gốc M phục hồi:</label>
-    <textarea id="elgDecryptedOutput" rows="2" readonly placeholder="Thông điệp sau khi giải mã sẽ hiển thị tại đây..."></textarea>
+    <textarea id="elgDecryptedOutput" rows="2" readonly placeholder="Thông điệp M sau khi giải mã sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="elgDecryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết quá trình giải mã</div>
@@ -149,8 +149,8 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp x:</label>
-            <input type="text" id="sigXMsg" placeholder="Nhập thông điệp x...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M:</label>
+            <input type="text" id="sigMMsg" placeholder="Nhập thông điệp M...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa ngẫu nhiên k:</label>
@@ -181,8 +181,8 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp gốc x:</label>
-            <input type="text" id="verXMsg" placeholder="Nhập thông điệp gốc x...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp gốc M:</label>
+            <input type="text" id="verMMsg" placeholder="Nhập thông điệp gốc M...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Chữ ký số (γ, δ):</label>
@@ -416,23 +416,23 @@ function runElGamalDecrypt() {
             ${mathSteps.join('<br><br>')}
         </div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ KHÔI PHỤC THÀNH CÔNG THÔNG ĐIỆP GỐC M: "<span style="color:#ffffff">${decryptedText}</span>"
+            ✓ KHÔI PHỤC THÀNH CÔNG THÔNG ĐIỆP M: "<span style="color:#ffffff">${decryptedText}</span>"
         </div>
     `;
 }
 
 function runElGamalSignature() {
-    let xMsgStr = document.getElementById('sigXMsg').value.trim();
+    let mMsgStr = document.getElementById('sigMMsg').value.trim();
     let kStr = document.getElementById('sigK').value.trim();
-    if(!xMsgStr || !kStr || lastP === 0n) { alert('Nhập thông điệp x, khóa k và thiết lập p, g, x ở Bước 1 trước!'); return; }
+    if(!mMsgStr || !kStr || lastP === 0n) { alert('Nhập thông điệp M, khóa ngẫu nhiên k và thiết lập p, g, x ở Khối 1 trước!'); return; }
 
-    let xMsg = BigInt(xMsgStr);
+    let M = BigInt(mMsgStr);
     let k = BigInt(kStr);
     let pMinus1 = lastP - 1n;
 
     let gamma = modPow(lastG, k, lastP);
     let aGamma = (lastX * gamma) % pMinus1;
-    let numerator = (xMsg - aGamma) % pMinus1;
+    let numerator = (M - aGamma) % pMinus1;
     if (numerator < 0n) numerator += pMinus1;
 
     let kInv = BaseModInverse(k, pMinus1);
@@ -447,7 +447,7 @@ function runElGamalSignature() {
         &nbsp;&nbsp;γ = gᵏ mod p = ${lastG}^${k} mod ${lastP} = <strong style="color:#34d399">${gamma}</strong><br><br>
         • <strong>Bước 2: Tính δ (delta):</strong><br>
         &nbsp;&nbsp;- Tính p - 1 = ${lastP} - 1 = ${pMinus1}<br>
-        &nbsp;&nbsp;- Tử số = (x - a·γ) mod (p-1) = (${xMsg} - ${lastX}×${gamma}) mod ${pMinus1} = ${numerator}<br>
+        &nbsp;&nbsp;- Tử số = (M - x·γ) mod (p-1) = (${M} - ${lastX}×${gamma}) mod ${pMinus1} = ${numerator}<br>
         &nbsp;&nbsp;- Nghịch đảo k⁻¹ mod (p-1) = ${k}⁻¹ mod ${pMinus1} = ${kInv}<br>
         &nbsp;&nbsp;- δ = (${numerator} × ${kInv}) mod ${pMinus1} = <strong style="color:#34d399">${delta}</strong><br><br>
         <span style="color:#34d399; font-weight:bold;">➔ CHỮ KÝ SỐ THU ĐƯỢC: (${gamma}, ${delta})</span>
@@ -456,18 +456,18 @@ function runElGamalSignature() {
 
 // XÁC THỰC HOÀN TOÀN ĐỘC LẬP
 function runElGamalVerify() {
-    let xMsgStr = document.getElementById('verXMsg').value.trim();
+    let mMsgStr = document.getElementById('verMMsg').value.trim();
     let sigStr = document.getElementById('verSig').value.trim();
     let pStr = document.getElementById('verP').value.trim();
     let gStr = document.getElementById('verG').value.trim();
     let yStr = document.getElementById('verY').value.trim();
 
-    if(!xMsgStr || !sigStr || !pStr || !gStr || !yStr) {
-        alert('Vui lòng nhập đầy đủ thông điệp, chữ ký (gamma, delta) và các tham số p, g, y ở Khối 5!');
+    if(!mMsgStr || !sigStr || !pStr || !gStr || !yStr) {
+        alert('Vui lòng nhập đầy đủ thông điệp M, chữ ký (gamma, delta) và các tham số p, g, y ở Khối 5!');
         return;
     }
 
-    let xMsg = BigInt(xMsgStr);
+    let M = BigInt(mMsgStr);
     let p = BigInt(pStr);
     let g = BigInt(gStr);
     let y = BigInt(yStr);
@@ -487,7 +487,7 @@ function runElGamalVerify() {
         return;
     }
 
-    let leftSide = modPow(g, xMsg, p);
+    let leftSide = modPow(g, M, p);
     let yGamma = modPow(y, gamma, p);
     let gammaDelta = modPow(gamma, delta, p);
     let rightSide = (yGamma * gammaDelta) % p;
@@ -503,8 +503,8 @@ function runElGamalVerify() {
     document.getElementById('verVisualStep').style.display = 'block';
     document.getElementById('verTraceText').innerHTML = `
         <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[XÁC THỰC CHỮ KÝ SỐ ELGAMAL]</div>
-        <div>• <strong>Công thức kiểm tra:</strong> gˣ ≡ yᵝ · γᵠ (mod p)</div>
-        <div>• <strong>Vế trái (LHS):</strong> gˣ mod p = ${g}^${xMsg} mod ${p} = <strong style="color:#ffffff">${leftSide}</strong></div>
+        <div>• <strong>Công thức kiểm tra:</strong> gᴹ ≡ yᵝ · γᵠ (mod p)</div>
+        <div>• <strong>Vế trái (LHS):</strong> gᴹ mod p = ${g}^${M} mod ${p} = <strong style="color:#ffffff">${leftSide}</strong></div>
         <div>• <strong>Vế phải (RHS):</strong> (yᵝ · γᵠ) mod p = (${y}^${gamma} mod ${p} × ${gamma}^${delta} mod ${p}) mod ${p} = <strong style="color:#ffffff">${rightSide}</strong></div>
         <div style="margin-top: 6px;">• <strong>So sánh:</strong> LHS (${leftSide}) ${isValid ? '===' : '!=='} RHS (${rightSide})</div>
         <div style="color: ${resColor}; font-weight: bold; margin-top: 6px; font-size: 14px;">
