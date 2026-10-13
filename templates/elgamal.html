@@ -36,11 +36,11 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="elgP" value="" placeholder="Nhập p (VD: 257)...">
+            <input type="text" id="elgP" value="" placeholder="Nhập p (VD: 997)...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
-            <input type="text" id="elgG" value="" placeholder="Nhập g (VD: 5)...">
+            <input type="text" id="elgG" value="" placeholder="Nhập g (VD: 643)...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
@@ -75,8 +75,8 @@
     </div>
 
     <div style="margin-bottom: 12px;">
-        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M:</label>
-        <textarea id="elgMsg" rows="2" placeholder="Nhập số nguyên M nhỏ hơn p, hoặc dãy số cách nhau bằng dấu cách..."></textarea>
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M (nhập từng số hoặc cách nhau bằng dấu cách):</label>
+        <textarea id="elgMsg" rows="2" placeholder="VD: 78 334..."></textarea>
     </div>
 
     <div style="margin-bottom: 12px;">
@@ -112,7 +112,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Dán bản mã dạng cặp (c₁, c₂):</label>
-    <textarea id="elgDecryptInput" rows="2" placeholder="Dán bản mã vào đây (VD: (247, 877) (247, 884))..."></textarea>
+    <textarea id="elgDecryptInput" rows="2" placeholder="Dán bản mã vào đây (VD: (906, 594) (906, 933))..."></textarea>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
         <div>
@@ -141,7 +141,7 @@
     </div>
 </div>
 
-<!-- KHỐI 4: TÍNH CHỮ KÝ SỐ ELGAMAL -->
+<!-- KHỐI 4: TÍNH CHỮ KÝ SỐ ELGAMAL (CHẠY THUẦN JS) -->
 <div class="crypto-card" style="border: 2px solid var(--accent-emerald);">
     <div class="card-title-header" style="color: #34d399;">
         <i class="fa-solid fa-file-signature"></i> 4. Tính Chữ ký số ElGamal (γ, δ)
@@ -222,7 +222,7 @@
 
 <script>
 let lastP = 0n;
-let lastG = 0n;
+let letG = 0n;
 let lastX = 0n;
 let lastY = 0n;
 
@@ -275,9 +275,8 @@ function genElGamalKey() {
     }
 
     let pVal = BigInt(pStr);
-
     if (!isPrime(pVal)) {
-        alert(`Lỗi toán học: p = ${pVal} không phải là số nguyên tố! Theo lý thuyết mật mã ElGamal, p bắt buộc phải là một số nguyên tố.`);
+        alert(`Lỗi toán học: p = ${pVal} không phải là số nguyên tố!`);
         document.getElementById('elgKeyVisualStep').style.display = 'none';
         return;
     }
@@ -285,19 +284,16 @@ function genElGamalKey() {
     lastP = pVal;
     lastG = BigInt(gStr);
     lastX = BigInt(xStr);
-
     lastY = modPow(lastG, lastX, lastP);
-    document.getElementById('elgPublic').value = `p = ${lastP}, g = ${lastG}, y = ${lastY}`;
 
+    document.getElementById('elgPublic').value = `p = ${lastP}, g = ${lastG}, y = ${lastY}`;
     document.getElementById('elgKeyVisualStep').style.display = 'block';
     document.getElementById('elgKeyTraceText').innerHTML = `
         <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[BƯỚC 1: THIẾT LẬP THAM SỐ & TÍNH KHÓA]</div>
         <div>• <strong>Số nguyên tố p:</strong> ${lastP} (✓ Hợp lệ) | <strong>Phần tử sinh g:</strong> ${lastG}</div>
         <div>• <strong>Khóa bí mật x:</strong> ${lastX}</div>
         <div>• <strong>Tính Khóa Công Khai (y):</strong> y = gˣ mod p ➔ ${lastG}^${lastX} mod ${lastP} = <span style="color:#06b6d4">${lastY}</span></div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ HOÀN TẤT: Khóa công khai gồm bộ ba (p=${lastP}, g=${lastG}, y=${lastY}).
-        </div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT: Khóa công khai gồm bộ ba (p=${lastP}, g=${lastG}, y=${lastY}).</div>
     `;
 }
 
@@ -333,8 +329,8 @@ function runElGamalEncrypt() {
 
     let cipherPairs = [];
     let mathSteps = [];
-
     let parts = text.split(/[\s,]+/);
+
     parts.forEach(numStr => {
         let m = BigInt(numStr);
         if (m >= lastP) {
@@ -343,34 +339,26 @@ function runElGamalEncrypt() {
         }
 
         let k = kStr ? BigInt(kStr) : (BigInt(Math.floor(Math.random() * Number(lastP - 3n))) + 2n);
-
         let c1 = modPow(lastG, k, lastP);
         let yk = modPow(lastY, k, lastP);
         let c2 = (m * yk) % lastP;
 
-        cipherPairs.push(`(${c1},${c2})`);
+        cipherPairs.push(`(${c1}, ${c2})`);
         mathSteps.push(`Thông điệp M = ${m} ➔ Chọn số ngẫu nhiên k = ${k}:<br>&nbsp;&nbsp;• c₁ = gᵏ mod p = ${lastG}^${k} mod ${lastP} = <strong>${c1}</strong><br>&nbsp;&nbsp;• c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
     });
 
     let ciphertextStr = cipherPairs.join(' ');
     document.getElementById('elgOutput').value = ciphertextStr;
-
     document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgTraceText').innerHTML = `
         <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[BƯỚC 2: QUÁ TRÌNH MÃ HÓA SỐ NGUYÊN]</div>
         <div>• <strong>Thông điệp đầu vào M:</strong> ${text}</div>
-        <div>• <strong>Sử dụng Khóa Công Khai:</strong> p = ${lastP}, g = ${lastG}, y = ${lastY}</div>
         <div>• <strong>Chi tiết sinh cặp bản mã (c₁, c₂):</strong></div>
-        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
-            ${mathSteps.join('<br><br>')}
-        </div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ➔ BẢN MÃ THU ĐƯỢC: <span style="color:#f43f5e">${ciphertextStr}</span>
-        </div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">${mathSteps.join('<br><br>')}</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">➔ BẢN MÃ THU ĐƯỢC: <span style="color:#f43f5e">${ciphertextStr}</span></div>
     `;
 }
 
-// SỬA LẠI HÀM GIẢI MÃ CHUẨN XÁC TOÁN HỌC
 function runElGamalDecrypt() {
     let cipherText = document.getElementById('elgDecryptInput').value.trim();
     let xStr = document.getElementById('elgDecryptX').value.trim();
@@ -381,8 +369,8 @@ function runElGamalDecrypt() {
 
     let x = BigInt(xStr);
     let p = BigInt(pStr);
-
     let matches = cipherText.match(/\(\s*(\d+)\s*,\s*(\d+)\s*\)/g);
+
     if(!matches) {
         alert('Định dạng bản mã không hợp lệ! Bản mã phải có dạng cặp (c1, c2)');
         return;
@@ -397,13 +385,13 @@ function runElGamalDecrypt() {
         let c1 = BigInt(nums[0]);
         let c2 = BigInt(nums[1]);
 
-        // Công thức chuẩn: M = c2 * (c1^x)^(-1) mod p = c2 * c1^(p - 1 - x) mod p
+        // Giải mã chuẩn: M = c2 * (c1^x)^(-1) mod p
         let c1x = modPow(c1, x, p);
-        let c1xInv = modPow(c1, p - 1n - x, p); // Sử dụng Fermat nhỏ tính nghịch đảo qua lũy thừa modulo cực kỳ chính xác
+        let c1xInv = BaseModInverse(c1x, p);
         let m = (c2 * c1xInv) % p;
 
         plainResults.push(m.toString());
-        mathSteps.push(`Cặp bản mã (${c1}, ${c2}) ➔ Khôi phục M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = ${c2} × ${c1xInv} mod ${p} = <strong>${m}</strong>`);
+        mathSteps.push(`Cặp bản mã (${c1}, ${c2}) ➔ Khôi phục M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = <strong>${m}</strong>`);
     });
 
     let decryptedText = plainResults.join(' ');
@@ -412,23 +400,24 @@ function runElGamalDecrypt() {
     document.getElementById('elgDecryptTraceText').innerHTML = `
         <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[BƯỚC 3: QUÁ TRÌNH GIẢI MÃ]</div>
         <div>• <strong>Bản mã đầu vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-        <div>• <strong>Sử dụng Khóa Bí Mật:</strong> x = ${x}, p = ${p}</div>
         <div>• <strong>Chi tiết khôi phục:</strong></div>
-        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">
-            ${mathSteps.join('<br><br>')}
-        </div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ KHÔI PHỤC THÀNH CÔNG THÔNG ĐIỆP M: "<span style="color:#ffffff">${decryptedText}</span>"
-        </div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">${mathSteps.join('<br><br>')}</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ KHÔI PHỤC THÀNH CÔNG THÔNG ĐIỆP M: "<span style="color:#ffffff">${decryptedText}</span>"</div>
     `;
 }
 
+// KHỐI 4: TÍNH CHỮ KÝ SỐ ELGAMAL (CHẠY ĐỘC LẬP HOÀN TOÀN BẰNG JS)
 function runElGamalSignature() {
     let mMsgStr = document.getElementById('sigMMsg').value.trim();
     let kStr = document.getElementById('sigK').value.trim();
-    if(!mMsgStr || !kStr || lastP === 0n) { 
-        alert('Vui lòng nhập thông điệp M, khóa ngẫu nhiên k và thiết lập tham số ở Khối 1 trước!'); 
+
+    if(!mMsgStr || !kStr) { 
+        alert('Vui lòng nhập đầy đủ Thông điệp M và Khóa ngẫu nhiên k!'); 
         return; 
+    }
+    if(lastP === 0n) {
+        alert('Vui lòng thiết lập tham số ở Khối 1 (hoặc đảm bảo p, g, x đã được nạp) trước!');
+        return;
     }
 
     let M = BigInt(mMsgStr);
@@ -467,7 +456,7 @@ function runElGamalVerify() {
     let yStr = document.getElementById('verY').value.trim();
 
     if(!mMsgStr || !sigStr || !pStr || !gStr || !yStr) {
-        alert('Vui lòng nhập đầy đủ thông điệp M, chữ ký (gamma, delta) và các tham số p, g, y ở Khối 5!');
+        alert('Vui lòng nhập đầy đủ thông điệp M, chữ ký và các tham số ở Khối 5!');
         return;
     }
 
@@ -497,23 +486,18 @@ function runElGamalVerify() {
     let rightSide = (yGamma * gammaDelta) % p;
 
     let isValid = (leftSide === rightSide);
-
     let resText = isValid ? "HỢP LỆ (Signature Valid ✓)" : "KHÔNG HỢP LỆ (Signature Invalid ✗)";
     let resColor = isValid ? "var(--accent-cyan)" : "var(--accent-rose)";
 
     document.getElementById('verOutput').value = resText;
     document.getElementById('verOutput').style.color = resColor;
-
     document.getElementById('verVisualStep').style.display = 'block';
     document.getElementById('verTraceText').innerHTML = `
         <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[XÁC THỰC CHỮ KÝ SỐ ELGAMAL]</div>
         <div>• <strong>Công thức kiểm tra:</strong> gᴹ ≡ yᵝ · γᵠ (mod p)</div>
         <div>• <strong>Vế trái (LHS):</strong> gᴹ mod p = ${g}^${M} mod ${p} = <strong style="color:#ffffff">${leftSide}</strong></div>
         <div>• <strong>Vế phải (RHS):</strong> (yᵝ · γᵠ) mod p = (${y}^${gamma} mod ${p} × ${gamma}^${delta} mod ${p}) mod ${p} = <strong style="color:#ffffff">${rightSide}</strong></div>
-        <div style="margin-top: 6px;">• <strong>So sánh:</strong> LHS (${leftSide}) ${isValid ? '===' : '!=='} RHS (${rightSide})</div>
-        <div style="color: ${resColor}; font-weight: bold; margin-top: 6px; font-size: 14px;">
-            ➔ KẾT LUẬN: <span style="text-transform: uppercase;">${resText}</span>
-        </div>
+        <div style="color: ${resColor}; font-weight: bold; margin-top: 6px; font-size: 14px;">➔ KẾT LUẬN: <span style="text-transform: uppercase;">${resText}</span></div>
     `;
 }
 </script>
