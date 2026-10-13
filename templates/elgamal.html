@@ -260,6 +260,10 @@ function modPow(base, exp, mod) {
     return res;
 }
 
+function gcd(a, b) {
+    return b === 0n ? a : gcd(b, a % b);
+}
+
 function BaseModInverse(a, m) {
     let m0 = m;
     let y = 0n, x = 1n;
@@ -433,7 +437,7 @@ function runElGamalDecrypt() {
     `;
 }
 
-// KHỐI 4: ĐÃ FIX LÀM SẠCH KHOẢNG TRẮNG ĐỂ KHÔNG BỊ LỖI BIGINT
+// KHỐI 4: THÊM KIỂM TRA GCD CHUẨN XÁC ĐỂ TRÁNH LỖI DIVISION BY ZERO
 function runElGamalSignature() {
     try {
         let mMsgStr = document.getElementById('sigMMsg').value.replace(/\s+/g, '').trim();
@@ -453,6 +457,12 @@ function runElGamalSignature() {
         let M = BigInt(mMsgStr);
         let k = BigInt(kStr);
         let pMinus1 = p - 1n;
+
+        // KIỂM TRA ĐIỀU KIỆN TOÁN HỌC: gcd(k, p-1) PHẢI BẰNG 1
+        if (gcd(k, pMinus1) !== 1n) {
+            alert(`Lỗi toán học: gcd(k, p-1) = gcd(${k}, ${pMinus1}) = ${gcd(k, pMinus1)} ≠ 1.\nKhóa ngẫu nhiên k và p-1 phải nguyên tố cùng nhau thì mới tính được chữ ký số! Vui lòng chọn giá trị k khác.`);
+            return;
+        }
 
         let gamma = modPow(g, k, p);
         let aGamma = (x * gamma) % pMinus1;
@@ -476,7 +486,6 @@ function runElGamalSignature() {
     }
 }
 
-// KHỐI 5: ĐÃ FIX CHUẨN XÁC CÔNG THỨC TOÁN HỌC XÁC THỰC CHỮ KÝ ELGAMAL
 function runElGamalVerify() {
     try {
         let mMsgStr = document.getElementById('verMMsg').value.replace(/\s+/g, '').trim();
@@ -503,10 +512,7 @@ function runElGamalVerify() {
         let gamma = BigInt(matchSig[1]);
         let delta = BigInt(matchSig[2]);
 
-        // LHS = g^M mod p
         let leftSide = modPow(g, M, p);
-        
-        // RHS = (y^gamma * gamma^delta) mod p
         let yGamma = modPow(y, gamma, p);
         let gammaDelta = modPow(gamma, delta, p);
         let rightSide = (yGamma * gammaDelta) % p;
