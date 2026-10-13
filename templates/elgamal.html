@@ -146,7 +146,7 @@
     </div>
 </div>
 
-<!-- KHỐI 4: TÍNH CHỮ KÝ SỐ ELGAMAL -->
+<!-- KHỐI 4: TÍNH CHỮ KÝ SỐ ELGAMAL (CÓ ĐỦ p, g, x ĐỂ KHÔNG BAO GIỜ BỊ CHẾT NGẦM) -->
 <div class="crypto-card" style="border: 2px solid var(--accent-emerald);">
     <div class="card-title-header" style="color: #34d399;">
         <i class="fa-solid fa-file-signature"></i> 4. Tính Chữ ký số ElGamal (γ, δ)
@@ -160,6 +160,21 @@
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa ngẫu nhiên k:</label>
             <input type="text" id="sigK" placeholder="Nhập khóa ngẫu nhiên k...">
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
+            <input type="text" id="sigP" placeholder="Nhập p...">
+        </div>
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
+            <input type="text" id="sigG" placeholder="Nhập g...">
+        </div>
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
+            <input type="text" id="sigX" placeholder="Nhập x...">
         </div>
     </div>
 
@@ -331,7 +346,6 @@ function runElGamalEncrypt() {
 
     if(!text) { alert('Vui lòng nhập thông điệp M cần mã hóa!'); return; }
     
-    // Tự động lấy tham số từ Khối 1 nếu chưa bấm
     let pIn = document.getElementById('elgP').value.trim();
     let gIn = document.getElementById('elgG').value.trim();
     let xIn = document.getElementById('elgX').value.trim();
@@ -416,22 +430,16 @@ function runElGamalDecrypt() {
     `;
 }
 
-// KHỐI 4: TÍNH CHỮ KÝ SỐ (ĐƯỢC VIẾT ĐỘC LẬP HOÀN TOÀN, BẤM LÀ CHẠY NGAY)
 function runElGamalSignature() {
     let mMsgStr = document.getElementById('sigMMsg').value.trim();
     let kStr = document.getElementById('sigK').value.trim();
-    let pStr = document.getElementById('elgP').value.trim();
-    let gStr = document.getElementById('elgG').value.trim();
-    let xStr = document.getElementById('elgX').value.trim();
+    let pStr = document.getElementById('sigP').value.trim();
+    let gStr = document.getElementById('sigG').value.trim();
+    let xStr = document.getElementById('sigX').value.trim();
 
-    if(!mMsgStr || !kStr) { 
-        alert('Vui lòng nhập đầy đủ thông điệp M và khóa ngẫu nhiên k ở Khối 4!'); 
+    if(!mMsgStr || !kStr || !pStr || !gStr || !xStr) { 
+        alert('Vui lòng nhập đầy đủ thông điệp M, khóa k và các tham số p, g, x ở Khối 4!'); 
         return; 
-    }
-
-    if(!pStr || !gStr || !xStr) {
-        alert('Vui lòng nhập đầy đủ tham số p, g, x ở Khối 1 trước khi tính chữ ký!');
-        return;
     }
 
     let p = BigInt(pStr);
