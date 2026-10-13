@@ -112,7 +112,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Dán bản mã dạng cặp (c₁, c₂):</label>
-    <textarea id="elgDecryptInput" rows="2" placeholder="Dán bản mã vào đây (VD: (39, 65))..."></textarea>
+    <textarea id="elgDecryptInput" rows="2" placeholder="Dán bản mã vào đây (VD: (247, 877) (247, 884))..."></textarea>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
         <div>
@@ -370,6 +370,7 @@ function runElGamalEncrypt() {
     `;
 }
 
+// SỬA LẠI HÀM GIẢI MÃ CHUẨN XÁC TOÁN HỌC
 function runElGamalDecrypt() {
     let cipherText = document.getElementById('elgDecryptInput').value.trim();
     let xStr = document.getElementById('elgDecryptX').value.trim();
@@ -383,7 +384,7 @@ function runElGamalDecrypt() {
 
     let matches = cipherText.match(/\(\s*(\d+)\s*,\s*(\d+)\s*\)/g);
     if(!matches) {
-        alert('Định dạng bản mã không hợp lệ! Bản mã phải có dạng cặp (c1,c2)');
+        alert('Định dạng bản mã không hợp lệ! Bản mã phải có dạng cặp (c1, c2)');
         return;
     }
 
@@ -396,12 +397,13 @@ function runElGamalDecrypt() {
         let c1 = BigInt(nums[0]);
         let c2 = BigInt(nums[1]);
 
+        // Công thức chuẩn: M = c2 * (c1^x)^(-1) mod p = c2 * c1^(p - 1 - x) mod p
         let c1x = modPow(c1, x, p);
-        let c1xInv = BaseModInverse(c1x, p);
+        let c1xInv = modPow(c1, p - 1n - x, p); // Sử dụng Fermat nhỏ tính nghịch đảo qua lũy thừa modulo cực kỳ chính xác
         let m = (c2 * c1xInv) % p;
 
         plainResults.push(m.toString());
-        mathSteps.push(`Cặp bản mã (${c1}, ${c2}) ➔ Khôi phục M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = <strong>${m}</strong>`);
+        mathSteps.push(`Cặp bản mã (${c1}, ${c2}) ➔ Khôi phục M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = ${c2} × ${c1xInv} mod ${p} = <strong>${m}</strong>`);
     });
 
     let decryptedText = plainResults.join(' ');
@@ -424,7 +426,10 @@ function runElGamalDecrypt() {
 function runElGamalSignature() {
     let mMsgStr = document.getElementById('sigMMsg').value.trim();
     let kStr = document.getElementById('sigK').value.trim();
-    if(!mMsgStr || !kStr || lastP === 0n) { alert('Nhập thông điệp M, khóa ngẫu nhiên k và thiết lập p, g, x ở Khối 1 trước!'); return; }
+    if(!mMsgStr || !kStr || lastP === 0n) { 
+        alert('Vui lòng nhập thông điệp M, khóa ngẫu nhiên k và thiết lập tham số ở Khối 1 trước!'); 
+        return; 
+    }
 
     let M = BigInt(mMsgStr);
     let k = BigInt(kStr);
@@ -454,7 +459,6 @@ function runElGamalSignature() {
     `;
 }
 
-// XÁC THỰC HOÀN TOÀN ĐỘC LẬP
 function runElGamalVerify() {
     let mMsgStr = document.getElementById('verMMsg').value.trim();
     let sigStr = document.getElementById('verSig').value.trim();
