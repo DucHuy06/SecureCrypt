@@ -182,10 +182,13 @@
         <i class="fa-solid fa-signature"></i> Tính Chữ ký số ElGamal
     </button>
 
-    <div style="margin-top: 12px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
         <label style="font-weight: 600; font-size: 13px; color: #34d399;">Chữ ký số thu được (γ, δ):</label>
-        <input type="text" id="sigOutput" readonly placeholder="Kết quả chữ ký..." style="color: #34d399; font-weight: bold;">
+        <button type="button" onclick="copyInput('sigOutput')" style="padding: 4px 12px; font-size: 12px; background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy Chữ Ký (γ, δ)
+        </button>
     </div>
+    <input type="text" id="sigOutput" readonly placeholder="Kết quả chữ ký..." style="color: #34d399; font-weight: bold;">
 
     <div class="step-trace-box" id="sigVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết Chữ ký số ElGamal</div>
@@ -430,14 +433,14 @@ function runElGamalDecrypt() {
     `;
 }
 
-// KHỐI 4: ĐÃ XÓA BỎ CHẶN GCD VÀ BỌC TRY-CATCH ĐỂ HIỆN LỖI TRỰC TIẾP KHÔNG BAO GIỜ BỊ ĐỨNG NGẦM
+// KHỐI 4: ĐÃ FIX LÀM SẠCH KHOẢNG TRẮNG ĐỂ KHÔNG BỊ LỖI BIGINT
 function runElGamalSignature() {
     try {
-        let mMsgStr = document.getElementById('sigMMsg').value.trim();
-        let kStr = document.getElementById('sigK').value.trim();
-        let pStr = document.getElementById('sigP').value.trim();
-        let gStr = document.getElementById('sigG').value.trim();
-        let xStr = document.getElementById('sigX').value.trim();
+        let mMsgStr = document.getElementById('sigMMsg').value.replace(/\s+/g, '').trim();
+        let kStr = document.getElementById('sigK').value.replace(/\s+/g, '').trim();
+        let pStr = document.getElementById('sigP').value.replace(/\s+/g, '').trim();
+        let gStr = document.getElementById('sigG').value.replace(/\s+/g, '').trim();
+        let xStr = document.getElementById('sigX').value.replace(/\s+/g, '').trim();
 
         if(!mMsgStr || !kStr || !pStr || !gStr || !xStr) { 
             alert('Vui lòng nhập đầy đủ thông điệp M, khóa k và các tham số p, g, x ở Khối 4!'); 
@@ -473,44 +476,57 @@ function runElGamalSignature() {
     }
 }
 
+// KHỐI 5: ĐÃ FIX CHUẨN XÁC CÔNG THỨC TOÁN HỌC XÁC THỰC CHỮ KÝ ELGAMAL
 function runElGamalVerify() {
-    let mMsgStr = document.getElementById('verMMsg').value.trim();
-    let sigStr = document.getElementById('verSig').value.trim();
-    let pStr = document.getElementById('verP').value.trim();
-    let gStr = document.getElementById('verG').value.trim();
-    let yStr = document.getElementById('verY').value.trim();
+    try {
+        let mMsgStr = document.getElementById('verMMsg').value.replace(/\s+/g, '').trim();
+        let sigStr = document.getElementById('verSig').value.trim();
+        let pStr = document.getElementById('verP').value.replace(/\s+/g, '').trim();
+        let gStr = document.getElementById('verG').value.replace(/\s+/g, '').trim();
+        let yStr = document.getElementById('verY').value.replace(/\s+/g, '').trim();
 
-    if(!mMsgStr || !sigStr || !pStr || !gStr || !yStr) {
-        alert('Vui lòng nhập đầy đủ thông tin xác thực ở Khối 5!');
-        return;
+        if(!mMsgStr || !sigStr || !pStr || !gStr || !yStr) {
+            alert('Vui lòng nhập đầy đủ thông tin xác thực ở Khối 5!');
+            return;
+        }
+
+        let M = BigInt(mMsgStr);
+        let p = BigInt(pStr);
+        let g = BigInt(gStr);
+        let y = BigInt(yStr);
+
+        let matchSig = sigStr.match(/(\d+)\s*,\s*(\d+)/);
+        if(!matchSig) {
+            alert('Định dạng chữ ký không hợp lệ! (Phải có dạng gamma, delta)');
+            return;
+        }
+        let gamma = BigInt(matchSig[1]);
+        let delta = BigInt(matchSig[2]);
+
+        // LHS = g^M mod p
+        let leftSide = modPow(g, M, p);
+        
+        // RHS = (y^gamma * gamma^delta) mod p
+        let yGamma = modPow(y, gamma, p);
+        let gammaDelta = modPow(gamma, delta, p);
+        let rightSide = (yGamma * gammaDelta) % p;
+
+        let isValid = (leftSide === rightSide);
+        let resText = isValid ? "HỢP LỆ (Signature Valid ✓)" : "KHÔNG HỢP LỆ (Signature Invalid ✗)";
+        let resColor = isValid ? "var(--accent-cyan)" : "var(--accent-rose)";
+
+        document.getElementById('verOutput').value = resText;
+        document.getElementById('verOutput').style.color = resColor;
+        document.getElementById('verVisualStep').style.display = 'block';
+        document.getElementById('verTraceText').innerHTML = `
+            <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[BƯỚC 5: CHI TIẾT XÁC THỰC CHỮ KÝ]</div>
+            <div>• <strong>Vế trái (LHS = g^M mod p):</strong> ${g}^${M} mod ${p} = <strong>${leftSide}</strong></div>
+            <div>• <strong>Vế phải (RHS = (y^γ · γ^δ) mod p):</strong> (${y}^${gamma} × ${gamma}^${delta}) mod ${p} = <strong>${rightSide}</strong></div>
+            <div style="margin-top: 6px;">➔ KẾT QUẢ: <strong style="color:${resColor}">${resText}</strong></div>
+        `;
+    } catch (err) {
+        alert('Lỗi xác thực chữ ký: ' + err.message);
     }
-
-    let M = BigInt(mMsgStr);
-    let p = BigInt(pStr);
-    let g = BigInt(gStr);
-    let y = BigInt(yStr);
-
-    let matchSig = sigStr.match(/(\d+)\s*,\s*(\d+)/);
-    if(!matchSig) {
-        alert('Định dạng chữ ký không hợp lệ!');
-        return;
-    }
-    let gamma = BigInt(matchSig[1]);
-    let delta = BigInt(matchSig[2]);
-
-    let leftSide = modPow(g, M, p);
-    let yGamma = modPow(y, gamma, p);
-    let gammaDelta = modPow(gamma, delta, p);
-    let rightSide = (yGamma * gammaDelta) % p;
-
-    let isValid = (leftSide === rightSide);
-    let resText = isValid ? "HỢP LỆ (Signature Valid ✓)" : "KHÔNG HỢP LỆ (Signature Invalid ✗)";
-    let resColor = isValid ? "var(--accent-cyan)" : "var(--accent-rose)";
-
-    document.getElementById('verOutput').value = resText;
-    document.getElementById('verOutput').style.color = resColor;
-    document.getElementById('verVisualStep').style.display = 'block';
-    document.getElementById('verTraceText').innerHTML = `LHS = ${leftSide} | RHS = ${rightSide} ➔ <strong>${resText}</strong>`;
 }
 </script>
 {% endblock %}
