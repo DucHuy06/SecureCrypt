@@ -23,7 +23,7 @@
         <i class="fa-solid fa-shield-halved text-rose me-2"></i>Mật mã ElGamal & Chữ ký số
     </h1>
     <div style="color: var(--text-muted); font-size: 14px;">
-        Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn Z_p*.
+        Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn \(\mathbb{Z}_p^*\).
     </div>
 </div>
 
@@ -35,15 +35,15 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p (Ví dụ: 257):</label>
-            <input type="text" id="elgP" value="" placeholder="Nhập p...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
+            <input type="text" id="elgP" value="" placeholder="Nhập p (VD: 257)...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g (Ví dụ: 5):</label>
-            <input type="text" id="elgG" value="" placeholder="Nhập g...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
+            <input type="text" id="elgG" value="" placeholder="Nhập g (VD: 5)...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x (Ví dụ: 6):</label>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
             <input type="text" id="elgX" value="" placeholder="Nhập x (0 < x < p)...">
         </div>
     </div>
@@ -75,13 +75,13 @@
     </div>
 
     <div style="margin-bottom: 12px;">
-        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M (Nhập số nguyên nhỏ hơn p, hoặc dãy số cách nhau bằng dấu cách):</label>
-        <textarea id="elgMsg" rows="2" placeholder="Ví dụ: 7 hoặc 12 15 8..."></textarea>
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M:</label>
+        <textarea id="elgMsg" rows="2" placeholder="Nhập số nguyên nhỏ hơn p, hoặc dãy số cách nhau bằng dấu cách (VD: 7 hoặc 12 15 8)..."></textarea>
     </div>
 
     <div style="margin-bottom: 12px;">
-        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa ngẫu nhiên k (Tùy chọn - để trống sẽ tự sinh):</label>
-        <input type="text" id="elgK" value="" placeholder="Nhập k (ví dụ: 29)...">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa ngẫu nhiên k:</label>
+        <input type="text" id="elgK" value="" placeholder="Tùy chọn - để trống hệ thống sẽ tự sinh ngẫu nhiên...">
     </div>
 
     <div style="margin-top: 10px;">
@@ -111,17 +111,17 @@
         <i class="fa-solid fa-lock-open text-emerald"></i> 3. Thao tác Giải mã bản mã (C ➔ M)
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Dán bản mã dạng cặp (c₁, c₂) vào đây:</label>
-    <textarea id="elgDecryptInput" rows="2" placeholder="Dán bản mã vào đây (ví dụ: (39,65))..."></textarea>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Dán bản mã dạng cặp (c₁, c₂):</label>
+    <textarea id="elgDecryptInput" rows="2" placeholder="Dán bản mã vào đây (VD: (39, 65))..."></textarea>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
-            <input type="text" id="elgDecryptX" value="" placeholder="Nhập thủ công giá trị x...">
+            <input type="text" id="elgDecryptX" value="" placeholder="Nhập khóa bí mật x...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="elgDecryptP" value="" placeholder="Nhập thủ công giá trị p...">
+            <input type="text" id="elgDecryptP" value="" placeholder="Nhập số nguyên tố p...">
         </div>
     </div>
 
@@ -144,17 +144,17 @@
 <!-- KHỐI 4: TÍNH CHỮ KÝ SỐ ELGAMAL -->
 <div class="crypto-card" style="border: 2px solid var(--accent-emerald);">
     <div class="card-title-header" style="color: #34d399;">
-        <i class="fa-solid fa-file-signature"></i> 4. Tính Chữ ký số ElGamal (γ, δ) cho Bài tập
+        <i class="fa-solid fa-file-signature"></i> 4. Tính Chữ ký số ElGamal (γ, δ)
     </div>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp x:</label>
-            <input type="text" id="sigXMsg" placeholder="Nhập x (ví dụ: 50)...">
+            <input type="text" id="sigXMsg" placeholder="Nhập thông điệp x...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa ngẫu nhiên k:</label>
-            <input type="text" id="sigK" placeholder="Nhập k (ví dụ: 29)...">
+            <input type="text" id="sigK" placeholder="Nhập khóa ngẫu nhiên k...">
         </div>
     </div>
 
@@ -173,7 +173,7 @@
     </div>
 </div>
 
-<!-- KHỐI 5: XÁC THỰC CHỮ KÝ SỐ ELGAMAL (BỔ SUNG MỚI CHO MAX PING) -->
+<!-- KHỐI 5: XÁC THỰC CHỮ KÝ SỐ ELGAMAL (ĐỘC LẬP HOÀN TOÀN) -->
 <div class="crypto-card" style="border: 2px solid var(--accent-cyan);">
     <div class="card-title-header" style="color: var(--accent-cyan);">
         <i class="fa-solid fa-shield-check"></i> 5. Xác thực Chữ ký số ElGamal (Verification)
@@ -182,7 +182,7 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp gốc x:</label>
-            <input type="text" id="verXMsg" placeholder="Nhập thông điệp x...">
+            <input type="text" id="verXMsg" placeholder="Nhập thông điệp gốc x...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Chữ ký số (γ, δ):</label>
@@ -193,15 +193,15 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="verP" placeholder="Nhập p...">
+            <input type="text" id="verP" placeholder="Nhập số nguyên tố p...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
-            <input type="text" id="verG" placeholder="Nhập g...">
+            <input type="text" id="verG" placeholder="Nhập phần tử sinh g...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa công khai y:</label>
-            <input type="text" id="verY" placeholder="Nhập y...">
+            <input type="text" id="verY" placeholder="Nhập khóa công khai y...">
         </div>
     </div>
 
@@ -288,11 +288,6 @@ function genElGamalKey() {
 
     lastY = modPow(lastG, lastX, lastP);
     document.getElementById('elgPublic').value = `p = ${lastP}, g = ${lastG}, y = ${lastY}`;
-
-    // Tự động điền dữ liệu sang các khối bên dưới để tiện test
-    document.getElementById('verP').value = lastP.toString();
-    document.getElementById('verG').value = lastG.toString();
-    document.getElementById('verY').value = lastY.toString();
 
     document.getElementById('elgKeyVisualStep').style.display = 'block';
     document.getElementById('elgKeyTraceText').innerHTML = `
@@ -445,10 +440,6 @@ function runElGamalSignature() {
 
     let sigResult = `(${gamma}, ${delta})`;
     document.getElementById('sigOutput').value = sigResult;
-    
-    // Tự động điền sang khối xác thực phía dưới
-    document.getElementById('verXMsg').value = xMsgStr;
-    document.getElementById('verSig').value = sigResult;
 
     document.getElementById('sigVisualStep').style.display = 'block';
     document.getElementById('sigTraceText').innerHTML = `
@@ -463,7 +454,7 @@ function runElGamalSignature() {
     `;
 }
 
-// HÀM XÁC THỰC CHỮ KÝ SỐ ELGAMAL (VERIFICATION)
+// XÁC THỰC HOÀN TOÀN ĐỘC LẬP
 function runElGamalVerify() {
     let xMsgStr = document.getElementById('verXMsg').value.trim();
     let sigStr = document.getElementById('verSig').value.trim();
@@ -472,7 +463,7 @@ function runElGamalVerify() {
     let yStr = document.getElementById('verY').value.trim();
 
     if(!xMsgStr || !sigStr || !pStr || !gStr || !yStr) {
-        alert('Vui lòng nhập đầy đủ thông điệp, chữ ký (gamma, delta) và các tham số p, g, y!');
+        alert('Vui lòng nhập đầy đủ thông điệp, chữ ký (gamma, delta) và các tham số p, g, y ở Khối 5!');
         return;
     }
 
@@ -481,7 +472,6 @@ function runElGamalVerify() {
     let g = BigInt(gStr);
     let y = BigInt(yStr);
 
-    // Lọc lấy hai số gamma và delta từ chuỗi nhập vào
     let cleanSig = sigStr.replace(/[()\s]/g, '');
     let parts = cleanSig.split(',');
     if(parts.length < 2) {
@@ -491,17 +481,13 @@ function runElGamalVerify() {
     let gamma = BigInt(parts[0]);
     let delta = BigInt(parts[1]);
 
-    // Kiểm tra điều kiện 0 < gamma < p
     if(gamma <= 0n || gamma >= p) {
         document.getElementById('verOutput').value = "KHÔNG HỢP LỆ (Vi phạm điều kiện 0 < γ < p)";
         document.getElementById('verOutput').style.color = "var(--accent-rose)";
         return;
     }
 
-    // Vế trái: g^x mod p
     let leftSide = modPow(g, xMsg, p);
-
-    // Vế phải: (y^gamma * gamma^delta) mod p
     let yGamma = modPow(y, gamma, p);
     let gammaDelta = modPow(gamma, delta, p);
     let rightSide = (yGamma * gammaDelta) % p;
@@ -516,20 +502,13 @@ function runElGamalVerify() {
 
     document.getElementById('verVisualStep').style.display = 'block';
     document.getElementById('verTraceText').innerHTML = `
-        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[BƯỚC 5: KIỂM TRA ĐIỀU KIỆN XÁC THỰC]</div>
-        <div>• <strong>Công thức kiểm tra:</strong> gˣ ≡ yᵝ · γᵠ (mod p) tương đương g^x ≡ (y^γ · γ^δ) mod p</div>
+        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[XÁC THỰC CHỮ KÝ SỐ ELGAMAL]</div>
+        <div>• <strong>Công thức kiểm tra:</strong> gˣ ≡ yᵝ · γᵠ (mod p)</div>
         <div>• <strong>Vế trái (LHS):</strong> gˣ mod p = ${g}^${xMsg} mod ${p} = <strong style="color:#ffffff">${leftSide}</strong></div>
-        <div>• <strong>Vế phải (RHS):</strong></div>
-        <div style="padding-left: 15px;">
-            - yᵝ mod p = ${y}^${gamma} mod ${p} = ${yGamma}<br>
-            - γᵠ mod p = ${gamma}^${delta} mod ${p} = ${gammaDelta}<br>
-            - (yᵝ · γᵠ) mod p = (${yGamma} × ${gammaDelta}) mod ${p} = <strong style="color:#ffffff">${rightSide}</strong>
-        </div>
-        <div style="margin-top: 8px;">
-            • <strong>So sánh:</strong> LHS (${leftSide}) ${isValid ? '===' : '!=='} RHS (${rightSide})
-        </div>
+        <div>• <strong>Vế phải (RHS):</strong> (yᵝ · γᵠ) mod p = (${y}^${gamma} mod ${p} × ${gamma}^${delta} mod ${p}) mod ${p} = <strong style="color:#ffffff">${rightSide}</strong></div>
+        <div style="margin-top: 6px;">• <strong>So sánh:</strong> LHS (${leftSide}) ${isValid ? '===' : '!=='} RHS (${rightSide})</div>
         <div style="color: ${resColor}; font-weight: bold; margin-top: 6px; font-size: 14px;">
-            ➔ KẾT LUẬN: CHỮ KÝ SỐ NÀY LÀ <span style="text-transform: uppercase;">${resText}</span>
+            ➔ KẾT LUẬN: <span style="text-transform: uppercase;">${resText}</span>
         </div>
     `;
 }
