@@ -5,7 +5,11 @@ from Crypto.Util import number
 
 class ElGamalCrypto:
     @staticmethod
-    def generate_keypair(bits: int = 512) -> dict:
+    def generate_keypair(bits: int = 256) -> dict:
+        """
+        Sinh cặp khóa ElGamal. 
+        Mặc định để số bit = 256 để cân bằng giữa tốc độ xử lý trên web và tính bảo mật mô phỏng.
+        """
         try:
             p = number.getPrime(bits)
             g = random.randint(2, p - 1)
@@ -27,12 +31,23 @@ class ElGamalCrypto:
     @staticmethod
     def encrypt(plaintext: str, public_key_json: str) -> dict:
         try:
+            # Giới hạn độ dài chuỗi đầu vào để tránh việc sinh mảng cặp số quá lớn gây nặng web
+            if len(plaintext) > 100:
+                return {
+                    "status": "error", 
+                    "message": "Do đặc thù của thuật toán ElGamal mô phỏng trên web, vui lòng nhập văn bản ngắn hơn 100 ký tự."
+                }
+
             pub_key = json.loads(public_key_json)
             p, g, y = int(pub_key["p"]), int(pub_key["g"]), int(pub_key["y"])
 
             cipher_pairs = []
             for b in plaintext.encode('utf-8'):
                 m = int(b)
+                # Kiểm tra an toàn: giá trị byte phải nhỏ hơn p
+                if m >= p:
+                    return {"status": "error", "message": "Ký tự vượt quá giới hạn của số nguyên tố p."}
+                
                 k = random.randint(2, p - 2)
                 c1 = pow(g, k, p)
                 c2 = (m * pow(y, k, p)) % p
@@ -62,4 +77,4 @@ class ElGamalCrypto:
 
             return {"status": "success", "plaintext": decrypted_bytes.decode('utf-8')}
         except Exception as e:
-            return {"status": "error", "message": f"Giải mã ElGamal thất bại: {str(e)}"}
+            return {"status": "error", "message": f"Giải mã ElGamal thất bại: Khóa sai hoặc dữ liệu hỏng ({str(e)})."}
