@@ -7,8 +7,7 @@ class ElGamalCrypto:
     @staticmethod
     def generate_keypair(bits: int = 256) -> dict:
         """
-        Sinh cặp khóa ElGamal. 
-        Mặc định để số bit = 256 để cân bằng giữa tốc độ xử lý trên web và tính bảo mật mô phỏng.
+        Sinh cặp khóa ElGamal chuẩn số nguyên.
         """
         try:
             p = number.getPrime(bits)
@@ -31,22 +30,18 @@ class ElGamalCrypto:
     @staticmethod
     def encrypt(plaintext: str, public_key_json: str) -> dict:
         try:
-            # Giới hạn độ dài chuỗi đầu vào để tránh việc sinh mảng cặp số quá lớn gây nặng web
-            if len(plaintext) > 100:
-                return {
-                    "status": "error", 
-                    "message": "Do đặc thù của thuật toán ElGamal mô phỏng trên web, vui lòng nhập văn bản ngắn hơn 100 ký tự."
-                }
-
             pub_key = json.loads(public_key_json)
             p, g, y = int(pub_key["p"]), int(pub_key["g"]), int(pub_key["y"])
 
+            # Tách chuỗi theo khoảng trắng hoặc dấu phẩy để xử lý từng số nguyên M
+            import re
+            parts = [p.strip() for p in re.split(r'[\s,]+', plaintext.strip()) if p.strip()]
+            
             cipher_pairs = []
-            for b in plaintext.encode('utf-8'):
-                m = int(b)
-                # Kiểm tra an toàn: giá trị byte phải nhỏ hơn p
+            for part in parts:
+                m = int(part)
                 if m >= p:
-                    return {"status": "error", "message": "Ký tự vượt quá giới hạn của số nguyên tố p."}
+                    return {"status": "error", "message": f"Lỗi: Thông điệp M = {m} phải nhỏ hơn số nguyên tố p ({p})."}
                 
                 k = random.randint(2, p - 2)
                 c1 = pow(g, k, p)
@@ -65,16 +60,27 @@ class ElGamalCrypto:
             priv_key = json.loads(private_key_json)
             p, x = int(priv_key["p"]), int(priv_key["x"])
 
-            json_str = base64.b64decode(ciphertext_b64).decode('utf-8')
-            cipher_pairs = json.loads(json_str)
+            # Giải mã chuỗi base64 thành danh sách cặp bản mã
+            try:
+                json_str = base64.b64decode(ciphertext_b64).decode('utf-8')
+                cipher_pairs = json.loads(json_str)
+            except Exception:
+                # Fallback nếu truyền trực tiếp dạng chuỗi cặp thô
+                import re
+                matches = re.findall(r'\(\s*(\d+)\s*٬,\s*(\d+)\s*\)', ciphertext_b64)
+                if not matches:
+                    matches = re.findall(r'(\d+)\s*,\s*(\d+)', ciphertext_b64)
+                cipher_pairs = matches
 
-            decrypted_bytes = bytearray()
+            plain_results = []
             for pair in cipher_pairs:
                 c1, c2 = int(pair[0]), int(pair[1])
                 s = pow(c1, x, p)
                 s_inv = number.inverse(s, p)
-                decrypted_bytes.append((c2 * s_inv) % p)
+                m = (c2 * s_inv) % p
+                plain_results.append(str(m))
 
-            return {"status": "success", "plaintext": decrypted_bytes.decode('utf-8')}
+            # Trả về các thông điệp số nguyên phân tách bằng khoảng trắng
+            return {"status": "success", "plaintext": " ".join(plain_results)}
         except Exception as e:
             return {"status": "error", "message": f"Giải mã ElGamal thất bại: Khóa sai hoặc dữ liệu hỏng ({str(e)})."}
