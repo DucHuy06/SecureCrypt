@@ -132,7 +132,12 @@
         <button type="button" onclick="clearElgDecrypt()"><i class="fa-solid fa-trash"></i> Xóa khối</button>
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; margin-top: 16px; display: block;">Thông điệp gốc M phục hồi:</label>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp gốc M phục hồi:</label>
+        <button type="button" onclick="copyInput('elgDecryptedOutput')" style="padding: 4px 12px; font-size: 12px; background: #334155;">
+            <i class="fa-solid fa-copy"></i> Copy Thông Điệp M
+        </button>
+    </div>
     <textarea id="elgDecryptedOutput" rows="2" readonly placeholder="Thông điệp M sau khi giải mã sẽ hiển thị tại đây..."></textarea>
 
     <div class="step-trace-box" id="elgDecryptVisualStep" style="display: none; margin-top: 20px;">
@@ -325,19 +330,19 @@ function runElGamalEncrypt() {
     let kStr = document.getElementById('elgK').value.trim();
 
     if(!text) { alert('Vui lòng nhập thông điệp M cần mã hóa!'); return; }
-    if(lastP === 0n) {
-        let pIn = document.getElementById('elgP').value.trim();
-        let gIn = document.getElementById('elgG').value.trim();
-        let xIn = document.getElementById('elgX').value.trim();
-        if(pIn && gIn && xIn) {
-            lastP = BigInt(pIn);
-            lastG = BigInt(gIn);
-            lastX = BigInt(xIn);
-            lastY = modPow(lastG, lastX, lastP);
-        } else {
-            alert('Vui lòng thiết lập tham số p, g, x ở Khối 1 trước!');
-            return;
-        }
+    
+    // Tự động lấy tham số từ Khối 1 nếu chưa bấm
+    let pIn = document.getElementById('elgP').value.trim();
+    let gIn = document.getElementById('elgG').value.trim();
+    let xIn = document.getElementById('elgX').value.trim();
+    if(pIn && gIn) {
+        lastP = BigInt(pIn);
+        lastG = BigInt(gIn);
+        if(xIn) { lastX = BigInt(xIn); lastY = modPow(lastG, lastX, lastP); }
+    }
+    if(lastP === 0n || lastY === 0n) {
+        alert('Vui lòng nhập đủ p, g, x và tính Khóa Công Khai ở Bước 1 trước!');
+        return;
     }
 
     let cipherPairs = [];
@@ -352,13 +357,19 @@ function runElGamalEncrypt() {
         let c2 = (m * yk) % lastP;
 
         cipherPairs.push(`(${c1}, ${c2})`);
-        mathSteps.push(`M = ${m}, k = ${k} ➔ c₁ = ${c1}, c₂ = ${c2}`);
+        mathSteps.push(`M = ${m}, k = ${k} ➔ c₁ = gᵏ mod p = ${lastG}^${k} mod ${lastP} = <strong>${c1}</strong>, c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
     });
 
     let ciphertextStr = cipherPairs.join(' ');
     document.getElementById('elgOutput').value = ciphertextStr;
     document.getElementById('elgVisualStep').style.display = 'block';
-    document.getElementById('elgTraceText').innerHTML = mathSteps.join('<br>');
+    document.getElementById('elgTraceText').innerHTML = `
+        <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[BƯỚC 2: QUÁ TRÌNH MÃ HÓA SỐ NGUYÊN]</div>
+        <div>• <strong>Thông điệp đầu vào M:</strong> ${text}</div>
+        <div>• <strong>Chi tiết sinh cặp bản mã (c₁, c₂):</strong></div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">${mathSteps.join('<br>')}</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">➔ BẢN MÃ THU ĐƯỢC: <span style="color:#f43f5e">${ciphertextStr}</span></div>
+    `;
 }
 
 function runElGamalDecrypt() {
@@ -390,15 +401,22 @@ function runElGamalDecrypt() {
         let m = (c2 * c1xInv) % p;
 
         plainResults.push(m.toString());
-        mathSteps.push(`(${c1}, ${c2}) ➔ M = ${c2} × (${c1}^${x})⁻¹ mod ${p} = <strong>${m}</strong>`);
+        mathSteps.push(`(${c1}, ${c2}) ➔ M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = <strong>${m}</strong>`);
     });
 
     let decryptedText = plainResults.join(' ');
     document.getElementById('elgDecryptedOutput').value = decryptedText;
     document.getElementById('elgDecryptVisualStep').style.display = 'block';
-    document.getElementById('elgDecryptTraceText').innerHTML = mathSteps.join('<br>');
+    document.getElementById('elgDecryptTraceText').innerHTML = `
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[BƯỚC 3: QUÁ TRÌNH GIẢI MÃ]</div>
+        <div>• <strong>Bản mã đầu vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+        <div>• <strong>Chi tiết khôi phục:</strong></div>
+        <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">${mathSteps.join('<br>')}</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ KHÔI PHỤC THÀNH CÔNG THÔNG ĐIỆP M: "<span style="color:#ffffff">${decryptedText}</span>"</div>
+    `;
 }
 
+// KHỐI 4: TÍNH CHỮ KÝ SỐ (ĐƯỢC VIẾT ĐỘC LẬP HOÀN TOÀN, BẤM LÀ CHẠY NGAY)
 function runElGamalSignature() {
     let mMsgStr = document.getElementById('sigMMsg').value.trim();
     let kStr = document.getElementById('sigK').value.trim();
@@ -407,7 +425,7 @@ function runElGamalSignature() {
     let xStr = document.getElementById('elgX').value.trim();
 
     if(!mMsgStr || !kStr) { 
-        alert('Vui lòng nhập đầy đủ thông điệp M và khóa k!'); 
+        alert('Vui lòng nhập đầy đủ thông điệp M và khóa ngẫu nhiên k ở Khối 4!'); 
         return; 
     }
 
@@ -441,9 +459,10 @@ function runElGamalSignature() {
     document.getElementById('sigOutput').value = sigResult;
     document.getElementById('sigVisualStep').style.display = 'block';
     document.getElementById('sigTraceText').innerHTML = `
-        • <strong>γ (gamma):</strong> g^k mod p = ${g}^${k} mod ${p} = <strong style="color:#34d399">${gamma}</strong><br>
-        • <strong>δ (delta):</strong> (M - x·gamma) * k⁻¹ mod (p-1) = <strong style="color:#34d399">${delta}</strong><br>
-        <span style="color:#34d399; font-weight:bold;">➔ CHỮ KÝ: (${gamma}, ${delta})</span>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[BƯỚC 4: CHI TIẾT TÍNH CHỮ KÝ SỐ]</div>
+        <div>• <strong>Tính γ (gamma):</strong> gᵏ mod p = ${g}^${k} mod ${p} = <strong style="color:#34d399">${gamma}</strong></div>
+        <div>• <strong>Tính δ (delta):</strong> (M - x·γ) · k⁻¹ mod (p-1) = (${M} - ${x}×${gamma}) × ${k}⁻¹ mod ${pMinus1} = <strong style="color:#34d399">${delta}</strong></div>
+        <div style="color: #34d399; font-weight: bold; margin-top: 6px;">➔ CHỮ KÝ SỐ THU ĐƯỢC: (${gamma}, ${delta})</div>
     `;
 }
 
