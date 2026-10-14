@@ -23,7 +23,7 @@
         <i class="fa-solid fa-key text-amber me-2"></i>Mật mã Bất đối xứng RSA
     </h1>
     <div style="color: var(--text-muted); font-size: 14px;">
-        Hệ thống mã hóa khóa công khai dựa trên độ khó của bài toán Phân tích số nguyên lớn ra thừa số nguyên tố.
+        Hệ thống mã hóa khóa công khai và chữ ký số dựa trên độ khó của bài toán phân tích số nguyên lớn.
     </div>
 </div>
 
@@ -88,7 +88,7 @@
 <!-- KHỐI 2: THAO TÁC MÃ HÓA RSA -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa văn bản (Dùng Khóa công khai e, n)
+        <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa văn bản
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc / Các số nguyên M (cách nhau bằng dấu cách):</label>
@@ -96,12 +96,12 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa công khai e:</label>
-            <input type="text" id="rsaEncryptKeyE" value="" placeholder="Để trống sẽ tự lấy từ Bước 1...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa e:</label>
+            <input type="text" id="rsaEncryptKeyE" value="" placeholder="Nhập e...">
         </div>
         <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa chung n:</label>
-            <input type="text" id="rsaEncryptKeyN" value="" placeholder="Để trống sẽ tự lấy từ Bước 1...">
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa n:</label>
+            <input type="text" id="rsaEncryptKeyN" value="" placeholder="Nhập n...">
         </div>
     </div>
 
@@ -129,7 +129,7 @@
 <!-- KHỐI 3: THAO TÁC GIẢI MÃ RSA -->
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-lock-open text-emerald"></i> 3. Thao tác Giải mã bản mã (Dùng Khóa bí mật d, n)
+        <i class="fa-solid fa-lock-open text-emerald"></i> 3. Thao tác Giải mã bản mã
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Dán bản mã cần giải mã vào đây:</label>
@@ -138,11 +138,11 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật d:</label>
-            <input type="text" id="rsaDecryptKeyD" value="" placeholder="Để trống sẽ tự lấy từ Bước 1...">
+            <input type="text" id="rsaDecryptKeyD" value="" placeholder="Nhập d...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa chung n:</label>
-            <input type="text" id="rsaDecryptKeyN" value="" placeholder="Để trống sẽ tự lấy từ Bước 1...">
+            <input type="text" id="rsaDecryptKeyN" value="" placeholder="Nhập n...">
         </div>
     </div>
 
@@ -164,6 +164,76 @@
     <div class="step-trace-box" id="rsaDecryptVisualStep" style="display: none; margin-top: 20px;">
         <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết quá trình giải mã</div>
         <div id="rsaDecryptTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
+    </div>
+</div>
+
+<!-- KHỐI 4: CHỮ KÝ SỐ RSA -->
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-file-signature text-amber"></i> 4. Chữ ký số RSA (Ký & Xác thực)
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <!-- Phần Ký số -->
+        <div style="background: rgba(15, 23, 42, 0.4); padding: 16px; border-radius: 8px; border: 1px solid #334155;">
+            <h3 style="font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 12px;">
+                <i class="fa-solid fa-pen-nib text-amber"></i> Tạo Chữ Ký (Signing)
+            </h3>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp cần ký (M):</label>
+            <input type="text" id="rsaSignMsg" value="" placeholder="Nhập thông điệp..." style="margin-bottom: 10px;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label style="font-weight: 600; font-size: 12px; color: #cbd5e1;">Khóa bí mật d:</label>
+                    <input type="text" id="rsaSignD" value="" placeholder="Nhập d...">
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 12px; color: #cbd5e1;">Khóa chung n:</label>
+                    <input type="text" id="rsaSignN" value="" placeholder="Nhập n...">
+                </div>
+            </div>
+
+            <button type="button" onclick="signRSA()" style="background: var(--accent-amber); color: #000; font-weight: 700; width: 100%;">
+                <i class="fa-solid fa-file-signature"></i> Tạo chữ ký số
+            </button>
+
+            <div style="margin-top: 12px;">
+                <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Chữ ký số (S):</label>
+                <textarea id="rsaSignature" rows="2" readonly placeholder="Chữ ký tạo ra sẽ hiển thị tại đây..."></textarea>
+            </div>
+        </div>
+
+        <!-- Phần Xác thực chữ ký -->
+        <div style="background: rgba(15, 23, 42, 0.4); padding: 16px; border-radius: 8px; border: 1px solid #334155;">
+            <h3 style="font-size: 16px; font-weight: 700; color: #f8fafc; margin-bottom: 12px;">
+                <i class="fa-solid fa-shield-check text-emerald"></i> Xác Thực Chữ Ký (Verification)
+            </h3>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp gốc (M):</label>
+            <input type="text" id="rsaVerifyMsg" value="" placeholder="Nhập thông điệp gốc..." style="margin-bottom: 10px;">
+
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Chữ ký nhận được (S):</label>
+            <input type="text" id="rsaVerifySig" value="" placeholder="Nhập chữ ký cần kiểm tra..." style="margin-bottom: 10px;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <div>
+                    <label style="font-weight: 600; font-size: 12px; color: #cbd5e1;">Khóa công khai e:</label>
+                    <input type="text" id="rsaVerifyE" value="" placeholder="Nhập e...">
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 12px; color: #cbd5e1;">Khóa chung n:</label>
+                    <input type="text" id="rsaVerifyN" value="" placeholder="Nhập n...">
+                </div>
+            </div>
+
+            <button type="button" onclick="verifyRSA()" style="background: var(--accent-emerald); color: #000; font-weight: 700; width: 100%;">
+                <i class="fa-solid fa-check-to-slot"></i> Xác thực chữ ký
+            </button>
+
+            <div style="margin-top: 12px;">
+                <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Kết quả xác thực:</label>
+                <div id="rsaVerifyResult" style="padding: 10px; background: #1e293b; border-radius: 6px; font-family: monospace; font-size: 13px; min-height: 45px; display: flex; align-items: center; color: #94a3b8;">Chưa xác thực...</div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -248,18 +318,29 @@ function generateRSAKeys() {
     lastE = e;
     lastD = d;
 
+    // Gán kết quả sinh khóa
     document.getElementById('rsaPublic').value = `e = ${e.toString()}, n = ${n.toString()}`;
     document.getElementById('rsaPrivateD').value = d.toString();
     document.getElementById('rsaPrivateN').value = n.toString();
+
+    // Tự động điền nhanh vào các khối dưới để tiện thao tác
+    document.getElementById('rsaEncryptKeyE').value = e.toString();
+    document.getElementById('rsaEncryptKeyN').value = n.toString();
+    document.getElementById('rsaDecryptKeyD').value = d.toString();
+    document.getElementById('rsaDecryptKeyN').value = n.toString();
+    document.getElementById('rsaSignD').value = d.toString();
+    document.getElementById('rsaSignN').value = n.toString();
+    document.getElementById('rsaVerifyE').value = e.toString();
+    document.getElementById('rsaVerifyN').value = n.toString();
 
     document.getElementById('rsaKeyVisualStep').style.display = 'block';
     document.getElementById('rsaKeyTraceText').innerHTML = `
         <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">[BƯỚC 1: XÂY DỰNG KHÓA]</div>
         <div>• <strong>Chọn hai số nguyên tố:</strong> p = ${p.toString()}, q = ${q.toString()}</div>
         <div>• <strong>Tính tích khóa chung (n):</strong> n = p × q = <span style="color:#06b6d4">${n.toString()}</span></div>
-        <div>• <strong>Tính hàm số Euler Phi:</strong> φ(n) = <span style="color:#06b6d4">${phi.toString()}</span></div>
+        <div>• <strong>Tính hàm số Euler Phi:</strong> φ(n) = (p-1)(q-1) = <span style="color:#06b6d4">${phi.toString()}</span></div>
         <div>• <strong>Số mũ công khai (e):</strong> <span style="color:#06b6d4">${e.toString()}</span> | <strong>Số mũ bí mật (d):</strong> <span style="color:#10b981">${d.toString()}</span></div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT: Cấp thành công Khóa Công Khai và Khóa Bí Mật.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT: Đã cấp khóa thành công và đồng bộ sẵn vào các bước mã hóa/giải mã/ký số.</div>
     `;
 }
 
@@ -315,7 +396,6 @@ function encryptRSA() {
     });
 
     let ciphertext = cipherArr.join(' ');
-
     document.getElementById('rsaCiphertext').value = ciphertext;
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
@@ -357,7 +437,6 @@ function decryptRSA() {
     });
 
     let decryptedText = plainResults.join(' ');
-
     document.getElementById('rsaDecryptedPlaintext').value = decryptedText;
     document.getElementById('rsaDecryptVisualStep').style.display = 'block';
     document.getElementById('rsaDecryptTraceText').innerHTML = `
@@ -369,6 +448,54 @@ function decryptRSA() {
         </div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ VĂN BẢN GỐC PHỤC HỒI: "<span style="color:#ffffff">${decryptedText}</span>"</div>
     `;
+}
+
+// Xử lý chữ ký số RSA: S = M^d mod n
+function signRSA() {
+    let msgStr = document.getElementById('rsaSignMsg').value.trim();
+    let dStr = document.getElementById('rsaSignD').value.trim();
+    let nStr = document.getElementById('rsaSignN').value.trim();
+
+    if(!msgStr) { alert('Vui lòng nhập thông điệp cần ký!'); return; }
+    let d = dStr ? BigInt(dStr) : lastD;
+    let n = nStr ? BigInt(nStr) : lastN;
+
+    if(d === 0n || n === 0n) {
+        alert('Chưa có khóa bí mật d và n!');
+        return;
+    }
+
+    let m = BigInt(msgStr);
+    let signature = modPow(m, d, n);
+    document.getElementById('rsaSignature').value = signature.toString();
+}
+
+// Xác thực chữ ký số: M' = S^e mod n, so sánh M' với M
+function verifyRSA() {
+    let msgStr = document.getElementById('rsaVerifyMsg').value.trim();
+    let sigStr = document.getElementById('rsaVerifySig').value.trim();
+    let eStr = document.getElementById('rsaVerifyE').value.trim();
+    let nStr = document.getElementById('rsaVerifyN').value.trim();
+
+    if(!msgStr || !sigStr) { alert('Vui lòng nhập đầy đủ thông điệp và chữ ký cần xác thực!'); return; }
+    let e = eStr ? BigInt(eStr) : lastE;
+    let n = nStr ? BigInt(nStr) : lastN;
+
+    if(e === 0n || n === 0n) {
+        alert('Chưa có khóa công khai e và n!');
+        return;
+    }
+
+    let mOriginal = BigInt(msgStr);
+    let s = BigInt(sigStr);
+    let mRecovered = modPow(s, e, n);
+
+    let resBox = document.getElementById('rsaVerifyResult');
+    if (mRecovered === mOriginal) {
+        resBox.innerHTML = `<span style="color: #34d399; font-weight: bold;"><i class="fa-solid fa-circle-check"></i> CHỮ KÝ HỢP LỆ! (M bản khôi phục = ${mRecovered})</span>`;
+    } else {
+        resBox.innerHTML = `<span style="color: #f43f5e; font-weight: bold;"><i class="fa-solid fa-circle-xmark"></i> CHỮ KÝ KHÔNG HỢP LỆ! (Khác biệt so với thông điệp gốc)</span>`;
+    }
 }
 </script>
 {% endblock %}
