@@ -20,10 +20,10 @@
 
 <div class="hero-banner" style="margin-bottom: 24px;">
     <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
-        <i class="fa-solid fa-shield-halved text-rose me-2"></i>Mật mã ElGamal & Chữ ký số
+        <i class="fa-solid fa-shield-halved text-rose me-2"></i>Mật mã ElGamal
     </h1>
     <div style="color: var(--text-muted); font-size: 14px;">
-        Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn \(\mathbb{Z}_p^*\).
+        Hệ thống mật mã bất đối xứng dựa trên bài toán Logarit rời rạc trên trường hữu hạn.
     </div>
 </div>
 
@@ -146,103 +146,6 @@
     </div>
 </div>
 
-<!-- KHỐI 4: TÍNH CHỮ KÝ SỐ ELGAMAL -->
-<div class="crypto-card" style="border: 2px solid var(--accent-emerald);">
-    <div class="card-title-header" style="color: #34d399;">
-        <i class="fa-solid fa-file-signature"></i> 4. Tính Chữ ký số ElGamal (γ, δ)
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M:</label>
-            <input type="text" id="sigMMsg" placeholder="Nhập thông điệp M...">
-        </div>
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa ngẫu nhiên k:</label>
-            <input type="text" id="sigK" placeholder="Nhập khóa ngẫu nhiên k...">
-        </div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="sigP" placeholder="Nhập p...">
-        </div>
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
-            <input type="text" id="sigG" placeholder="Nhập g...">
-        </div>
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa bí mật x:</label>
-            <input type="text" id="sigX" placeholder="Nhập x...">
-        </div>
-    </div>
-
-    <button type="button" onclick="runElGamalSignature()" style="background: var(--accent-emerald); color: #000; font-weight: 700;">
-        <i class="fa-solid fa-signature"></i> Tính Chữ ký số ElGamal
-    </button>
-
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
-        <label style="font-weight: 600; font-size: 13px; color: #34d399;">Chữ ký số thu được (γ, δ):</label>
-        <button type="button" onclick="copyInput('sigOutput')" style="padding: 4px 12px; font-size: 12px; background: #334155;">
-            <i class="fa-solid fa-copy"></i> Copy Chữ Ký (γ, δ)
-        </button>
-    </div>
-    <input type="text" id="sigOutput" readonly placeholder="Kết quả chữ ký..." style="color: #34d399; font-weight: bold;">
-
-    <div class="step-trace-box" id="sigVisualStep" style="display: none; margin-top: 20px;">
-        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết Chữ ký số ElGamal</div>
-        <div id="sigTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
-    </div>
-</div>
-
-<!-- KHỐI 5: XÁC THỰC CHỮ KÝ SỐ ELGAMAL -->
-<div class="crypto-card" style="border: 2px solid var(--accent-cyan);">
-    <div class="card-title-header" style="color: var(--accent-cyan);">
-        <i class="fa-solid fa-shield-check"></i> 5. Xác thực Chữ ký số ElGamal (Verification)
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp gốc M:</label>
-            <input type="text" id="verMMsg" placeholder="Nhập thông điệp gốc M...">
-        </div>
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Chữ ký số (γ, δ):</label>
-            <input type="text" id="verSig" placeholder="Nhập dạng (gamma, delta)...">
-        </div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="verP" placeholder="Nhập p...">
-        </div>
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Phần tử sinh g:</label>
-            <input type="text" id="verG" placeholder="Nhập g...">
-        </div>
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Khóa công khai y:</label>
-            <input type="text" id="verY" placeholder="Nhập y...">
-        </div>
-    </div>
-
-    <button type="button" onclick="runElGamalVerify()" style="background: var(--accent-cyan); color: #000; font-weight: 700;">
-        <i class="fa-solid fa-circle-check"></i> Xác Thực Chữ Ký
-    </button>
-
-    <div style="margin-top: 12px;">
-        <label style="font-weight: 600; font-size: 13px; color: var(--accent-cyan);">Kết quả kiểm tra tính hợp lệ:</label>
-        <input type="text" id="verOutput" readonly placeholder="Trạng thái xác thực..." style="font-weight: bold;">
-    </div>
-
-    <div class="step-trace-box" id="verVisualStep" style="display: none; margin-top: 20px;">
-        <div class="step-trace-title"><i class="fa-solid fa-diagram-project"></i> Giải thích chi tiết quá trình kiểm tra chữ ký</div>
-        <div id="verTraceText" style="font-family: monospace; font-size: 13px; color: #cbd5e1; line-height: 1.7;"></div>
-    </div>
-</div>
-
 <script>
 let lastP = 0n;
 let lastG = 0n;
@@ -258,10 +161,6 @@ function modPow(base, exp, mod) {
         exp /= 2n;
     }
     return res;
-}
-
-function gcd(a, b) {
-    return b === 0n ? a : gcd(b, a % b);
 }
 
 function BaseModInverse(a, m) {
@@ -371,6 +270,7 @@ function runElGamalEncrypt() {
     let parts = text.split(/[\s,]+/);
 
     parts.forEach(numStr => {
+        if(!numStr) return;
         let m = BigInt(numStr);
         let k = kStr ? BigInt(kStr) : (BigInt(Math.floor(Math.random() * Number(lastP - 3n))) + 2n);
         let c1 = modPow(lastG, k, lastP);
@@ -383,6 +283,7 @@ function runElGamalEncrypt() {
 
     let ciphertextStr = cipherPairs.join(' ');
     document.getElementById('elgOutput').value = ciphertextStr;
+    document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgTraceText').innerHTML = `
         <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[BƯỚC 2: QUÁ TRÌNH MÃ HÓA SỐ NGUYÊN]</div>
@@ -435,104 +336,6 @@ function runElGamalDecrypt() {
         <div style="padding-left: 10px; margin: 6px 0; border-left: 2px solid #475569;">${mathSteps.join('<br>')}</div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ KHÔI PHỤC THÀNH CÔNG THÔNG ĐIỆP M: "<span style="color:#ffffff">${decryptedText}</span>"</div>
     `;
-}
-
-// KHỐI 4: THÊM KIỂM TRA GCD CHUẨN XÁC ĐỂ TRÁNH LỖI DIVISION BY ZERO
-function runElGamalSignature() {
-    try {
-        let mMsgStr = document.getElementById('sigMMsg').value.replace(/\s+/g, '').trim();
-        let kStr = document.getElementById('sigK').value.replace(/\s+/g, '').trim();
-        let pStr = document.getElementById('sigP').value.replace(/\s+/g, '').trim();
-        let gStr = document.getElementById('sigG').value.replace(/\s+/g, '').trim();
-        let xStr = document.getElementById('sigX').value.replace(/\s+/g, '').trim();
-
-        if(!mMsgStr || !kStr || !pStr || !gStr || !xStr) { 
-            alert('Vui lòng nhập đầy đủ thông điệp M, khóa k và các tham số p, g, x ở Khối 4!'); 
-            return; 
-        }
-
-        let p = BigInt(pStr);
-        let g = BigInt(gStr);
-        let x = BigInt(xStr);
-        let M = BigInt(mMsgStr);
-        let k = BigInt(kStr);
-        let pMinus1 = p - 1n;
-
-        // KIỂM TRA ĐIỀU KIỆN TOÁN HỌC: gcd(k, p-1) PHẢI BẰNG 1
-        if (gcd(k, pMinus1) !== 1n) {
-            alert(`Lỗi toán học: gcd(k, p-1) = gcd(${k}, ${pMinus1}) = ${gcd(k, pMinus1)} ≠ 1.\nKhóa ngẫu nhiên k và p-1 phải nguyên tố cùng nhau thì mới tính được chữ ký số! Vui lòng chọn giá trị k khác.`);
-            return;
-        }
-
-        let gamma = modPow(g, k, p);
-        let aGamma = (x * gamma) % pMinus1;
-        let numerator = (M - aGamma) % pMinus1;
-        if (numerator < 0n) numerator += pMinus1;
-
-        let kInv = BaseModInverse(k, pMinus1);
-        let delta = (numerator * kInv) % pMinus1;
-
-        let sigResult = `(${gamma}, ${delta})`;
-        document.getElementById('sigOutput').value = sigResult;
-        document.getElementById('sigVisualStep').style.display = 'block';
-        document.getElementById('sigTraceText').innerHTML = `
-            <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[BƯỚC 4: CHI TIẾT TÍNH CHỮ KÝ SỐ]</div>
-            <div>• <strong>Tính γ (gamma):</strong> gᵏ mod p = ${g}^${k} mod ${p} = <strong style="color:#34d399">${gamma}</strong></div>
-            <div>• <strong>Tính δ (delta):</strong> (M - x·γ) · k⁻¹ mod (p-1) = (${M} - ${x}×${gamma}) × ${k}⁻¹ mod ${pMinus1} = <strong style="color:#34d399">${delta}</strong></div>
-            <div style="color: #34d399; font-weight: bold; margin-top: 6px;">➔ CHỮ KÝ SỐ THU ĐƯỢC: (${gamma}, ${delta})</div>
-        `;
-    } catch (err) {
-        alert('Lỗi tính toán chữ ký số: ' + err.message);
-    }
-}
-
-function runElGamalVerify() {
-    try {
-        let mMsgStr = document.getElementById('verMMsg').value.replace(/\s+/g, '').trim();
-        let sigStr = document.getElementById('verSig').value.trim();
-        let pStr = document.getElementById('verP').value.replace(/\s+/g, '').trim();
-        let gStr = document.getElementById('verG').value.replace(/\s+/g, '').trim();
-        let yStr = document.getElementById('verY').value.replace(/\s+/g, '').trim();
-
-        if(!mMsgStr || !sigStr || !pStr || !gStr || !yStr) {
-            alert('Vui lòng nhập đầy đủ thông tin xác thực ở Khối 5!');
-            return;
-        }
-
-        let M = BigInt(mMsgStr);
-        let p = BigInt(pStr);
-        let g = BigInt(gStr);
-        let y = BigInt(yStr);
-
-        let matchSig = sigStr.match(/(\d+)\s*,\s*(\d+)/);
-        if(!matchSig) {
-            alert('Định dạng chữ ký không hợp lệ! (Phải có dạng gamma, delta)');
-            return;
-        }
-        let gamma = BigInt(matchSig[1]);
-        let delta = BigInt(matchSig[2]);
-
-        let leftSide = modPow(g, M, p);
-        let yGamma = modPow(y, gamma, p);
-        let gammaDelta = modPow(gamma, delta, p);
-        let rightSide = (yGamma * gammaDelta) % p;
-
-        let isValid = (leftSide === rightSide);
-        let resText = isValid ? "HỢP LỆ (Signature Valid ✓)" : "KHÔNG HỢP LỆ (Signature Invalid ✗)";
-        let resColor = isValid ? "var(--accent-cyan)" : "var(--accent-rose)";
-
-        document.getElementById('verOutput').value = resText;
-        document.getElementById('verOutput').style.color = resColor;
-        document.getElementById('verVisualStep').style.display = 'block';
-        document.getElementById('verTraceText').innerHTML = `
-            <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[BƯỚC 5: CHI TIẾT XÁC THỰC CHỮ KÝ]</div>
-            <div>• <strong>Vế trái (LHS = g^M mod p):</strong> ${g}^${M} mod ${p} = <strong>${leftSide}</strong></div>
-            <div>• <strong>Vế phải (RHS = (y^γ · γ^δ) mod p):</strong> (${y}^${gamma} × ${gamma}^${delta}) mod ${p} = <strong>${rightSide}</strong></div>
-            <div style="margin-top: 6px;">➔ KẾT QUẢ: <strong style="color:${resColor}">${resText}</strong></div>
-        `;
-    } catch (err) {
-        alert('Lỗi xác thực chữ ký: ' + err.message);
-    }
 }
 </script>
 {% endblock %}
