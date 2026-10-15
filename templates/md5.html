@@ -134,7 +134,16 @@ function calculateMD5File() {
     let reader = new FileReader();
     reader.onload = function(e) {
         let arrayBuffer = e.target.result;
-        let wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
+        let uint8Array = new Uint8Array(arrayBuffer);
+        let words = [];
+        for (let i = 0; i < uint8Array.length; i += 4) {
+            let word = (uint8Array[i] << 24) |
+                       ((uint8Array[i + 1] || 0) << 16) |
+                       ((uint8Array[i + 2] || 0) << 8) |
+                       (uint8Array[i + 3] || 0);
+            words.push(word);
+        }
+        let wordArray = CryptoJS.lib.WordArray.create(words, uint8Array.length);
         let hash = CryptoJS.MD5(wordArray).toString();
         
         document.getElementById('md5Output').value = hash;
@@ -142,7 +151,7 @@ function calculateMD5File() {
         document.getElementById('md5TraceText').innerHTML = `
             <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[PHÂN TÍCH QUÁ TRÌNH BĂM TỆP TIN (FILE HASHING)]</div>
             <div>• <strong>Tên tệp tin:</strong> ${file.name} (${file.size} bytes)</div>
-            <div>• <strong>Định dạng nhị phân:</strong> Đọc trực tiếp qua ArrayBuffer vào khối 512-bit.</div>
+            <div>• <strong>Định dạng nhị phân:</strong> Đọc và phân tích toàn bộ nội dung dữ liệu thực tế qua ArrayBuffer.</div>
             <div>• <strong>Thực thi 64 bước nén MD5:</strong> Hoàn tất xử lý toàn bộ các khối dữ liệu của file.</div>
             <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
                 ➔ MD5 FILE DIGEST (32 HEX): <span style="color:#06b6d4">${hash}</span>
