@@ -1,55 +1,61 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-fingerprint text-emerald"></i> So sánh Trực diện: Hàm Băm & Kiểm tra Toàn vẹn (MD5 vs. SHA-256)
+        <i class="fa-solid fa-shield-virus text-emerald"></i> Mô phỏng Thực tế: Kiểm tra Tính toàn vẹn File & Chống Tấn công Đụng độ (MD5 vs. SHA-256)
     </div>
     <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
-        So sánh mã băm chuỗi văn bản hoặc tải lên tệp tin (File Checksum) để đối chiếu tốc độ và độ dài chuỗi digest.
+        Mô phỏng kịch bản tải xuống phần mềm. Kiểm chứng khả năng phát hiện file bị kẻ tấn công chèn mã độc (Tampering & Collision Attack).
     </p>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 4px;">Văn bản A:</label>
-            <input type="text" id="hashIn1" placeholder="Nhập chuỗi A..." value="">
+    <!-- FORM MÔ PHỎNG -->
+    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 16px;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 10px; font-size: 13.5px;">
+            <i class="fa-solid fa-file-shield"></i> Chọn Gói tin / Phần mềm Cài đặt Mẫu
         </div>
-        <div>
-            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 4px;">Văn bản B (Thay đổi nhỏ):</label>
-            <input type="text" id="hashIn2" placeholder="Nhập chuỗi B..." value="">
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;">
+            <input type="text" id="softwareName" value="SecureCrypt_V1.0_Setup.exe (Size: 15.4 MB)" readonly style="background: #0f172a; color: #cbd5e1; border: 1px solid #475569; padding: 8px; border-radius: 6px;">
+            <button type="button" onclick="runIntegritySimulation()" style="background: var(--accent-emerald); color: #000; font-weight: 700; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
+                <i class="fa-solid fa-play"></i> Mô phỏng Kiểm định Toàn vẹn
+            </button>
         </div>
     </div>
 
-    <div style="margin-bottom: 14px; background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
-        <label style="font-weight: 600; font-size: 12.5px; color: #38bdf8; display: block; margin-bottom: 4px;">Hoặc chọn tải lên tập tin để tính Checksum:</label>
-        <input type="file" id="fileChecksumInput" style="font-size: 12px; color: #cbd5e1;" onchange="handleFileChecksum(event)">
-    </div>
-
-    <button type="button" onclick="runHashComparison()" style="background: var(--accent-emerald); color: #000; font-weight: 700; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-microscope"></i> Thực thi Băm & So sánh
-    </button>
-
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
-        <div style="background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #fbbf24; margin-bottom: 6px; font-size: 14px;">MD5 (128-bit Digest)</div>
-            <div id="md5DiffStats" style="font-size: 12px; color: #34d399; margin-bottom: 8px;">Mã băm MD5 (128-bit)</div>
-            <div style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; word-break: break-all; line-height: 1.5;">
-                <div>Hash A: <span id="md5Res1" style="color:#fff;">Chờ chạy...</span></div>
-                <div>Hash B: <span id="md5Res2" style="color:#fff;">Chờ chạy...</span></div>
+    <!-- KẾT QUẢ ĐỐI CHIẾU -->
+    <div id="integrityResultBox" style="display: none; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+        <div style="font-weight: 700; color: #fbbf24; margin-bottom: 10px; font-size: 13.5px;">
+            <i class="fa-solid fa-laptop-code"></i> Nhật ký Kiểm định An toàn Hệ thống (Security Audit Logs)
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px;">
+            <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #7f1d1d;">
+                <div style="font-weight: 700; color: #f87171; font-size: 13px; margin-bottom: 6px;">Thuật toán MD5 (128-bit)</div>
+                <div id="logMD5" style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; line-height: 1.5;"></div>
+            </div>
+            <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #065f46;">
+                <div style="font-weight: 700; color: #34d399; font-size: 13px; margin-bottom: 6px;">Thuật toán SHA-256 (256-bit)</div>
+                <div id="logSHA" style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; line-height: 1.5;"></div>
             </div>
         </div>
-
-        <div style="background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #d946ef; margin-bottom: 6px; font-size: 14px;">SHA-256 (256-bit Digest)</div>
-            <div id="shaDiffStats" style="font-size: 12px; color: #d946ef; margin-bottom: 8px;">Mã băm SHA-256 (256-bit)</div>
-            <div style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; word-break: break-all; line-height: 1.5;">
-                <div>Hash A: <span id="shaRes1" style="color:#fff;">Chờ chạy...</span></div>
-                <div>Hash B: <span id="shaRes2" style="color:#fff;">Chờ chạy...</span></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="hashAnalysisBox" style="margin-top: 20px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; display: none;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 14px;">
-            <i class="fa-solid fa-chart-line"></i> Phân tích So sánh & Ứng dụng Thực tế (Sau khi thực thi)
-        </div>
-        <div id="hashAnalysisContent" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
     </div>
 </div>
+
+<script>
+function runIntegritySimulation() {
+    let box = document.getElementById('integrityResultBox');
+    box.style.display = 'block';
+    
+    document.getElementById('logMD5').innerHTML = `<span style="color:#fbbf24;">[Đang kiểm tra...]</span>`;
+    document.getElementById('logSHA').innerHTML = `<span style="color:#fbbf24;">[Đang kiểm tra...]</span>`;
+
+    setTimeout(() => {
+        document.getElementById('logMD5').innerHTML = `
+            • <strong>Trạng thái File Gốc:</strong> <code>5a8f...2e10</code><br>
+            • <strong>Trạng thái File bị chèn mã độc:</strong> <code>5a8f...2e10</code> (Trung khớp do lỗ hổng đụng độ MD5!).<br>
+            <span style="color:#f87171; font-weight:bold;">=> CẢNH BÁO: MD5 bị đánh lừa, không phát hiện được file đã bị chỉnh sửa mã độc!</span>
+        `;
+        document.getElementById('logSHA').innerHTML = `
+            • <strong>Trạng thái File Gốc:</strong> <code>c9b2...7f41</code><br>
+            • <strong>Trạng thái File bị chèn mã độc:</strong> <code>3d1e...9a04</code> (Thay đổi hoàn toàn cấu trúc).<br>
+            <span style="color:#34d399; font-weight:bold;">=> AN TOÀN TUYỆT ĐỐI: SHA-256 lập tức chặn đứng file độc hại!</span>
+        `;
+    }, 700);
+}
+</script>
