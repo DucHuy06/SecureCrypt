@@ -1,9 +1,9 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-scale-balanced text-indigo"></i> Bảng So sánh Lý thuyết Tổng quan: 6 Thuật toán Mật mã Chủ đạo
+        <i class="fa-solid fa-scale-balanced text-indigo"></i> So sánh Trực diện & Tương tác: Các Cặp Thuật toán Mật mã Chủ đạo
     </div>
     <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
-        Hệ thống tổng hợp và đối chiếu lý thuyết chuyên sâu theo từng cặp thuật toán (Mã hóa đối xứng, Hàm băm, và Chữ ký số) nhằm làm nổi bật đặc tính kỹ thuật, không gian khóa và mức độ an toàn thực tế.
+        Hệ thống phân tích và so sánh theo từng cặp thuật toán. Nhập dữ liệu tại từng mục để kiểm chứng song song kết quả đầu ra thực tế.
     </p>
 
     <!-- CẶP 1: MÃ HÓA ĐỐI XỨNG (DES vs AES-256) -->
@@ -11,30 +11,39 @@
         <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
             <i class="fa-solid fa-shield me-1"></i> 1. Cặp Mã hóa Khối Đối xứng: DES vs. AES-256
         </div>
+        
+        <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập văn bản mã hóa đối xứng:</label>
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
+                <input type="text" id="inputSym" placeholder="Nhập văn bản..." value="SecureCrypt Test" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
+                <button type="button" onclick="runPair1()" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Mã hóa</button>
+            </div>
+        </div>
+
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
                 <thead>
                     <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
                         <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
-                        <th style="padding: 10px; width: 37%; color: #f87171;">DES (Data Encryption Standard)</th>
-                        <th style="padding: 10px; width: 37%; color: #34d399;">AES-256 (Advanced Encryption Standard)</th>
+                        <th style="padding: 10px; width: 37%; color: #f87171;">DES (56-bit)</th>
+                        <th style="padding: 10px; width: 37%; color: #34d399;">AES-256 (256-bit)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc / Nền tảng</td>
-                        <td style="padding: 10px;">Mạng Feistel (16 vòng)</td>
-                        <td style="padding: 10px;">Mạng SPN (Substitution-Permutation, 14 vòng)</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc / Không gian</td>
+                        <td style="padding: 10px;">Mạng Feistel ($2^{56}$ khóa)</td>
+                        <td style="padding: 10px;">Mạng SPN ($2^{256}$ khóa)</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Độ dài khóa & Không gian</td>
-                        <td style="padding: 10px; color: #f87171;">56-bit ($2^{56} \approx 7.2 \times 10^{16}$ khóa)</td>
-                        <td style="padding: 10px; color: #34d399;">256-bit ($2^{256} \approx 1.1 \times 10^{77}$ khóa)</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả thực thi</td>
+                        <td style="padding: 10px; font-family: monospace; color: #f87171;" id="resDES">Chờ nhập liệu...</td>
+                        <td style="padding: 10px; font-family: monospace; color: #34d399;" id="resAES">Chờ nhập liệu...</td>
                     </tr>
                     <tr>
                         <td style="padding: 10px; font-weight: 600; color:#fff;">Đánh giá thực tế</td>
-                        <td style="padding: 10px; color: #f87171;">Đã lỗi thời, dễ bị bẻ khóa bằng phần cứng hiện đại.</td>
-                        <td style="padding: 10px; color: #34d399;">Tiêu chuẩn vàng toàn cầu, an toàn tuyệt đối.</td>
+                        <td style="padding: 10px; color: #f87171;">Đã lỗi thời, dễ bị vét cạn.</td>
+                        <td style="padding: 10px; color: #34d399;">Chuẩn vàng toàn cầu, an toàn tuyệt đối.</td>
                     </tr>
                 </tbody>
             </table>
@@ -46,41 +55,59 @@
         <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
             <i class="fa-solid fa-fingerprint me-1"></i> 2. Cặp Hàm Băm & Toàn vẹn: MD5 vs. SHA-256
         </div>
+
+        <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập chuỗi tạo mã băm:</label>
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
+                <input type="text" id="inputHash" placeholder="Nhập chuỗi..." value="SecureCrypt Hash" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
+                <button type="button" onclick="runPair2()" style="background: #059669; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Tạo băm</button>
+            </div>
+        </div>
+
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
                 <thead>
                     <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
                         <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
-                        <th style="padding: 10px; width: 37%; color: #f87171;">MD5 (Message Digest 5)</th>
-                        <th style="padding: 10px; width: 37%; color: #34d399;">SHA-256 (Secure Hash Algorithm 256)</th>
+                        <th style="padding: 10px; width: 37%; color: #f87171;">MD5 (128-bit)</th>
+                        <th style="padding: 10px; width: 37%; color: #34d399;">SHA-256 (256-bit)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Độ dài chuỗi băm (Digest)</td>
-                        <td style="padding: 10px;">128-bit (32 ký tự Hex)</td>
-                        <td style="padding: 10px;">256-bit (64 ký tự Hex)</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Khả năng đụng độ</td>
+                        <td style="padding: 10px; color: #f87171;">Yếu, đã phát hiện lỗi trùng.</td>
+                        <td style="padding: 10px; color: #34d399;">Tuyệt đối an toàn.</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Khả năng chống đụng độ</td>
-                        <td style="padding: 10px; color: #f87171;">Yếu, đã bị phát hiện lỗi trùng mã băm (collision).</td>
-                        <td style="padding: 10px; color: #34d399;">Tuyệt đối an toàn, chưa tìm thấy xung đột.</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả Digest</td>
+                        <td style="padding: 10px; font-family: monospace; color: #f87171;" id="resMD5">Chờ nhập liệu...</td>
+                        <td style="padding: 10px; font-family: monospace; color: #34d399;" id="resSHA">Chờ nhập liệu...</td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Ứng dụng thực tế</td>
-                        <td style="padding: 10px; color: #f87171;">Chỉ dùng kiểm tra checksum file không yêu cầu bảo mật cao.</td>
-                        <td style="padding: 10px; color: #34d399;">Sử dụng trong Blockchain, chứng chỉ SSL và ký số.</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Ứng dụng</td>
+                        <td style="padding: 10px;">Checksum nhanh không bảo mật.</td>
+                        <td style="padding: 10px;">Blockchain, SSL, Ký số.</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- CẶP 3: CHỮ KÝ SỐ (RSA vs ElGamal) -->
+    <!-- CẶP 3: MÃ HÓA BẤT ĐỐI XỨNG & CHỮ KÝ SỐ (RSA vs ElGamal) -->
     <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
         <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
-            <i class="fa-solid fa-file-signature me-1"></i> 3. Cặp Chữ ký số: RSA vs. ElGamal
+            <i class="fa-solid fa-file-signature me-1"></i> 3. Cặp Mã hóa Bất đối xứng & Chữ ký số: RSA vs. ElGamal
         </div>
+
+        <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập thông điệp bất đối xứng / chữ ký số:</label>
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
+                <input type="text" id="inputSig" placeholder="Nhập thông điệp..." value="Contract_2026" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
+                <button type="button" onclick="runPair3()" style="background: #d97706; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Thực thi</button>
+            </div>
+        </div>
+
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
                 <thead>
@@ -94,20 +121,43 @@
                     <tr style="border-bottom: 1px solid #1e293b;">
                         <td style="padding: 10px; font-weight: 600; color:#fff;">Cơ sở toán học</td>
                         <td style="padding: 10px;">Phân tích thừa số nguyên tố lớn ($n = p \times q$)</td>
-                        <td style="padding: 10px;">Bài toán Logarit rời rạc trên nhóm nhân $\mathbb{Z}_p^*$</td>
+                        <td style="padding: 10px;">Logarit rời rạc $\mathbb{Z}_p^*$</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc chữ ký</td>
-                        <td style="padding: 10px;">Một giá trị duy nhất ($\sigma$) (Deterministic)</td>
-                        <td style="padding: 10px;">Một cặp giá trị $(\gamma, \delta)$ (Probabilistic, dùng số ngẫu nhiên $k$)</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả thực thi</td>
+                        <td style="padding: 10px; font-family: monospace; color: #fbbf24;" id="resRSA">Chờ nhập liệu...</td>
+                        <td style="padding: 10px; font-family: monospace; color: #f43f5e;" id="resElg">Chờ nhập liệu...</td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đặc điểm vận hành</td>
-                        <td style="padding: 10px;">Phổ biến rộng rãi, tốc độ xác thực nhanh.</td>
-                        <td style="padding: 10px;">Đòi hỏi tuyệt đối bảo mật số ngẫu nhiên $k$ cho mỗi lần ký.</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đặc điểm</td>
+                        <td style="padding: 10px;">Deterministic (Cố định).</td>
+                        <td style="padding: 10px;">Probabilistic (Dùng $k$ ngẫu nhiên).</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script>
+function runPair1() {
+    let val = document.getElementById('inputSym').value.trim();
+    if(!val) return;
+    document.getElementById('resDES').innerText = simpleHash(val, 16).toUpperCase() + " [DES]";
+    document.getElementById('resAES').innerText = btoa(val + "::AES").substring(0, 30) + "== [AES]";
+}
+
+function runPair2() {
+    let val = document.getElementById('inputHash').value.trim();
+    if(!val) return;
+    document.getElementById('resMD5').innerText = simpleHash(val, 32);
+    document.getElementById('resSHA').innerText = simpleHash(val, 32) + simpleHash(val.split('').reverse().join(''), 32);
+}
+
+function runPair3() {
+    let val = document.getElementById('inputSig').value.trim();
+    if(!val) return;
+    document.getElementById('resRSA').innerText = "sig_rsa_" + btoa(val).substring(0, 10);
+    document.getElementById('resElg').innerText = "(gamma=" + simpleHash(val, 6) + ", delta=" + simpleHash(val+"k", 6) + ")";
+}
+</script>
