@@ -1,96 +1,113 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-scale-balanced text-indigo"></i> So sánh Chuyên sâu Cấu trúc & Hiệu năng: DES vs. AES-256
+        <i class="fa-solid fa-scale-balanced text-indigo"></i> Bảng So sánh Lý thuyết Tổng quan: 6 Thuật toán Mật mã Chủ đạo
     </div>
-    <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 20px;">
-        Phân tích đối chiếu toàn diện giữa chuẩn mã hóa khối đối xứng thế hệ cũ (DES) và chuẩn mã hóa hiện đại tiêu chuẩn toàn cầu (AES-256).
+    <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
+        Hệ thống tổng hợp và đối chiếu lý thuyết chuyên sâu theo từng cặp thuật toán (Mã hóa đối xứng, Hàm băm, và Chữ ký số) nhằm làm nổi bật đặc tính kỹ thuật, không gian khóa và mức độ an toàn thực tế.
     </p>
 
-    <!-- Ô NHẬP LIỆU KIỂM CHỨNG TRỰC TIẾP -->
-    <div style="background: #1e293b; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
-        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">
-            Nhập dữ liệu văn bản để thực thi mã hóa song song kiểm chứng:
-        </label>
-        <textarea id="symInput" rows="2" placeholder="Nhập chuỗi thông tin bất kỳ..."></textarea>
-
-        <div style="margin-top: 12px;">
-            <button type="button" onclick="runPureComparison()" style="background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px;">
-                <i class="fa-solid fa-play"></i> Thực thi & Đối chiếu Cấu trúc
-            </button>
-        </div>
-    </div>
-
-    <!-- BẢNG SO SÁNH LÝ THUYẾT & KẾT QUẢ THỰC THI -->
-    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14px;">
-            <i class="fa-solid fa-table"></i> Bảng So sánh Lý thuyết & Đặc tính Kỹ thuật Trực diện
+    <!-- CẶP 1: MÃ HÓA ĐỐI XỨNG (DES vs AES-256) -->
+    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
+            <i class="fa-solid fa-shield me-1"></i> 1. Cặp Mã hóa Khối Đối xứng: DES vs. AES-256
         </div>
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 12.5px;">
+            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
                 <thead>
                     <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
-                        <th style="padding: 10px; width: 28%;">Tiêu chí phân tích</th>
-                        <th style="padding: 10px; width: 36%; color: #f87171;">DES (Data Encryption Standard)</th>
-                        <th style="padding: 10px; width: 36%; color: #34d399;">AES-256 (Advanced Encryption Standard)</th>
+                        <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
+                        <th style="padding: 10px; width: 37%; color: #f87171;">DES (Data Encryption Standard)</th>
+                        <th style="padding: 10px; width: 37%; color: #34d399;">AES-256 (Advanced Encryption Standard)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc thuật toán</td>
-                        <td style="padding: 10px;">Mạng Feistel (Feistel Cipher)</td>
-                        <td style="padding: 10px;">Mạng Substitution-Permutation (SPN)</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc / Nền tảng</td>
+                        <td style="padding: 10px;">Mạng Feistel (16 vòng)</td>
+                        <td style="padding: 10px;">Mạng SPN (Substitution-Permutation, 14 vòng)</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kích thước Khối (Block Size)</td>
-                        <td style="padding: 10px;">64-bit</td>
-                        <td style="padding: 10px;">128-bit</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Độ dài Khóa (Key Length)</td>
-                        <td style="padding: 10px;">56-bit thực tế (64-bit có tính parity)</td>
-                        <td style="padding: 10px;">256-bit</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Không gian khóa (Key Space)</td>
-                        <td style="padding: 10px; color: #f87171;">2^56 (khoảng 7.2 x 10^16 khóa)</td>
-                        <td style="padding: 10px; color: #34d399;">2^256 (khoảng 1.1 x 10^77 khóa)</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả Bản mã thực tế</td>
-                        <td style="padding: 10px; font-family: monospace; color: #f87171;" id="tableOutDES">Chờ thực thi đầu vào...</td>
-                        <td style="padding: 10px; font-family: monospace; color: #34d399;" id="tableOutAES">Chờ thực thi đầu vào...</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Tốc độ xử lý thực thi</td>
-                        <td style="padding: 10px;" id="tableTimeDES">-- ms</td>
-                        <td style="padding: 10px;" id="tableTimeAES">-- ms</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Độ dài khóa & Không gian</td>
+                        <td style="padding: 10px; color: #f87171;">56-bit ($2^{56} \approx 7.2 \times 10^{16}$ khóa)</td>
+                        <td style="padding: 10px; color: #34d399;">256-bit ($2^{256} \approx 1.1 \times 10^{77}$ khóa)</td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đánh giá An toàn Thực tế</td>
-                        <td style="padding: 10px; color: #f87171;">Đã bị bãi bỏ. Dễ dàng bị tấn công vét cạn (brute-force) bằng phần cứng hiện đại trong thời gian ngắn.</td>
-                        <td style="padding: 10px; color: #34d399;">Chuẩn bảo mật toàn cầu tối tân. Vét cạn không gian khóa lớn hơn tuổi của vũ trụ (Bất khả thi).</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đánh giá thực tế</td>
+                        <td style="padding: 10px; color: #f87171;">Đã lỗi thời, dễ bị bẻ khóa bằng phần cứng hiện đại.</td>
+                        <td style="padding: 10px; color: #34d399;">Tiêu chuẩn vàng toàn cầu, an toàn tuyệt đối.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CẶP 2: HÀM BĂM (MD5 vs SHA-256) -->
+    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
+            <i class="fa-solid fa-fingerprint me-1"></i> 2. Cặp Hàm Băm & Toàn vẹn: MD5 vs. SHA-256
+        </div>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
+                        <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
+                        <th style="padding: 10px; width: 37%; color: #f87171;">MD5 (Message Digest 5)</th>
+                        <th style="padding: 10px; width: 37%; color: #34d399;">SHA-256 (Secure Hash Algorithm 256)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Độ dài chuỗi băm (Digest)</td>
+                        <td style="padding: 10px;">128-bit (32 ký tự Hex)</td>
+                        <td style="padding: 10px;">256-bit (64 ký tự Hex)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Khả năng chống đụng độ</td>
+                        <td style="padding: 10px; color: #f87171;">Yếu, đã bị phát hiện lỗi trùng mã băm (collision).</td>
+                        <td style="padding: 10px; color: #34d399;">Tuyệt đối an toàn, chưa tìm thấy xung đột.</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Ứng dụng thực tế</td>
+                        <td style="padding: 10px; color: #f87171;">Chỉ dùng kiểm tra checksum file không yêu cầu bảo mật cao.</td>
+                        <td style="padding: 10px; color: #34d399;">Sử dụng trong Blockchain, chứng chỉ SSL và ký số.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CẶP 3: CHỮ KÝ SỐ (RSA vs ElGamal) -->
+    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
+            <i class="fa-solid fa-file-signature me-1"></i> 3. Cặp Chữ ký số: RSA vs. ElGamal
+        </div>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
+                        <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
+                        <th style="padding: 10px; width: 37%; color: #fbbf24;">Chữ ký số RSA</th>
+                        <th style="padding: 10px; width: 37%; color: #f43f5e;">Chữ ký số ElGamal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cơ sở toán học</td>
+                        <td style="padding: 10px;">Phân tích thừa số nguyên tố lớn ($n = p \times q$)</td>
+                        <td style="padding: 10px;">Bài toán Logarit rời rạc trên nhóm nhân $\mathbb{Z}_p^*$</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc chữ ký</td>
+                        <td style="padding: 10px;">Một giá trị duy nhất ($\sigma$) (Deterministic)</td>
+                        <td style="padding: 10px;">Một cặp giá trị $(\gamma, \delta)$ (Probabilistic, dùng số ngẫu nhiên $k$)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đặc điểm vận hành</td>
+                        <td style="padding: 10px;">Phổ biến rộng rãi, tốc độ xác thực nhanh.</td>
+                        <td style="padding: 10px;">Đòi hỏi tuyệt đối bảo mật số ngẫu nhiên $k$ cho mỗi lần ký.</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
-<script>
-function runPureComparison() {
-    let text = document.getElementById('symInput').value.trim();
-    if(!text) { alert('Vui lòng nhập văn bản cần mã hóa!'); return; }
-
-    let t1 = performance.now();
-    let desResult = simpleHash(text, 16).toUpperCase() + " [DES]";
-    let t2 = performance.now();
-    let aesResult = btoa(text + "::AES_SECURE").substring(0, 32) + "== [AES-256]";
-    let t3 = performance.now();
-
-    document.getElementById('tableOutDES').innerText = desResult;
-    document.getElementById('tableTimeDES').innerText = (t2 - t1).toFixed(3) + " ms";
-
-    document.getElementById('tableOutAES').innerText = aesResult;
-    document.getElementById('tableTimeAES').innerText = (t3 - t2).toFixed(3) + " ms";
-}
-</script>
