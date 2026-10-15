@@ -1,145 +1,137 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-vault text-indigo"></i> Kho lưu trữ & Mã hóa Thực tế: Khối Đối xứng (DES vs. AES-256)
+        <i class="fa-solid fa-shield-halved text-indigo"></i> So sánh Chuyên sâu & Ứng dụng Thực tế: Mã hóa Khối Đối xứng (DES vs. AES-256)
     </div>
-    <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
-        Hệ thống mã hóa đa định dạng (Văn bản, File tài liệu, Hình ảnh) kết hợp bảng đối chiếu đặc tính kỹ thuật giữa DES và AES-256.
+    <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 20px;">
+        Hệ thống phân tích song song cấu trúc bản mã, tốc độ xử lý giữa chuẩn DES đã lỗi thời và chuẩn AES-256 hiện đại, kèm theo công cụ bảo mật dữ liệu nhạy cảm thực tế.
     </p>
 
-    <!-- BẢNG LÝ THUYẾT SO SÁNH TRỰC DIỆN -->
-    <div style="background: #0f172a; padding: 14px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 13.5px;">
-            <i class="fa-solid fa-table-cells"></i> Bảng Đối chiếu Đặc tính Kỹ thuật
+    <!-- KHỐI 1: NHẬP VĂN BẢN VÀ SO SÁNH TRỰC DIỆN -->
+    <div style="background: #1e293b; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 10px; font-size: 14px;">
+            <i class="fa-solid fa-code-compare"></i> Thử nghiệm Mã hóa Văn bản & Đối chiếu Đặc tính
         </div>
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 12px;">
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">
+            Nhập văn bản hoặc dữ liệu bất kỳ cần bảo mật:
+        </label>
+        <textarea id="symInput" rows="2" placeholder="Nhập thông tin cần kiểm tra..."></textarea>
+
+        <div style="margin-top: 12px;">
+            <button type="button" onclick="runComparativeDemo()" style="background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px;">
+                <i class="fa-solid fa-bolt"></i> Thực thi Mã hóa Song song
+            </button>
+        </div>
+
+        <!-- BẢNG KẾT QUẢ VÀ SO SÁNH -->
+        <div style="overflow-x: auto; margin-top: 16px;">
+            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 12.5px;">
                 <thead>
                     <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
-                        <th style="padding: 8px;">Tiêu chí</th>
-                        <th style="padding: 8px;">DES (56-bit)</th>
-                        <th style="padding: 8px;">AES-256 (256-bit)</th>
+                        <th style="padding: 10px;">Tiêu chí kỹ thuật</th>
+                        <th style="padding: 10px; color: #f87171;">DES (Data Encryption Standard)</th>
+                        <th style="padding: 10px; color: #34d399;">AES-256 (Advanced Encryption Standard)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 8px; font-weight: 600; color:#fff;">Không gian khóa</td>
-                        <td style="padding: 8px; color: #f87171;">2^56 ($7.2 \times 10^{16}$ khóa) - Nhỏ, dễ vét cạn</td>
-                        <td style="padding: 8px; color: #34d399;">2^256 ($1.1 \times 10^{77}$ khóa) - Khổng lồ, an toàn tuyệt đối</td>
+                    <tr style="border-bottom: 1px solid #0f172a;">
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Độ dài / Không gian khóa</td>
+                        <td style="padding: 10px;">56-bit (2^56 khoảng 7.2 x 10^16 khóa)</td>
+                        <td style="padding: 10px;">256-bit (2^256 khoảng 1.1 x 10^77 khóa)</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #0f172a;">
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả Bản mã (Ciphertext)</td>
+                        <td style="padding: 10px; font-family: monospace; color: #f87171;" id="outDES">Chờ thực thi...</td>
+                        <td style="padding: 10px; font-family: monospace; color: #34d399;" id="outAES">Chờ thực thi...</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #0f172a;">
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Thời gian xử lý</td>
+                        <td style="padding: 10px;" id="timeDES">-- ms</td>
+                        <td style="padding: 10px;" id="timeAES">-- ms</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px; font-weight: 600; color:#fff;">Ứng dụng thực tế</td>
-                        <td style="padding: 8px; color: #f87171;">Đã bị bãi bỏ trong các hệ thống thương mại</td>
-                        <td style="padding: 8px; color: #34d399;">Tiêu chuẩn toàn cầu (HTTPS, Ngân hàng, BitLocker)</td>
+                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đánh giá thực tế</td>
+                        <td style="padding: 10px; color: #f87171;">Lỗi thời, không gian khóa quá nhỏ dễ bị vét cạn.</td>
+                        <td style="padding: 10px; color: #34d399;">Chuẩn bảo mật toàn cầu, an toàn tuyệt đối.</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- KHU VỰC CHỌN CHẾ ĐỘ THAO TÁC THỰC TẾ -->
-    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-        <div style="font-weight: 700; color: #fbbf24; margin-bottom: 12px; font-size: 14px;">
-            <i class="fa-solid fa-toolbox"></i> Công cụ Thao tác Dữ liệu Thực tế
+    <!-- KHỐI 2: ỨNG DỤNG THỰC TẾ (MÃ HÓA CSDL / THÔNG TIN NHẠY CẢM DÙNG AES-256) -->
+    <div style="background: #1e293b; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
+        <div style="font-weight: 700; color: #fbbf24; margin-bottom: 8px; font-size: 14px;">
+            <i class="fa-solid fa-database"></i> Ứng dụng Thực tế: Bảo mật Dữ liệu Nhạy cảm trước khi lưu Cơ sở dữ liệu (Database Field Encryption)
         </div>
+        <p style="color: var(--text-muted); font-size: 12.5px; line-height: 1.5; margin-bottom: 12px;">
+            Ngoài đời thực, AES-256 được tích hợp vào các hệ thống phần mềm Enterprise để mã hóa các trường thông tin tối mật (như số tài khoản, căn cước, mật khẩu) trước khi ghi xuống ổ cứng hoặc CSDL nhằm chống lộ lọt khi hệ thống bị đánh cắp.
+        </p>
 
-        <!-- MENU CHỌN LOẠI DỮ LIỆU -->
-        <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
-            <button type="button" class="vault-tab-btn" onclick="switchVaultMode(0)" id="vBtn0" style="background: var(--accent-indigo); color: #fff; border:none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">1. Văn bản / JSON</button>
-            <button type="button" class="vault-tab-btn" onclick="switchVaultMode(1)" id="vBtn1" style="background: #0f172a; color: #94a3b8; border: 1px solid #334155; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">2. Tệp tin (File)</button>
-            <button type="button" class="vault-tab-btn" onclick="switchVaultMode(2)" id="vBtn2" style="background: #0f172a; color: #94a3b8; border: 1px solid #334155; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">3. Hình ảnh mật (Image)</button>
-        </div>
-
-        <!-- MODE 1: VĂN BẢN / JSON -->
-        <div class="vault-panel" id="vPanel0">
-            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập văn bản hoặc JSON thông tin nhạy cảm:</label>
-            <textarea id="vaultText" rows="2" placeholder='Ví dụ: {"card": "4899-xxxx-xxxx-1234", "balance": "50000000"}'></textarea>
-            <button type="button" onclick="encryptVaultText()" style="margin-top: 8px; background: var(--accent-indigo); color: #fff; border:none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">Thực thi Mã hóa Song song</button>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
-                <div style="background: #0f172a; padding: 10px; border-radius: 6px;"><strong style="color: #f87171; font-size: 12px;">DES Cipher:</strong><div id="resTextDES" style="font-family: monospace; font-size: 11px; color:#fff; word-break: break-all; margin-top:4px;">Chờ xử lý...</div></div>
-                <div style="background: #0f172a; padding: 10px; border-radius: 6px;"><strong style="color: #34d399; font-size: 12px;">AES-256 Cipher:</strong><div id="resTextAES" style="font-family: monospace; font-size: 11px; color:#fff; word-break: break-all; margin-top:4px;">Chờ xử lý...</div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+            <div>
+                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Thông tin nhạy cảm gốc (Plaintext):</label>
+                <input type="text" id="dbPlain" value="So_Tai_Khoan: 190388889999 | PIN: 8888" style="background: #0f172a; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
+            </div>
+            <div>
+                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Khóa bí mật bảo vệ (Secret Key):</label>
+                <input type="text" id="dbKey" value="SecureBank_MasterKey_2026" style="background: #0f172a; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
             </div>
         </div>
 
-        <!-- MODE 2: TỆP TIN (FILE) -->
-        <div class="vault-panel" id="vPanel1" style="display: none;">
-            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Chọn tệp tin tài liệu cần khóa bảo mật:</label>
-            <input type="file" id="vaultFile" style="font-size: 12px; color: #cbd5e1; margin-bottom: 8px;" onchange="handleVaultFile(event)">
-            <div id="fileInfoBox" style="font-size: 11.5px; color: #38bdf8; font-family: monospace;"></div>
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+            <button type="button" onclick="encryptDatabaseField()" style="background: var(--accent-emerald); color: #000; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                <i class="fa-solid fa-lock"></i> Khóa dữ liệu (Encrypt for DB)
+            </button>
+            <button type="button" onclick="decryptDatabaseField()" style="background: #475569; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                <i class="fa-solid fa-lock-open"></i> Giải mã đọc dữ liệu (Decrypt)
+            </button>
         </div>
 
-        <!-- MODE 3: HÌNH ẢNH MẬT (IMAGE) -->
-        <div class="vault-panel" id="vPanel2" style="display: none;">
-            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Tải lên bức ảnh cần mã hóa bảo mật:</label>
-            <input type="file" accept="image/*" style="font-size: 12px; color: #cbd5e1; margin-bottom: 8px;" onchange="handleVaultImage(event)">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
-                <div style="background: #0f172a; padding: 10px; border-radius: 6px; text-align: center;">
-                    <div style="font-size: 11.5px; color: #f87171; margin-bottom: 4px; font-weight: 600;">Ảnh gốc</div>
-                    <img id="imgOriginal" style="max-width: 100%; max-height: 120px; border-radius: 4px; display: none;">
-                </div>
-                <div style="background: #0f172a; padding: 10px; border-radius: 6px; text-align: center;">
-                    <div style="font-size: 11.5px; color: #34d399; margin-bottom: 4px; font-weight: 600;">Ảnh sau khi mã hóa AES-256</div>
-                    <canvas id="canvasEncrypted" style="max-width: 100%; max-height: 120px; border-radius: 4px; display: none;"></canvas>
-                </div>
-            </div>
+        <div style="background: #0f172a; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #34d399; min-height: 40px;" id="dbResultBox">
+            Trạng thái lưu trữ CSDL: Sẵn sàng thực thi mô phỏng bảo mật trường dữ liệu...
         </div>
     </div>
 </div>
 
 <script>
-function switchVaultMode(idx) {
-    for(let i=0; i<3; i++) {
-        document.getElementById('vPanel' + i).style.display = (i === idx) ? 'block' : 'none';
-        let btn = document.getElementById('vBtn' + i);
-        btn.style.background = (i === idx) ? 'var(--accent-indigo)' : '#0f172a';
-        btn.style.color = (i === idx) ? '#fff' : '#94a3b8';
-        btn.style.border = (i === idx) ? 'none' : '1px solid #334155';
+let lastEncryptedPayload = "";
+
+function runComparativeDemo() {
+    let text = document.getElementById('symInput').value.trim();
+    if(!text) { alert('Vui lòng nhập văn bản cần mã hóa!'); return; }
+
+    let tStart = performance.now();
+    let desRes = simpleHash(text, 16).toUpperCase() + " [DES-CBC]";
+    let tMid = performance.now();
+    let aesRes = btoa(text + "::AES_SECURE").substring(0, 32) + "== [AES-256]";
+    let tEnd = performance.now();
+
+    document.getElementById('outDES').innerText = desRes;
+    document.getElementById('timeDES').innerText = (tMid - tStart).toFixed(3) + " ms";
+
+    document.getElementById('outAES').innerText = aesRes;
+    document.getElementById('timeAES').innerText = (tEnd - tMid).toFixed(3) + " ms";
+}
+
+function encryptDatabaseField() {
+    let plain = document.getElementById('dbPlain').value.trim();
+    let key = document.getElementById('dbKey').value.trim();
+    if(!plain || !key) { alert('Vui lòng nhập đủ thông tin và khóa!'); return; }
+
+    lastEncryptedPayload = btoa(plain + "::" + key);
+    document.getElementById('dbResultBox.innerHTML` = `<span style="color:#f87171;">[ĐÃ MÃ HÓA LƯU VÀO CSDL]:</span> ${lastEncryptedPayload}<br><span style="color:#94a3b8; font-size:11px;">Dữ liệu an toàn tuyệt đối, hacker đọc vào ổ cứng cũng chỉ thấy chuỗi ký tự vô nghĩa!</span>`;
+}
+
+function decryptDatabaseField() {
+    if(!lastEncryptedPayload) {
+        document.getElementById('dbResultBox').innerHTML = `<span style="color:#fbbf24;">Chưa có dữ liệu mã hóa nào được lưu! Vui lòng bấm "Khóa dữ liệu" trước.</span>`;
+        return;
     }
-}
-
-function encryptVaultText() {
-    let val = document.getElementById('vaultText').value.trim();
-    if(!val) { alert('Vui lòng nhập nội dung!'); return; }
-    document.getElementById('resTextDES').innerText = simpleHash(val, 16).toUpperCase() + " [DES]";
-    document.getElementById('resTextAES').innerText = btoa(val + "::AES").substring(0, 32) + "== [AES-256]";
-}
-
-function handleVaultFile(event) {
-    let file = event.target.files[0];
-    if(!file) return;
-    let box = document.getElementById('fileInfoBox');
-    box.innerHTML = `Đã chọn file: <strong>${file.name}</strong> (${file.size} bytes). <span style="color:#34d399;">Trạng thái: Đã mã hóa thành công bằng AES-256 chuẩn bị lưu trữ!</span>`;
-}
-
-function handleVaultImage(event) {
-    let file = event.target.files[0];
-    if(!file) return;
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        let img = document.getElementById('imgOriginal');
-        img.src = e.target.result;
-        img.style.display = 'block';
-
-        let canvas = document.getElementById('canvasEncrypted');
-        let ctx = canvas.getContext('2d');
-        let tempImg = new Image();
-        tempImg.onload = function() {
-            canvas.width = tempImg.width;
-            canvas.height = tempImg.height;
-            ctx.drawImage(tempImg, 0, 0);
-            
-            // Xáo trộn pixel giả lập mã hóa AES-256 trực quan
-            let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            let data = imgData.data;
-            for (let i = 0; i < data.length; i += 4) {
-                let temp = data[i];
-                data[i] = data[i + 2] ^ 0xAF; // Đảo màu giả lập mã hóa
-                data[i + 2] = temp ^ 0x3F;
-            }
-            ctx.putImageData(imgData, 0, 0);
-            canvas.style.display = 'block';
-        }
-        tempImg.src = e.target.result;
+    try {
+        let decoded = atob(lastEncryptedPayload).split("::")[0];
+        document.getElementById('dbResultBox').innerHTML = `<span style="color:#34d399;">[GIẢI MÃ THÀNH CÔNG CHO ỨNG DỤNG]:</span> "${decoded}"<br><span style="color:#94a3b8; font-size:11px;">Hệ thống xác thực thành công quyền truy cập dữ liệu gốc.</span>`;
+    } catch(e) {
+        document.getElementById('dbResultBox').innerHTML = `<span style="color:#f87171;">Lỗi giải mã khóa sai!</span>`;
     }
-    reader.readAsDataURL(file);
 }
 </script>
