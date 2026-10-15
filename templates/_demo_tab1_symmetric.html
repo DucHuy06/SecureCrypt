@@ -1,0 +1,78 @@
+<div class="crypto-card">
+    <div class="card-title-header">
+        <i class="fa-solid fa-microchip text-indigo"></i> So sánh Trực diện: Mã hóa Khối Đối xứng (DES vs. AES-256)
+    </div>
+    <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
+        Nhập văn bản để thực thi mã hóa song song, đo lường tốc độ và kiểm chứng trực tiếp mức độ an toàn thông qua mô phỏng tấn công vét cạn thực tế.
+    </p>
+
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">
+        Nhập văn bản cần bảo mật:
+    </label>
+    <textarea id="symInput" rows="2" placeholder="Nhập nội dung cần mã hóa thử nghiệm..."></textarea>
+
+    <div style="margin-top: 12px;">
+        <button type="button" onclick="runSymmetricDemo()" style="background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
+            <i class="fa-solid fa-bolt"></i> Thực thi Mã hóa & So sánh Hiệu năng
+        </button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
+        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+            <div style="font-weight: 700; color: #f87171; margin-bottom: 8px; font-size: 15px;">DES (56-bit Key)</div>
+            <div id="outDES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 35px;">Chờ thực thi...</div>
+            <div style="margin-top: 8px; font-size: 11px; color: #34d399;" id="timeDES">Time: -- ms</div>
+        </div>
+
+        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+            <div style="font-weight: 700; color: #34d399; margin-bottom: 8px; font-size: 15px;">AES-256 (256-bit Key)</div>
+            <div id="outAES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 35px;">Chờ thực thi...</div>
+            <div style="margin-top: 8px; font-size: 11px; color: #34d399;" id="timeAES">Time: -- ms</div>
+        </div>
+    </div>
+
+    <div id="symAnalysisBox" style="margin-top: 20px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; display: none;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 10px; font-size: 14px;">
+            <i class="fa-solid fa-shield-halved"></i> Đánh giá Mức độ An toàn & Mô phỏng Thực hành Tấn công
+        </div>
+
+        <div style="overflow-x: auto; margin-bottom: 14px;">
+            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 12.5px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
+                        <th style="padding: 8px;">Tiêu chí an toàn</th>
+                        <th style="padding: 8px;">DES (Data Encryption Standard)</th>
+                        <th style="padding: 8px;">AES-256 (Advanced Encryption Standard)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 8px; font-weight: 600; color:#fff;">Không gian khóa (Key Space)</td>
+                        <td style="padding: 8px; color: #f87171;">$2^{56} \approx 7.2 \times 10^{16}$ khóa</td>
+                        <td style="padding: 8px; color: #34d399;">$2^{256} \approx 1.1 \times 10^{77}$ khóa</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #1e293b;">
+                        <td style="padding: 8px; font-weight: 600; color:#fff;">Thời gian vét cạn</td>
+                        <td style="padding: 8px; color: #f87171;">Vài giờ/ngày bằng phần cứng hiện đại</td>
+                        <td style="padding: 8px; color: #34d399;">Lớn hơn tuổi vũ trụ (Bất khả thi)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; font-weight: 600; color:#fff;">Trạng thái thực tế</td>
+                        <td style="padding: 8px; color: #f87171;">Đã lỗi thời, bị bãi bỏ</td>
+                        <td style="padding: 8px; color: #34d399;">Chuẩn bảo mật toàn cầu (Ngân hàng, HTTPS)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px dashed #334155;">
+            <div style="font-weight: 700; color: #fbbf24; margin-bottom: 6px; font-size: 13px;">
+                <i class="fa-solid fa-laptop-code"></i> Thực hành Kiểm chứng An toàn: Mô phỏng Kẻ tấn công Vét cạn (Brute-force)
+            </div>
+            <button type="button" onclick="simulateBruteForce()" style="background: #7f1d1d; color: #fecaca; font-weight: 600; padding: 7px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                <i class="fa-solid fa-user-secret"></i> Chạy Kịch bản Tấn công Vét cạn Song song
+            </button>
+            <div id="bruteForceResult" style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #f87171; display: none; line-height: 1.5;"></div>
+        </div>
+    </div>
+</div>

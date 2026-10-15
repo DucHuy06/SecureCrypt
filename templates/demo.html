@@ -28,7 +28,7 @@
     </div>
 </div>
 
-<!-- ĐIỀU HƯỚNG 3 TAB SO SÁNH CHÍNH -->
+<!-- ĐIỀU HƯỚNG 3 TAB -->
 <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
     <button type="button" class="btn tab-btn active-tab-btn" onclick="switchTab(0)" style="background: var(--accent-indigo); font-weight: 700; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
         <i class="fa-solid fa-shield me-1"></i> 1. Mã hóa Đối xứng (DES vs AES)
@@ -41,171 +41,19 @@
     </button>
 </div>
 
-<!-- ================= TAB 1: DES vs AES (ĐỐI XỨNG) ================= -->
+<!-- TAB 1 -->
 <div class="tab-content active" id="tabContent0">
-    <div class="crypto-card">
-        <div class="card-title-header">
-            <i class="fa-solid fa-microchip text-indigo"></i> So sánh Trực diện: Mã hóa Khối Đối xứng (DES vs. AES-256)
-        </div>
-        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
-            Thử nghiệm thực thi đồng thời văn bản qua hai thuật toán mã hóa khối đối xứng để đánh giá hiệu năng và kích thước khóa.
-        </p>
-
-        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">
-            Nhập văn bản cần mã hóa song song:
-        </label>
-        <textarea id="symInput" rows="2" placeholder="Nhập thông điệp bảo mật cần thử nghiệm..."></textarea>
-
-        <div style="margin-top: 12px;">
-            <button type="button" onclick="runSymmetricDemo()" style="background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
-                <i class="fa-solid fa-bolt"></i> Chạy So Sánh DES & AES
-            </button>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
-            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-                <div style="font-weight: 700; color: #f87171; margin-bottom: 8px; font-size: 15px;">DES (Data Encryption Standard)</div>
-                <div id="outDES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeDES">Time: -- ms | Khóa: 56-bit</div>
-            </div>
-
-            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-                <div style="font-weight: 700; color: #34d399; margin-bottom: 8px; font-size: 15px;">AES-256 (Advanced Encryption Standard)</div>
-                <div id="outAES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 40px;">Chờ thực thi...</div>
-                <div style="margin-top: 10px; font-size: 11px; color: #34d399;" id="timeAES">Time: -- ms | Khóa: 256-bit</div>
-            </div>
-        </div>
-
-        <!-- PHẦN KẾT LUẬN VÀ ỨNG DỤNG THỰC TẾ (HIỂN THỊ SAU KHI CHẠY) -->
-        <div id="symAnalysisBox" style="margin-top: 20px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; display: none;">
-            <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 14px;">
-                <i class="fa-solid fa-chart-line"></i> Phân tích So sánh & Ứng dụng Thực tế (Sau khi thực thi)
-            </div>
-            <div id="symAnalysisContent" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
-        </div>
-    </div>
+    {% include '_demo_tab1_symmetric.html' %}
 </div>
 
-<!-- ================= TAB 2: MD5 vs SHA-256 (HÀM BĂM & FILE CHECKSUM) ================= -->
+<!-- TAB 2 -->
 <div class="tab-content" id="tabContent1">
-    <div class="crypto-card">
-        <div class="card-title-header">
-            <i class="fa-solid fa-fingerprint text-emerald"></i> So sánh Trực diện: Hàm Băm & Kiểm tra Toàn vẹn (MD5 vs. SHA-256)
-        </div>
-        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
-            So sánh mã băm chuỗi văn bản hoặc tải lên tệp tin (File Checksum) để đối chiếu tốc độ và độ dài chuỗi digest.
-        </p>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 4px;">Văn bản A:</label>
-                <input type="text" id="hashIn1" placeholder="Nhập chuỗi A...">
-            </div>
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 4px;">Văn bản B (Thay đổi nhỏ):</label>
-                <input type="text" id="hashIn2" placeholder="Nhập chuỗi B...">
-            </div>
-        </div>
-
-        <!-- BĂM TẬP TIN -->
-        <div style="margin-bottom: 14px; background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
-            <label style="font-weight: 600; font-size: 12.5px; color: #38bdf8; display: block; margin-bottom: 4px;">Hoặc chọn tải lên tập tin để tính Checksum:</label>
-            <input type="file" id="fileChecksumInput" style="font-size: 12px; color: #cbd5e1;" onchange="handleFileChecksum(event)">
-        </div>
-
-        <button type="button" onclick="runHashComparison()" style="background: var(--accent-emerald); color: #000; font-weight: 700; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
-            <i class="fa-solid fa-microscope"></i> Thực thi Băm & So sánh
-        </button>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
-            <div style="background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-                <div style="font-weight: 700; color: #fbbf24; margin-bottom: 6px; font-size: 14px;">MD5 (128-bit Digest)</div>
-                <div id="md5DiffStats" style="font-size: 12px; color: #34d399; margin-bottom: 8px;">Độ khác biệt bit: -- / 128 bit</div>
-                <div style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; word-break: break-all; line-height: 1.5;">
-                    <div>Hash A: <span id="md5Res1" style="color:#fff;">Chờ chạy...</span></div>
-                    <div>Hash B: <span id="md5Res2" style="color:#fff;">Chờ chạy...</span></div>
-                </div>
-            </div>
-
-            <div style="background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-                <div style="font-weight: 700; color: #d946ef; margin-bottom: 6px; font-size: 14px;">SHA-256 (256-bit Digest)</div>
-                <div id="shaDiffStats" style="font-size: 12px; color: #d946ef; margin-bottom: 8px;">Độ khác biệt bit: -- / 256 bit</div>
-                <div style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; word-break: break-all; line-height: 1.5;">
-                    <div>Hash A: <span id="shaRes1" style="color:#fff;">Chờ chạy...</span></div>
-                    <div>Hash B: <span id="shaRes2" style="color:#fff;">Chờ chạy...</span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PHẦN KẾT LUẬN & ỨNG DỤNG THỰC TẾ HÀM BĂM -->
-        <div id="hashAnalysisBox" style="margin-top: 20px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; display: none;">
-            <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 14px;">
-                <i class="fa-solid fa-chart-line"></i> Phân tích So sánh & Ứng dụng Thực tế (Sau khi thực thi)
-            </div>
-            <div id="hashAnalysisContent" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
-        </div>
-    </div>
+    {% include '_demo_tab2_hash.html' %}
 </div>
 
-<!-- ================= TAB 3: CHỮ KÝ SỐ (RSA vs ELGAMAL) ================= -->
+<!-- TAB 3 -->
 <div class="tab-content" id="tabContent2">
-    <div class="crypto-card">
-        <div class="card-title-header">
-            <i class="fa-solid fa-file-signature text-amber"></i> So sánh Trực diện: Chữ ký số (RSA vs. ElGamal)
-        </div>
-        <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
-            Kiểm tra ràng buộc toán học (số nguyên tố, ước chung lớn nhất) và tiến hành ký số song song để so sánh cấu trúc chữ ký.
-        </p>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <!-- CỘT RSA -->
-            <div style="background: rgba(15, 23, 42, 0.5); padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-                <h3 style="font-size: 15px; font-weight: 700; color: #fbbf24; margin-bottom: 10px;">
-                    <i class="fa-solid fa-key"></i> Chữ ký số RSA
-                </h3>
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Thông điệp số M:</label>
-                <input type="text" id="demoRsaM" placeholder="Nhập M..." style="margin-bottom: 8px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <input type="text" id="demoRsaP" placeholder="Nguyên tố p..." value="61">
-                    <input type="text" id="demoRsaQ" placeholder="Nguyên tố q..." value="53">
-                </div>
-                <input type="text" id="demoRsaE" placeholder="Khóa công khai e..." value="17" style="margin-bottom: 8px;">
-                <button type="button" onclick="demoRunRsaSig()" style="background: #fbbf24; color: #000; font-weight: 700; width: 100%; padding: 8px; border:none; border-radius:6px; cursor:pointer; font-size:12px;">
-                    Kiểm tra & Ký RSA
-                </button>
-                <div id="demoRsaOut" style="margin-top: 10px; font-family: monospace; font-size: 12px; color: #34d399; background: #0f172a; padding: 8px; border-radius: 6px; min-height: 35px;">Chờ thực thi...</div>
-            </div>
-
-            <!-- CỘT ELGAMAL -->
-            <div style="background: rgba(15, 23, 42, 0.5); padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-                <h3 style="font-size: 15px; font-weight: 700; color: #f43f5e; margin-bottom: 10px;">
-                    <i class="fa-solid fa-shield-halved"></i> Chữ ký số ElGamal
-                </h3>
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Thông điệp M & Khóa ngẫu nhiên k:</label>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <input type="text" id="demoElgM" placeholder="Nhập M...">
-                    <input type="text" id="demoElgK" placeholder="Nhập k (gcd(k,p-1)=1)...">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px;">
-                    <input type="text" id="demoElgP" placeholder="Nguyên tố p...">
-                    <input type="text" id="demoElgG" placeholder="Phần tử g...">
-                    <input type="text" id="demoElgX" placeholder="Bí mật x...">
-                </div>
-                <button type="button" onclick="demoRunElgSig()" style="background: #f43f5e; color: #fff; font-weight: 700; width: 100%; padding: 8px; border:none; border-radius:6px; cursor:pointer; font-size:12px;">
-                    Kiểm tra & Ký ElGamal
-                </button>
-                <div id="demoElgOut" style="margin-top: 10px; font-family: monospace; font-size: 12px; color: #f43f5e; background: #0f172a; padding: 8px; border-radius: 6px; min-height: 35px;">Chờ thực thi...</div>
-            </div>
-        </div>
-
-        <!-- PHẦN KẾT LUẬN VÀ ỨNG DỤNG THỰC TẾ CHỮ KÝ SỐ -->
-        <div id="sigAnalysisBox" style="margin-top: 20px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; display: none;">
-            <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 14px;">
-                <i class="fa-solid fa-chart-line"></i> Phân tích So sánh & Ứng dụng Thực tế (Sau khi thực thi)
-            </div>
-            <div id="sigAnalysisContent" style="font-size: 13px; color: #cbd5e1; line-height: 1.6;"></div>
-        </div>
-    </div>
+    {% include '_demo_tab3_sig.html' %}
 </div>
 
 <script>
@@ -276,10 +124,11 @@ function simpleHash(str, length) {
     return hex.substring(0, length);
 }
 
-// 1. DES vs AES
+let currentSymInput = "";
 function runSymmetricDemo() {
     let text = document.getElementById('symInput').value.trim();
     if(!text) { alert('Vui lòng nhập văn bản cần mã hóa!'); return; }
+    currentSymInput = text;
 
     document.getElementById('outDES').innerText = simpleHash(text, 16).toUpperCase() + " (DES-CBC)";
     document.getElementById('timeDES').innerText = "Time: 0.12 ms | Khóa: 56-bit";
@@ -287,15 +136,21 @@ function runSymmetricDemo() {
     document.getElementById('outAES').innerText = btoa(text + "::AES_SECURE").substring(0, 32) + "==";
     document.getElementById('timeAES').innerText = "Time: 0.05 ms | Khóa: 256-bit";
 
-    let analysis = document.getElementById('symAnalysisBox');
-    analysis.style.display = 'block';
-    document.getElementById('symAnalysisContent').innerHTML = `
-        • <strong>Nhận xét hiệu năng:</strong> DES sử dụng không gian khóa nhỏ (56-bit) hiện đã lỗi thời và dễ bị tấn công vét cạn. AES-256 có tốc độ xử lý nhanh hơn trên phần cứng hiện đại và không gian khóa lớn (256-bit) đảm bảo an toàn tuyệt đối.<br>
-        • <strong>Ứng dụng thực tế:</strong> AES được dùng rộng rãi trong mã hóa ổ đĩa (BitLocker, FileVault), giao thức HTTPS/TLS, và bảo mật dữ liệu ngân hàng. DES hầu như đã bị loại bỏ khỏi các hệ thống thương mại.
+    document.getElementById('symAnalysisBox').style.display = 'block';
+    document.getElementById('bruteForceResult').style.display = 'none';
+}
+
+function simulateBruteForce() {
+    if(!currentSymInput) { alert('Vui lòng thực thi mã hóa trước khi chạy mô phỏng tấn công!'); return; }
+    let box = document.getElementById('bruteForceResult');
+    box.style.display = 'block';
+    box.innerHTML = `
+        <span style="color:#fbbf24;">[Đang chạy mô phỏng...]</span><br>
+        • <strong>Tấn công vào DES (56-bit):</strong> Đã quét qua $2^{56}$ khóa. Tìm thấy khóa đúng sau <strong>0.8 giây</strong>! Khôi phục bản mã thành công: <span style="color:#34d399;">"${currentSymInput}"</span>. <span style="color:#f87171; font-weight:bold;">(CẢNH BÁO: DES KHÔNG CÒN AN TOÀN!)</span><br>
+        • <strong>Tấn công vào AES-256 (256-bit):</strong> Đã quét qua $10^{12}$ khóa... Tiến trình đình trệ do không gian khóa quá lớn ($2^{256}$ năm). <span style="color:#34d399; font-weight:bold;">(TUYỆT ĐỐI AN TOÀN!)</span>
     `;
 }
 
-// 2. MD5 vs SHA-256 & File Checksum
 function runHashComparison() {
     let t1 = document.getElementById('hashIn1').value.trim();
     let t2 = document.getElementById('hashIn2').value.trim();
@@ -304,7 +159,7 @@ function runHashComparison() {
     let m1 = simpleHash(t1, 32);
     let m2 = simpleHash(t2, 32);
     let s1 = simpleHash(t1, 32) + simpleHash(t1.split('').reverse().join(''), 32);
-    let s2 = simpleHash(t2, 32) + simpleHash(t2.split('').reverse().join(''), 32);
+    let s2 = simpleHash(t2, 32) + simpleHash((t2).split('').reverse().join(''), 32);
 
     document.getElementById('md5Res1').innerText = m1;
     document.getElementById('md5Res2').innerText = m2;
@@ -328,14 +183,32 @@ function handleFileChecksum(event) {
     let reader = new FileReader();
     reader.onload = function(e) {
         let content = e.target.result;
-        document.getElementById('hashIn1').value = file.name + " (" + file.size + " bytes)";
-        document.getElementById('hashIn2').value = file.name + " (Modified Checksum)";
-        runHashComparison();
+        let hashM1 = simpleHash(content, 32);
+        let hashM2 = simpleHash(content + "_mod", 32);
+        let hashS1 = simpleHash(content, 32) + simpleHash(content.split('').reverse().join(''), 32);
+        let hashS2 = simpleHash(content + "_mod", 32) + simpleHash((content + "_mod").split('').reverse().join(''), 32);
+
+        document.getElementById('hashIn1').value = "[File: " + file.name + "]";
+        document.getElementById('hashIn2').value = "[File Modified]";
+
+        document.getElementById('md5Res1').innerText = hashM1;
+        document.getElementById('md5Res2').innerText = hashM2;
+        document.getElementById('md5DiffStats').innerText = `Mã băm MD5 cho tệp tin ${file.name}`;
+
+        document.getElementById('shaRes1').innerText = hashS1;
+        document.getElementById('shaRes2').innerText = hashS2;
+        document.getElementById('shaDiffStats').innerText = `Mã băm SHA-256 cho tệp tin ${file.name}`;
+
+        let analysis = document.getElementById('hashAnalysisBox');
+        analysis.style.display = 'block';
+        document.getElementById('hashAnalysisContent').innerHTML = `
+            • <strong>Kết quả băm tệp tin "${file.name}" (${file.size} bytes):</strong> Đã đọc nội dung thành công.<br>
+            • <strong>Ứng dụng thực tế:</strong> Kiểm tra checksum giúp phát hiện file tải về bị thay đổi hoặc nhiễm mã độc.
+        `;
     };
     reader.readAsText(file);
 }
 
-// 3. Chữ ký số (RSA vs ElGamal)
 function demoRunRsaSig() {
     let mStr = document.getElementById('demoRsaM').value.trim();
     let pStr = document.getElementById('demoRsaP').value.trim();
@@ -360,8 +233,8 @@ function demoRunRsaSig() {
     let sig = modPow(m, d, n);
 
     document.getElementById('demoRsaOut').innerHTML = `<span style="color:#34d399;">✓ Ký RSA hợp lệ:</span> σ = ${sig} (n=${n})`;
-
-    checkAndShowSigAnalysis();
+    document.getElementById('sigAnalysisBox').style.display = 'block';
+    document.getElementById('sigAttackResult').style.display = 'none';
 }
 
 function demoRunElgSig() {
@@ -399,18 +272,17 @@ function demoRunElgSig() {
     let delta = (num * kInv) % pMinus1;
 
     document.getElementById('demoElgOut').innerHTML = `<span style="color:#f43f5e;">✓ Ký ElGamal hợp lệ:</span> (γ=${gamma}, δ=${delta})`;
-
-    checkAndShowSigAnalysis();
+    document.getElementById('sigAnalysisBox').style.display = 'block';
+    document.getElementById('sigAttackResult').style.display = 'none';
 }
 
-function checkAndShowSigAnalysis() {
-    let analysis = document.getElementById('sigAnalysisBox');
-    analysis.style.display = 'block';
-    document.getElementById('sigAnalysisContent').innerHTML = `
-        • <strong>So sánh Chữ ký số RSA và ElGamal:</strong><br>
-        - <em>RSA:</em> Chữ ký là một số đơn độc ($\sigma$), dựa trên bài toán phân tích số nguyên lớn. Kích thước chữ ký bằng kích thước modulus $n$. Rất phổ biến trong chứng chỉ SSL/TLS và mã hóa email.<br>
-        - <em>ElGamal:</em> Chữ ký gồm một cặp giá trị $(\gamma, \delta)$, dựa trên bài toán Logarit rời rạc. Do sử dụng khóa ngẫu nhiên $k$ cho mỗi lần ký, chữ ký mang tính probabilistic (ngẫu nhiên hóa). Thường dùng trong hệ thống bỏ phiếu điện tử bảo mật cao.<br>
-        • <strong>Ứng dụng thực tế:</strong> Chữ ký số giúp đảm bảo 3 yếu tố cốt lõi: Tính toàn vẹn, Tính xác thực và Tính chống chối bỏ (Non-repudiation) trong các giao dịch điện tử.
+function simulateSigAttack() {
+    let box = document.getElementById('sigAttackResult');
+    box.style.display = 'block';
+    box.innerHTML = `
+        <span style="color:#fbbf24;">[Đang chạy mô phỏng giả mạo chữ ký...]</span><br>
+        • <strong>Tấn công vào RSA:</strong> Kẻ tấn công cố gắng giả mạo chữ ký mà không có khóa bí mật $d$. Hệ thống xác thực bằng khóa công khai $e$ đã phát hiện sai lệch và từ chối chữ ký giả mạo ngay lập tức. <span style="color:#34d399; font-weight:bold;">(AN TOÀN)</span><br>
+        • <strong>Tấn công vào ElGamal:</strong> Kẻ tấn công cố ý dùng lại khóa ngẫu nhiên $k$ cho 2 thông điệp khác nhau. Lỗ hổng tái sử dụng $k$ bị khai thác, lộ khóa bí mật $x$. <span style="color:#f87171; font-weight:bold;">(LƯU Ý: Phải đảm bảo đổi mới $k$ ngẫu nhiên tuyệt đối cho mỗi lần ký!)</span>
     `;
 }
 </script>
