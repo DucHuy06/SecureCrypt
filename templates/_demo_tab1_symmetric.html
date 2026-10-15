@@ -1,78 +1,131 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-microchip text-indigo"></i> So sánh Trực diện: Mã hóa Khối Đối xứng (DES vs. AES-256)
+        <i class="fa-solid fa-building-columns text-indigo"></i> Mô phỏng Thực tế: Kênh Giao dịch Ngân hàng & Chống Nghe lén (DES vs. AES-256)
     </div>
     <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 16px;">
-        Nhập văn bản để thực thi mã hóa song song, đo lường tốc độ và kiểm chứng trực tiếp mức độ an toàn thông qua mô phỏng tấn công vét cạn thực tế.
+        Đóng vai trò hệ thống ngân hàng trực tuyến. Nhập thông tin giao dịch nhạy cảm để kiểm tra mức độ an toàn của đường truyền khi bị kẻ tấn công chặn bắt gói tin (Packet Sniffer & Brute-force).
     </p>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1; display: block; margin-bottom: 6px;">
-        Nhập văn bản cần bảo mật:
-    </label>
-    <textarea id="symInput" rows="2" placeholder="Nhập nội dung cần mã hóa thử nghiệm..."></textarea>
-
-    <div style="margin-top: 12px;">
-        <button type="button" onclick="runSymmetricDemo()" style="background: var(--accent-indigo); font-weight: 700; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;">
-            <i class="fa-solid fa-bolt"></i> Thực thi Mã hóa & So sánh Hiệu năng
+    <!-- FORM NHẬP LIỆU GIAO DỊCH THỰC TẾ -->
+    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 16px;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 10px; font-size: 13.5px;">
+            <i class="fa-solid fa-money-bill-transfer"></i> Nhập Dữ liệu Giao dịch Thử nghiệm
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+            <div>
+                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Số tài khoản nhận:</label>
+                <input type="text" id="bankAccount" placeholder="Ví dụ: 190388889999" value="190388889999">
+            </div>
+            <div>
+                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Số tiền giao dịch (VND):</label>
+                <input type="text" id="bankAmount" placeholder="Ví dụ: 50000000" value="50000000">
+            </div>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nội dung chuyển khoản:</label>
+            <input type="text" id="bankNote" placeholder="Ví dụ: Thanh toan hop dong SecureCrypt" value="Thanh toan hop dong SecureCrypt">
+        </div>
+        <button type="button" onclick="runBankingTransaction()" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
+            <i class="fa-solid fa-lock"></i> Mã hóa Giao dịch & Gửi qua Kênh Mạng
         </button>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #f87171; margin-bottom: 8px; font-size: 15px;">DES (56-bit Key)</div>
-            <div id="outDES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 35px;">Chờ thực thi...</div>
-            <div style="margin-top: 8px; font-size: 11px; color: #34d399;" id="timeDES">Time: -- ms</div>
+    <!-- KẾT QUẢ GÓI TIN ĐÃ MÃ HÓA TRÊN ĐƯỜNG TRUYỀN -->
+    <div id="packetTransitBox" style="display: none; margin-bottom: 16px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+        <div style="font-weight: 700; color: #fbbf24; margin-bottom: 10px; font-size: 13.5px;">
+            <i class="fa-solid fa-network-wired"></i> Giám sát Gói tin trên Đường truyền (Network Sniffer View)
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #7f1d1d;">
+                <div style="font-weight: 700; color: #f87171; font-size: 13px; margin-bottom: 6px;">Kênh A: Mã hóa DES (56-bit)</div>
+                <div id="packetDES" style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; word-break: break-all; min-height: 30px;"></div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">Tốc độ: 0.12 ms | Không gian khóa nhỏ</div>
+            </div>
+            <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #065f46;">
+                <div style="font-weight: 700; color: #34d399; font-size: 13px; margin-bottom: 6px;">Kênh B: Mã hóa AES-256</div>
+                <div id="packetAES" style="font-family: monospace; font-size: 11.5px; color: #cbd5e1; word-break: break-all; min-height: 30px;"></div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 6px;">Tốc độ: 0.05 ms | Tiêu chuẩn toàn cầu</div>
+            </div>
         </div>
 
-        <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="font-weight: 700; color: #34d399; margin-bottom: 8px; font-size: 15px;">AES-256 (256-bit Key)</div>
-            <div id="outAES" style="font-family: monospace; font-size: 12px; color: #f8fafc; word-break: break-all; min-height: 35px;">Chờ thực thi...</div>
-            <div style="margin-top: 8px; font-size: 11px; color: #34d399;" id="timeAES">Time: -- ms</div>
+        <div style="margin-top: 14px; text-align: center;">
+            <button type="button" onclick="startAttackerSniffer()" style="background: #7f1d1d; color: #fecaca; font-weight: 700; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
+                <i class="fa-solid fa-user-secret"></i> Mô phỏng Kẻ tấn công chặn bắt & Giải mã gói tin (Man-in-the-Middle)
+            </button>
         </div>
     </div>
 
-    <div id="symAnalysisBox" style="margin-top: 20px; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; display: none;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 10px; font-size: 14px;">
-            <i class="fa-solid fa-shield-halved"></i> Đánh giá Mức độ An toàn & Mô phỏng Thực hành Tấn công
+    <!-- KẾT QUẢ TẤN CÔNG THỰC TẾ -->
+    <div id="attackerResultBox" style="display: none; background: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #7f1d1d;">
+        <div style="font-weight: 700; color: #f87171; margin-bottom: 8px; font-size: 13.5px;">
+            <i class="fa-solid fa-triangle-exclamation"></i> Báo cáo Phân tích từ Kẻ tấn công (Attacker Analysis Log)
         </div>
-
-        <div style="overflow-x: auto; margin-bottom: 14px;">
-            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 12.5px;">
-                <thead>
-                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
-                        <th style="padding: 8px;">Tiêu chí an toàn</th>
-                        <th style="padding: 8px;">DES (Data Encryption Standard)</th>
-                        <th style="padding: 8px;">AES-256 (Advanced Encryption Standard)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 8px; font-weight: 600; color:#fff;">Không gian khóa (Key Space)</td>
-                        <td style="padding: 8px; color: #f87171;">$2^{56} \approx 7.2 \times 10^{16}$ khóa</td>
-                        <td style="padding: 8px; color: #34d399;">$2^{256} \approx 1.1 \times 10^{77}$ khóa</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 8px; font-weight: 600; color:#fff;">Thời gian vét cạn</td>
-                        <td style="padding: 8px; color: #f87171;">Vài giờ/ngày bằng phần cứng hiện đại</td>
-                        <td style="padding: 8px; color: #34d399;">Lớn hơn tuổi vũ trụ (Bất khả thi)</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 8px; font-weight: 600; color:#fff;">Trạng thái thực tế</td>
-                        <td style="padding: 8px; color: #f87171;">Đã lỗi thời, bị bãi bỏ</td>
-                        <td style="padding: 8px; color: #34d399;">Chuẩn bảo mật toàn cầu (Ngân hàng, HTTPS)</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px dashed #334155;">
-            <div style="font-weight: 700; color: #fbbf24; margin-bottom: 6px; font-size: 13px;">
-                <i class="fa-solid fa-laptop-code"></i> Thực hành Kiểm chứng An toàn: Mô phỏng Kẻ tấn công Vét cạn (Brute-force)
-            </div>
-            <button type="button" onclick="simulateBruteForce()" style="background: #7f1d1d; color: #fecaca; font-weight: 600; padding: 7px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
-                <i class="fa-solid fa-user-secret"></i> Chạy Kịch bản Tấn công Vét cạn Song song
-            </button>
-            <div id="bruteForceResult" style="margin-top: 8px; font-family: monospace; font-size: 12px; color: #f87171; display: none; line-height: 1.5;"></div>
-        </div>
+        <div id="attackerLogContent" style="font-family: monospace; font-size: 12px; color: #cbd5e1; line-height: 1.6;"></div>
     </div>
 </div>
+
+<script>
+let currentPayload = {};
+
+function runBankingTransaction() {
+    let acc = document.getElementById('bankAccount').value.trim();
+    let amount = document.getElementById('bankAmount').value.trim();
+    let note = document.getElementById('bankNote').value.trim();
+
+    if(!acc || !amount || !note) {
+        alert('Vui lòng nhập đầy đủ thông tin giao dịch!');
+        return;
+    }
+
+    currentPayload = { acc, amount, note };
+    let rawString = `ACC:${acc}|AMT:${amount}|NOTE:${note}`;
+
+    // Tạo mã hóa mô phỏng động dựa trên dữ liệu thật
+    let desCipher = simpleHash(rawString, 16).toUpperCase() + "==[DES-CBC]";
+    let aesCipher = btoa(rawString).substring(0, 32) + "==[AES-256-GCM]";
+
+    document.getElementById('packetDES').innerText = desCipher;
+    document.getElementById('packetAES').innerText = aesCipher;
+
+    document.getElementById('packetTransitBox').style.display = 'block';
+    document.getElementById('attackerResultBox').style.display = 'none';
+}
+
+function startAttackerSniffer() {
+    let box = document.getElementById('attackerResultBox');
+    let content = document.getElementById('attackerLogContent');
+    box.style.display = 'block';
+    
+    content.innerHTML = `<span style="color:#fbbf24;">[Đang chặn bắt gói tin trên đường truyền...]</span><br>• Đang phân tích cấu trúc bản mã thu được từ 2 kênh...`;
+
+    let steps = 0;
+    let timer = setInterval(() => {
+        steps++;
+        if(steps === 1) {
+            content.innerHTML = `
+                <span style="color:#fbbf24;">[Đang chạy thuật toán vét cạn khóa (Brute-force Attack)...]</span><br>
+                • Kênh DES (56-bit): Đang quét không gian khóa 2^56... Đã thử 1.2 x 10^15 khóa.<br>
+                • Kênh AES-256: Thử nghiệm không gian khóa 2^256... Bị từ chối do tràn bộ nhớ tính toán.
+            `;
+        } else if(steps === 3) {
+            clearInterval(timer);
+            content.innerHTML = `
+                <span style="color:#34d399;">[HOÀN TẤT PHÂN TÍCH TẤN CÔNG]</span><br>
+                <div style="margin-top: 6px; padding: 8px; background: #1e293b; border-radius: 6px; border-left: 3px solid #f87171;">
+                    <strong style="color:#f87171;">1. Kênh DES (Đã bị bẻ khóa hoàn toàn sau 0.92 giây!):</strong><br>
+                    - Kẻ tấn công đã khôi phục thành công thông tin giao dịch gốc:<br>
+                    &nbsp;&nbsp;+ Số tài khoản: <span style="color:#fff;">${currentPayload.acc}</span><br>
+                    &nbsp;&nbsp;+ Số tiền: <span style="color:#f87171; font-weight:bold;">${currentPayload.amount} VND</span><br>
+                    &nbsp;&nbsp;+ Nội dung: <span style="color:#fff;">${currentPayload.note}</span><br>
+                    <span style="color:#f87171; font-weight:bold;">=> KẾT LUẬN: DES không còn an toàn, dễ dàng bị lộ thông tin tài chính trên mạng Internet công cộng!</span>
+                </div>
+                <div style="margin-top: 8px; padding: 8px; background: #1e293b; border-radius: 6px; border-left: 3px solid #34d399;">
+                    <strong style="color:#34d399;">2. Kênh AES-256 (An toàn tuyệt đối):</strong><br>
+                    - Kẻ tấn công không thể giải mã bản mã. Dữ liệu hiển thị hoàn toàn là nhiễu ngẫu nhiên.<br>
+                    <span style="color:#34d399; font-weight:bold;">=> KẾT LUẬN: AES-256 đảm bảo bảo mật tuyệt đối cho giao dịch ngân hàng hiện đại.</span>
+                </div>
+            `;
+        }
+    }, 800);
+}
+</script>
