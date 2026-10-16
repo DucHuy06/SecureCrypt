@@ -1,97 +1,34 @@
+
 <style>
     .secureshare-card {
-        background: #0b0f19;
-        color: #e5e7eb;
-        border: 1px solid #1e293b;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 15px 35px rgba(0,0,0,.35);
+        background:#0b0f19;color:#e5e7eb;border:1px solid #1e293b;
+        border-radius:16px;padding:24px;box-shadow:0 15px 35px rgba(0,0,0,.35)
     }
-    .secureshare-card * { box-sizing: border-box; }
-    .ss-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
+    .secureshare-card *{box-sizing:border-box}
+    .ss-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .ss-panel{min-width:0;background:#111827;border:1px solid #1f2937;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:13px}
+    .ss-heading{color:#38bdf8;font-size:14px;font-weight:750;padding-bottom:10px;border-bottom:1px solid #293548}
+    .secureshare-card label{display:block;color:#cbd5e1;font-size:12px;margin-bottom:6px}
+    .secureshare-card input,.secureshare-card select,.secureshare-card textarea{
+        width:100%;max-width:100%;min-width:0;background:#1f2937;color:#f8fafc;
+        border:1px solid #475569;padding:10px 11px;border-radius:8px;font-size:13px
     }
-    .ss-panel {
-        min-width: 0;
-        background: #111827;
-        border: 1px solid #1f2937;
-        border-radius: 12px;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 13px;
-    }
-    .ss-heading {
-        color: #38bdf8;
-        font-size: 14px;
-        font-weight: 750;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #293548;
-    }
-    .secureshare-card label {
-        display: block;
-        color: #cbd5e1;
-        font-size: 12px;
-        margin-bottom: 6px;
-    }
-    .secureshare-card input,
-    .secureshare-card select,
-    .secureshare-card textarea {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        background: #1f2937;
-        color: #f8fafc;
-        border: 1px solid #475569;
-        padding: 10px 11px;
-        border-radius: 8px;
-        font-size: 13px;
-    }
-    .secureshare-card textarea {
-        resize: vertical;
-        line-height: 1.5;
-    }
-    .ss-btn {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        background: #4f46e5;
-        color: #fff;
-        border: 0;
-        border-radius: 8px;
-        padding: 11px 14px;
-        font-weight: 700;
-        font-size: 13px;
-        cursor: pointer;
-    }
-    .ss-btn.secondary { background: #334155; }
-    .ss-btn:disabled { opacity: .55; cursor: wait; }
-    .ss-note {
-        color: #94a3b8;
-        font-size: 11.5px;
-        line-height: 1.55;
-    }
-    .ss-result {
-        background: #0b0f19;
-        border: 1px solid #374151;
-        padding: 13px;
-        border-radius: 8px;
-        min-height: 48px;
-        overflow-wrap: anywhere;
-        font-size: 13px;
-        line-height: 1.5;
-    }
-    .ss-success { color: #34d399; }
-    .ss-error { color: #f87171; }
-
-    @media (max-width: 760px) {
-        .ss-grid { grid-template-columns: 1fr; }
-        .secureshare-card { padding: 15px; }
-        .ss-panel { padding: 15px; }
-    }
+    .secureshare-card input[type=file]{font-size:12px}
+    .secureshare-card textarea{resize:vertical;line-height:1.5}
+    .ss-btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;background:#4f46e5;color:#fff;border:0;border-radius:8px;padding:11px 14px;font-weight:700;font-size:13px;cursor:pointer}
+    .ss-btn.secondary{background:#334155}
+    .ss-btn.danger{background:#991b1b}
+    .ss-btn:disabled{opacity:.55;cursor:not-allowed}
+    .ss-note{color:#94a3b8;font-size:11.5px;line-height:1.55}
+    .ss-result{background:#0b0f19;border:1px solid #374151;padding:13px;border-radius:8px;min-height:48px;overflow-wrap:anywhere;font-size:13px;line-height:1.5;white-space:pre-wrap}
+    .ss-success{color:#34d399}.ss-error{color:#f87171}
+    .ss-explanation{display:none;background:#0b1727;border:1px solid #164e63;border-radius:10px;padding:14px;margin-top:6px}
+    .ss-explanation h4{color:#67e8f9;font-size:13px;margin:0 0 8px}
+    .ss-explanation p,.ss-explanation li{font-size:12px;line-height:1.65;color:#cbd5e1}
+    .ss-explanation ul{padding-left:18px;margin:6px 0}
+    .ss-explanation code{overflow-wrap:anywhere;color:#a5f3fc}
+    .ss-divider{border:0;border-top:1px solid #293548;margin:8px 0}
+    @media(max-width:760px){.ss-grid{grid-template-columns:1fr}.secureshare-card{padding:15px}.ss-panel{padding:15px}}
 </style>
 
 <div class="crypto-card secureshare-card" id="secureShareApp">
@@ -101,40 +38,39 @@
             SecureShare — Chia sẻ tài liệu mật
         </h2>
         <p style="color:#94a3b8;font-size:13px;line-height:1.6;margin:0">
-            Mã hóa ngay trên trình duyệt, đóng gói thành tệp .secure
-            và giải mã bằng đúng khóa cùng cấu hình đã chọn.
+            Mã hóa tài liệu, bảo vệ khóa, kiểm tra tính toàn vẹn và xem cơ chế hoạt động sau khi thực thi.
         </p>
     </div>
 
     <div class="ss-grid">
-        <!-- MÃ HÓA -->
+        <!-- 1. MÃ HÓA -->
         <section class="ss-panel">
-            <div class="ss-heading">
-                <i class="fa-solid fa-lock"></i> 1. Đóng gói và mã hóa
-            </div>
+            <div class="ss-heading"><i class="fa-solid fa-lock"></i> 1. Đóng gói và mã hóa</div>
 
             <div>
                 <label for="ssTitle">Tên tài liệu</label>
-                <input id="ssTitle" type="text" value="Tai-lieu-mat.txt" maxlength="180">
+                <input id="ssTitle" type="text" value="" maxlength="180"
+                       placeholder="Nhập tên tài liệu (không bắt buộc)" autocomplete="off">
             </div>
 
             <div>
                 <label for="ssPlainFile">Chọn tệp cần mã hóa (tùy chọn)</label>
                 <input id="ssPlainFile" type="file">
-                <div class="ss-note">Tối đa 50 MB. Nếu chọn tệp, tệp sẽ được dùng thay cho văn bản bên dưới.</div>
+                <div class="ss-note">Tối đa 50 MB. Nếu chọn tệp, hệ thống dùng tệp thay cho nội dung văn bản.</div>
             </div>
 
             <div>
                 <label for="ssPlainText">Hoặc nhập nội dung văn bản</label>
-                <textarea id="ssPlainText" rows="5" placeholder="Nhập nội dung văn bản cần bảo mật..."></textarea>
+                <textarea id="ssPlainText" rows="5" placeholder="Nhập nội dung cần bảo mật..."></textarea>
             </div>
 
             <div>
                 <label for="ssCipher">Thuật toán mã hóa dữ liệu</label>
                 <select id="ssCipher">
                     <option value="AES-256-GCM">AES-256-GCM — mã hóa và xác thực</option>
-                    <option value="AES-256-CBC">AES-256-CBC — kết hợp HMAC-SHA-256</option>
+                    <option value="AES-256-CBC">AES-256-CBC + HMAC-SHA-256</option>
                 </select>
+                <div class="ss-note">DES được đưa vào phần so sánh minh họa bên dưới vì DES đã lỗi thời, không dùng để bảo vệ tệp thật.</div>
             </div>
 
             <div>
@@ -143,44 +79,81 @@
                     <option value="RSA-OAEP-2048">RSA-OAEP-2048 / SHA-256</option>
                     <option value="RSA-OAEP-3072">RSA-OAEP-3072 / SHA-256</option>
                 </select>
-                <div class="ss-note">
-                    RSA mã hóa khóa AES, không mã hóa trực tiếp toàn bộ tài liệu.
-                </div>
+                <div class="ss-note">RSA bảo vệ khóa AES; không mã hóa trực tiếp toàn bộ tài liệu.</div>
             </div>
 
             <div>
-                <label for="ssHash">Thuật toán băm</label>
-                <select id="ssHash" disabled>
-                    <option value="SHA-256" selected>SHA-256</option>
+                <label for="ssHash">Thuật toán băm kiểm tra</label>
+                <select id="ssHash">
+                    <option value="SHA-256">SHA-256 — khuyến nghị</option>
+                    <option value="MD5">MD5 — chỉ minh họa, không an toàn</option>
                 </select>
-                <div class="ss-note">
-                    SHA-256 kiểm tra nội dung sau giải mã. AES-CBC dùng thêm HMAC-SHA-256 để xác thực ciphertext.
-                </div>
+                <div class="ss-note">Tệp vẫn được kiểm tra toàn vẹn bằng SHA-256 và cơ chế xác thực của AES-GCM hoặc HMAC. MD5 chỉ được dùng để so sánh kết quả băm, không thay thế cơ chế bảo mật.</div>
             </div>
 
             <div>
                 <label for="ssPrivatePassword">Mật khẩu bảo vệ khóa riêng RSA</label>
-                <input id="ssPrivatePassword" type="password"
-                       autocomplete="new-password" placeholder="Tối thiểu 8 ký tự">
-            </div>
-
-            <div class="ss-note">
-                Sau khi mã hóa, bạn sẽ nhận được hai tệp:
-                tài liệu .secure và khóa riêng .private.secure.
-                Hãy lưu cả hai ở nơi an toàn.
+                <input id="ssPrivatePassword" type="password" autocomplete="new-password"
+                       placeholder="Tối thiểu 8 ký tự">
             </div>
 
             <button type="button" class="ss-btn" id="ssEncryptBtn">
                 <i class="fa-solid fa-lock"></i> Mã hóa và xuất tệp
             </button>
             <div id="ssEncryptStatus" class="ss-note" role="status" aria-live="polite"></div>
+
+            <div id="ssEncryptExplanation" class="ss-explanation">
+                <h4>Cơ chế mã hóa vừa thực thi</h4>
+                <div id="ssEncryptExplanationBody"></div>
+            </div>
+
+            <hr class="ss-divider">
+
+            <div class="ss-heading"><i class="fa-solid fa-flask"></i> So sánh thuật toán</div>
+            <div class="ss-note">Phần này chạy minh họa trên nội dung văn bản; không thay đổi thuật toán bảo vệ tệp .secure.</div>
+
+            <div>
+                <label for="ssCompareCipher">Mã hóa đối chiếu</label>
+                <select id="ssCompareCipher">
+                    <option value="DES">DES</option>
+                    <option value="AES">AES-256</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="ssComparePublic">Thuật toán khóa công khai đối chiếu</label>
+                <select id="ssComparePublic">
+                    <option value="RSA">RSA — minh họa cơ chế</option>
+                    <option value="ElGamal">ElGamal — minh họa cơ chế</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="ssCompareHash">Thuật toán băm đối chiếu</label>
+                <select id="ssCompareHash">
+                    <option value="MD5">MD5</option>
+                    <option value="SHA-256">SHA-256</option>
+                </select>
+            </div>
+
+            <button type="button" class="ss-btn secondary" id="ssCompareBtn">
+                <i class="fa-solid fa-code-compare"></i> Chạy so sánh thuật toán
+            </button>
+
+            <div id="ssCompareStatus" class="ss-result">Chưa chạy so sánh.</div>
+            <div id="ssCompareExplanation" class="ss-explanation">
+                <h4>Kết quả và cơ chế hoạt động</h4>
+                <div id="ssCompareExplanationBody"></div>
+            </div>
+
+            <div class="ss-note">
+                Lưu ý: phần so sánh DES/AES và MD5/SHA-256 có thể chạy trên dữ liệu mẫu. RSA/ElGamal được giải thích về cơ chế khóa công khai; không dùng tham số nhỏ để bảo vệ dữ liệu thật.
+            </div>
         </section>
 
-        <!-- GIẢI MÃ -->
+        <!-- 2. GIẢI MÃ -->
         <section class="ss-panel">
-            <div class="ss-heading">
-                <i class="fa-solid fa-box-open"></i> 2. Giải mã và kiểm định
-            </div>
+            <div class="ss-heading"><i class="fa-solid fa-box-open"></i> 2. Giải mã và kiểm định</div>
 
             <div>
                 <label for="ssEncryptedFile">Tệp tài liệu .secure</label>
@@ -190,17 +163,23 @@
             <div>
                 <label for="ssPrivateKeyFile">Tệp khóa riêng .private.secure</label>
                 <input id="ssPrivateKeyFile" type="file" accept=".secure,.json">
+                <div class="ss-note">Tệp khóa riêng được tạo khi mã hóa. Cần tệp này và mật khẩu tương ứng để giải mã.</div>
             </div>
 
             <div>
                 <label for="ssUnlockPassword">Mật khẩu mở khóa tệp khóa riêng</label>
-                <input id="ssUnlockPassword" type="password"
-                       autocomplete="current-password" placeholder="Nhập mật khẩu khóa riêng">
+                <input id="ssUnlockPassword" type="password" autocomplete="off"
+                       placeholder="Nhập mật khẩu khóa riêng">
             </div>
 
-            <button type="button" class="ss-btn" id="ssDecryptBtn">
-                <i class="fa-solid fa-unlock-keyhole"></i> Giải mã và kiểm tra
-            </button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" class="ss-btn" id="ssDecryptBtn">
+                    <i class="fa-solid fa-unlock-keyhole"></i> Giải mã và kiểm tra
+                </button>
+                <button type="button" class="ss-btn danger" id="ssClearFilesBtn">
+                    <i class="fa-solid fa-trash"></i> Xóa tài liệu
+                </button>
+            </div>
 
             <div id="ssDecryptStatus" class="ss-result" role="status" aria-live="polite">
                 Chưa có tài liệu được giải mã.
@@ -212,27 +191,37 @@
             </div>
 
             <div>
-                <label for="ssRestoredText">Nội dung đã khôi phục nếu là văn bản</label>
+                <label for="ssRestoredText">Nội dung khôi phục nếu là văn bản</label>
                 <textarea id="ssRestoredText" rows="6" readonly></textarea>
             </div>
 
-            <button type="button" class="ss-btn secondary"
-                    id="ssDownloadRestoredBtn" disabled>
-                <i class="fa-solid fa-download"></i> Tải tệp đã khôi phục
-            </button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button type="button" class="ss-btn secondary" id="ssDownloadRestoredBtn" disabled>
+                    <i class="fa-solid fa-download"></i> Tải tệp đã khôi phục
+                </button>
+                <button type="button" class="ss-btn secondary" id="ssClearResultBtn">
+                    <i class="fa-solid fa-eraser"></i> Xóa kết quả
+                </button>
+            </div>
+
+            <div id="ssDecryptExplanation" class="ss-explanation">
+                <h4>Cơ chế giải mã và kiểm định vừa thực thi</h4>
+                <div id="ssDecryptExplanationBody"></div>
+            </div>
 
             <div class="ss-note">
-                Giải mã chỉ thành công khi khóa phù hợp và kiểm tra toàn vẹn đạt yêu cầu.
+                Nút “Xóa tài liệu” xóa các lựa chọn tệp và mật khẩu khỏi giao diện. Nút “Xóa kết quả” xóa nội dung khôi phục và trạng thái hiển thị.
             </div>
         </section>
     </div>
 
     <div class="ss-note" style="border-top:1px solid #1f2937;padding-top:14px;margin-top:20px">
         <i class="fa-solid fa-shield-halved"></i>
-        Các thao tác mã hóa và giải mã trong thành phần này được thực hiện trên trình duyệt bằng Web Crypto API.
+        Mã hóa tệp sử dụng Web Crypto API trên trình duyệt. Hãy chạy trang qua HTTPS hoặc localhost để hỗ trợ Web Crypto API.
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 <script>
 (function () {
     'use strict';
@@ -244,14 +233,31 @@
     const $ = id => root.querySelector('#' + id);
     const MAX_SIZE = 50 * 1024 * 1024;
     const FORMAT = 'secureshare-v5';
+
     let restoredBlob = null;
     let restoredName = 'restored.bin';
 
     function status(id, message, type) {
         const el = $(id);
-        el.className = id === 'ssDecryptStatus' ? 'ss-result' : 'ss-note';
+        el.className = id === 'ssDecryptStatus' || id === 'ssCompareStatus'
+            ? 'ss-result' : 'ss-note';
         if (type) el.classList.add('ss-' + type);
         el.textContent = message;
+    }
+
+    function showExplanation(id, bodyId, html) {
+        $(bodyId).innerHTML = html;
+        $(id).style.display = 'block';
+    }
+
+    function hideExplanation(id) {
+        $(id).style.display = 'none';
+    }
+
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, c => ({
+            '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+        }[c]));
     }
 
     function toB64(bytes) {
@@ -276,8 +282,8 @@
         return crypto.getRandomValues(new Uint8Array(length));
     }
 
-    async function digest(bytes) {
-        return new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+    async function digest(bytes, algorithm) {
+        return new Uint8Array(await crypto.subtle.digest(algorithm || 'SHA-256', bytes));
     }
 
     function equalBytes(a, b) {
@@ -291,13 +297,9 @@
         const material = await crypto.subtle.importKey(
             'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']
         );
-        return crypto.subtle.deriveKey(
-            { name: 'PBKDF2', salt, iterations: 600000, hash: 'SHA-256' },
-            material,
-            { name: 'AES-GCM', length: 256 },
-            false,
-            usages
-        );
+        return crypto.subtle.deriveKey({
+            name: 'PBKDF2', salt, iterations: 600000, hash: 'SHA-256'
+        }, material, { name: 'AES-GCM', length: 256 }, false, usages);
     }
 
     async function protectPrivateKey(jwk, password) {
@@ -305,17 +307,11 @@
         const iv = randomBytes(12);
         const key = await derivePasswordKey(password, salt, ['encrypt']);
         const plain = new TextEncoder().encode(JSON.stringify(jwk));
-        const encrypted = await crypto.subtle.encrypt(
-            { name: 'AES-GCM', iv }, key, plain
-        );
+        const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
         return {
             format: 'secureshare-private-key-v1',
-            kdf: 'PBKDF2',
-            kdfHash: 'SHA-256',
-            iterations: 600000,
-            cipher: 'AES-256-GCM',
-            salt: toB64(salt),
-            iv: toB64(iv),
+            kdf: 'PBKDF2', kdfHash: 'SHA-256', iterations: 600000,
+            cipher: 'AES-256-GCM', salt: toB64(salt), iv: toB64(iv),
             ciphertext: toB64(new Uint8Array(encrypted))
         };
     }
@@ -326,14 +322,9 @@
             pkg.iterations !== 600000 || pkg.cipher !== 'AES-256-GCM') {
             throw new Error('Định dạng khóa riêng không được hỗ trợ.');
         }
-
-        const key = await derivePasswordKey(
-            password, fromB64(pkg.salt), ['decrypt']
-        );
+        const key = await derivePasswordKey(password, fromB64(pkg.salt), ['decrypt']);
         const plain = await crypto.subtle.decrypt(
-            { name: 'AES-GCM', iv: fromB64(pkg.iv) },
-            key,
-            fromB64(pkg.ciphertext)
+            { name: 'AES-GCM', iv: fromB64(pkg.iv) }, key, fromB64(pkg.ciphertext)
         );
         return JSON.parse(new TextDecoder().decode(plain));
     }
@@ -351,11 +342,8 @@
     }
 
     function downloadJson(data, filename) {
-        downloadBytes(
-            new TextEncoder().encode(JSON.stringify(data, null, 2)),
-            filename,
-            'application/json'
-        );
+        downloadBytes(new TextEncoder().encode(JSON.stringify(data, null, 2)),
+            filename, 'application/json');
     }
 
     async function readJsonFile(file, limit) {
@@ -377,16 +365,42 @@
             };
         }
 
-        const enteredName = $('ssTitle').value.trim() || 'tai-lieu.txt';
-        const name = enteredName.replace(/[\\/:*?"<>|]/g, '_').slice(0, 180);
+        const enteredName = $('ssTitle').value.trim();
+        const safeName = (enteredName || 'tai-lieu.txt')
+            .replace(/[\\/:*?"<>|]/g, '_').slice(0, 180);
+
         const bytes = new TextEncoder().encode($('ssPlainText').value);
+        if (!bytes.length) throw new Error('Hãy chọn tệp hoặc nhập nội dung văn bản.');
         if (bytes.length > MAX_SIZE) throw new Error('Văn bản vượt giới hạn 50 MB.');
-        return { name: name || 'tai-lieu.txt', mime: 'text/plain;charset=utf-8', bytes };
+
+        return {
+            name: safeName || 'tai-lieu.txt',
+            mime: 'text/plain;charset=utf-8',
+            bytes
+        };
+    }
+
+    function explainEncryption(cipher, rsaChoice, hashChoice, fileName, size) {
+        const cipherText = cipher === 'AES-256-GCM'
+            ? 'AES-256-GCM mã hóa nội dung bằng khóa AES 256 bit, nonce ngẫu nhiên và thẻ xác thực. Khi giải mã, thẻ xác thực giúp phát hiện dữ liệu bị chỉnh sửa.'
+            : 'AES-256-CBC mã hóa nội dung theo các khối. Vì CBC không tự xác thực dữ liệu, hệ thống tạo HMAC-SHA-256 để kiểm tra tính xác thực trước khi giải mã.';
+
+        return '<ul>' +
+            '<li><b>Bước 1 — Đọc dữ liệu:</b> đã xử lý <code>' + escapeHtml(fileName) +
+            '</code>, dung lượng ' + size + ' byte.</li>' +
+            '<li><b>Bước 2 — Mã hóa đối xứng:</b> ' + cipherText + '</li>' +
+            '<li><b>Bước 3 — Bảo vệ khóa:</b> ' + escapeHtml(rsaChoice) +
+            ' dùng RSA-OAEP với SHA-256 để đóng gói khóa AES. Khóa AES mới được tạo cho lần mã hóa này.</li>' +
+            '<li><b>Bước 4 — Kiểm tra:</b> SHA-256 được lưu để so sánh nội dung sau giải mã. Lựa chọn băm hiển thị là ' +
+            escapeHtml(hashChoice) + '; lựa chọn MD5 chỉ dùng minh họa, không thay thế cơ chế xác thực.</li>' +
+            '<li><b>Bước 5 — Xuất tệp:</b> tải xuống tệp tài liệu <code>.secure</code> và khóa riêng <code>.private.secure</code>.</li>' +
+            '</ul>';
     }
 
     async function encryptDocument() {
         const button = $('ssEncryptBtn');
         button.disabled = true;
+        hideExplanation('ssEncryptExplanation');
         status('ssEncryptStatus', 'Đang tạo khóa và mã hóa…');
 
         try {
@@ -400,20 +414,18 @@
             const input = await getInput();
             const cipher = $('ssCipher').value;
             const rsaChoice = $('ssRsa').value;
+            const hashChoice = $('ssHash').value;
             const bits = rsaChoice === 'RSA-OAEP-3072' ? 3072 : 2048;
 
             const rsa = await crypto.subtle.generateKey({
-                name: 'RSA-OAEP',
-                modulusLength: bits,
-                publicExponent: new Uint8Array([1, 0, 1]),
-                hash: 'SHA-256'
+                name: 'RSA-OAEP', modulusLength: bits,
+                publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256'
             }, true, ['wrapKey', 'unwrapKey']);
 
             const aesKey = await crypto.subtle.generateKey(
                 { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']
             );
             const rawKey = new Uint8Array(await crypto.subtle.exportKey('raw', aesKey));
-
             const wrappedKey = new Uint8Array(await crypto.subtle.wrapKey(
                 'raw', aesKey, rsa.publicKey, { name: 'RSA-OAEP' }
             ));
@@ -425,32 +437,25 @@
                 ciphertext = new Uint8Array(await crypto.subtle.encrypt(
                     { name: 'AES-GCM', iv, tagLength: 128 }, aesKey, input.bytes
                 ));
-            } else if (cipher === 'AES-256-CBC') {
+            } else {
                 const cbcKey = await crypto.subtle.importKey(
                     'raw', rawKey, 'AES-CBC', false, ['encrypt']
                 );
                 ciphertext = new Uint8Array(await crypto.subtle.encrypt(
                     { name: 'AES-CBC', iv }, cbcKey, input.bytes
                 ));
-            } else {
-                throw new Error('Thuật toán mã hóa không hợp lệ.');
             }
 
             const packageData = {
-                format: FORMAT,
-                version: 5,
-                cipher,
-                keyWrap: rsaChoice,
-                keyWrapHash: 'SHA-256',
-                hash: 'SHA-256',
-                title: input.name,
-                mimeType: input.mime,
+                format: FORMAT, version: 5, cipher,
+                keyWrap: rsaChoice, keyWrapHash: 'SHA-256',
+                hash: 'SHA-256', displayHash: hashChoice,
+                title: input.name, mimeType: input.mime,
                 createdAt: new Date().toISOString(),
                 plaintextSize: input.bytes.length,
-                iv: toB64(iv),
-                wrappedKey: toB64(wrappedKey),
+                iv: toB64(iv), wrappedKey: toB64(wrappedKey),
                 ciphertext: toB64(ciphertext),
-                sha256: toB64(await digest(input.bytes)),
+                sha256: toB64(await digest(input.bytes, 'SHA-256')),
                 hmac: null
             };
 
@@ -459,27 +464,17 @@
                     'raw', rawKey, 'HKDF', false, ['deriveKey']
                 );
                 const macKey = await crypto.subtle.deriveKey({
-                    name: 'HKDF',
-                    hash: 'SHA-256',
-                    salt: new Uint8Array(32),
+                    name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32),
                     info: new TextEncoder().encode('SecureShare-v5-HMAC-SHA-256')
-                }, hkdf, {
-                    name: 'HMAC', hash: 'SHA-256', length: 256
-                }, false, ['sign']);
+                }, hkdf, { name: 'HMAC', hash: 'SHA-256', length: 256 },
+                false, ['sign']);
 
                 const metadata = {
-                    format: FORMAT,
-                    cipher,
-                    keyWrap: rsaChoice,
-                    hash: 'SHA-256',
-                    iv: packageData.iv,
-                    wrappedKey: packageData.wrappedKey,
-                    salt: null,
-                    title: packageData.title,
-                    mimeType: packageData.mimeType,
+                    format: FORMAT, cipher, keyWrap: rsaChoice, hash: 'SHA-256',
+                    iv: packageData.iv, wrappedKey: packageData.wrappedKey,
+                    salt: null, title: packageData.title, mimeType: packageData.mimeType,
                     plaintextSize: packageData.plaintextSize
                 };
-
                 const metaBytes = new TextEncoder().encode(JSON.stringify(metadata));
                 const macInput = new Uint8Array(metaBytes.length + ciphertext.length);
                 macInput.set(metaBytes);
@@ -492,20 +487,19 @@
 
             const privateJwk = await crypto.subtle.exportKey('jwk', rsa.privateKey);
             const privatePackage = await protectPrivateKey(privateJwk, password);
-
-            const base = (input.name.replace(/\.[^.]+$/, '')
-                .replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100) || 'document');
+            const base = input.name.replace(/\.[^.]+$/, '')
+                .replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100) || 'document';
 
             downloadJson(packageData, base + '.secure');
             downloadJson(privatePackage, base + '.private.secure');
-
             rawKey.fill(0);
 
-            status(
-                'ssEncryptStatus',
-                'Mã hóa thành công. Đã tải xuống tệp .secure và khóa riêng .private.secure. Hãy lưu cả hai.',
-                'success'
-            );
+            status('ssEncryptStatus',
+                'Mã hóa thành công. Đã xuất tệp .secure và khóa riêng .private.secure.',
+                'success');
+
+            showExplanation('ssEncryptExplanation', 'ssEncryptExplanationBody',
+                explainEncryption(cipher, rsaChoice, hashChoice, input.name, input.bytes.length));
         } catch (err) {
             console.error(err);
             status('ssEncryptStatus', err.message || 'Mã hóa thất bại.', 'error');
@@ -517,10 +511,8 @@
     async function decryptDocument() {
         const button = $('ssDecryptBtn');
         button.disabled = true;
-        restoredBlob = null;
-        $('ssDownloadRestoredBtn').disabled = true;
-        $('ssRestoredText').value = '';
-        $('ssRestoredName').value = '';
+        clearRestoredResult(false);
+        hideExplanation('ssDecryptExplanation');
         status('ssDecryptStatus', 'Đang kiểm tra và giải mã…');
 
         try {
@@ -532,9 +524,7 @@
             const keyFile = $('ssPrivateKeyFile').files[0];
             const password = $('ssUnlockPassword').value;
 
-            if (!docFile || !keyFile) {
-                throw new Error('Hãy chọn cả tệp .secure và .private.secure.');
-            }
+            if (!docFile || !keyFile) throw new Error('Hãy chọn cả tệp .secure và .private.secure.');
             if (!password) throw new Error('Hãy nhập mật khẩu khóa riêng.');
 
             const pkg = await readJsonFile(docFile);
@@ -553,21 +543,13 @@
 
             const privateJwk = await unlockPrivateKey(privatePkg, password);
             const privateKey = await crypto.subtle.importKey(
-                'jwk',
-                privateJwk,
-                { name: 'RSA-OAEP', hash: 'SHA-256' },
-                false,
-                ['unwrapKey']
+                'jwk', privateJwk, { name: 'RSA-OAEP', hash: 'SHA-256' },
+                false, ['unwrapKey']
             );
 
             const aesKey = await crypto.subtle.unwrapKey(
-                'raw',
-                fromB64(pkg.wrappedKey),
-                privateKey,
-                { name: 'RSA-OAEP' },
-                { name: 'AES-GCM', length: 256 },
-                true,
-                ['encrypt', 'decrypt']
+                'raw', fromB64(pkg.wrappedKey), privateKey, { name: 'RSA-OAEP' },
+                { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']
             );
             const rawKey = new Uint8Array(await crypto.subtle.exportKey('raw', aesKey));
             if (rawKey.length !== 32) throw new Error('Khóa AES không hợp lệ.');
@@ -586,15 +568,9 @@
                 if (!pkg.hmac) throw new Error('Tệp AES-CBC thiếu HMAC.');
 
                 const metadata = {
-                    format: FORMAT,
-                    cipher: pkg.cipher,
-                    keyWrap: pkg.keyWrap,
-                    hash: 'SHA-256',
-                    iv: pkg.iv,
-                    wrappedKey: pkg.wrappedKey,
-                    salt: null,
-                    title: pkg.title,
-                    mimeType: pkg.mimeType,
+                    format: FORMAT, cipher: pkg.cipher, keyWrap: pkg.keyWrap,
+                    hash: 'SHA-256', iv: pkg.iv, wrappedKey: pkg.wrappedKey,
+                    salt: null, title: pkg.title, mimeType: pkg.mimeType,
                     plaintextSize: pkg.plaintextSize
                 };
 
@@ -602,13 +578,10 @@
                     'raw', rawKey, 'HKDF', false, ['deriveKey']
                 );
                 const macKey = await crypto.subtle.deriveKey({
-                    name: 'HKDF',
-                    hash: 'SHA-256',
-                    salt: new Uint8Array(32),
+                    name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32),
                     info: new TextEncoder().encode('SecureShare-v5-HMAC-SHA-256')
-                }, hkdf, {
-                    name: 'HMAC', hash: 'SHA-256', length: 256
-                }, false, ['verify']);
+                }, hkdf, { name: 'HMAC', hash: 'SHA-256', length: 256 },
+                false, ['verify']);
 
                 const metaBytes = new TextEncoder().encode(JSON.stringify(metadata));
                 const macInput = new Uint8Array(metaBytes.length + ciphertext.length);
@@ -634,9 +607,8 @@
                 throw new Error('Kích thước dữ liệu khôi phục không khớp.');
             }
 
-            const actualHash = await digest(clearBytes);
-            const expectedHash = fromB64(pkg.sha256);
-            if (!equalBytes(actualHash, expectedHash)) {
+            const actualHash = await digest(clearBytes, 'SHA-256');
+            if (!equalBytes(actualHash, fromB64(pkg.sha256))) {
                 clearBytes.fill(0);
                 throw new Error('SHA-256 không khớp: dữ liệu không toàn vẹn.');
             }
@@ -654,26 +626,32 @@
 
             if (looksText && clearBytes.length <= 2 * 1024 * 1024) {
                 try {
-                    $('ssRestoredText').value = new TextDecoder(
-                        'utf-8', { fatal: true }
-                    ).decode(clearBytes);
+                    $('ssRestoredText').value = new TextDecoder('utf-8', { fatal: true }).decode(clearBytes);
                 } catch (_) {
-                    $('ssRestoredText').value =
-                        'Không thể hiển thị dưới dạng UTF-8. Hãy tải tệp đã khôi phục.';
+                    $('ssRestoredText').value = 'Không thể hiển thị dưới dạng UTF-8. Hãy tải tệp đã khôi phục.';
                 }
             } else {
-                $('ssRestoredText').value =
-                    'Tệp nhị phân hoặc tệp lớn. Hãy tải xuống để mở bằng ứng dụng phù hợp.';
+                $('ssRestoredText').value = 'Tệp nhị phân hoặc tệp lớn. Hãy tải xuống để mở bằng ứng dụng phù hợp.';
             }
 
             $('ssDownloadRestoredBtn').disabled = false;
-            status(
-                'ssDecryptStatus',
+            status('ssDecryptStatus',
                 'Giải mã thành công. SHA-256 hợp lệ' +
-                (pkg.cipher === 'AES-256-CBC' ? ' và HMAC hợp lệ' : ' và xác thực GCM hợp lệ') +
-                '. Cấu hình: ' + pkg.cipher + ' + ' + pkg.keyWrap + ' + SHA-256.',
-                'success'
-            );
+                (pkg.cipher === 'AES-256-CBC' ? ' và HMAC hợp lệ.' : ' và xác thực GCM hợp lệ.') +
+                ' Cấu hình: ' + pkg.cipher + ' + ' + pkg.keyWrap + '.',
+                'success');
+
+            showExplanation('ssDecryptExplanation', 'ssDecryptExplanationBody',
+                '<ul>' +
+                '<li><b>1. Mở khóa riêng:</b> mật khẩu được dùng với PBKDF2 và SHA-256 để tạo khóa mở tệp khóa riêng.</li>' +
+                '<li><b>2. Khôi phục khóa AES:</b> RSA-OAEP giải bọc khóa AES bằng khóa riêng tương ứng.</li>' +
+                '<li><b>3. Giải mã dữ liệu:</b> ' + escapeHtml(pkg.cipher) +
+                (pkg.cipher === 'AES-256-GCM'
+                    ? ' kiểm tra thẻ xác thực trong quá trình giải mã.'
+                    : ' được kiểm tra HMAC-SHA-256 trước khi giải mã.') + '</li>' +
+                '<li><b>4. Kiểm tra SHA-256:</b> giá trị băm của nội dung khôi phục khớp với giá trị đã lưu trong gói.</li>' +
+                '<li><b>5. Kết quả:</b> tài liệu được khôi phục và có thể tải xuống.</li>' +
+                '</ul>');
 
             clearBytes.fill(0);
             rawKey.fill(0);
@@ -685,8 +663,106 @@
         }
     }
 
+    function clearRestoredResult(resetStatus) {
+        restoredBlob = null;
+        restoredName = 'restored.bin';
+        $('ssRestoredName').value = '';
+        $('ssRestoredText').value = '';
+        $('ssDownloadRestoredBtn').disabled = true;
+        hideExplanation('ssDecryptExplanation');
+        if (resetStatus !== false) status('ssDecryptStatus', 'Đã xóa kết quả khôi phục.');
+    }
+
+    function clearFiles() {
+        $('ssEncryptedFile').value = '';
+        $('ssPrivateKeyFile').value = '';
+        $('ssUnlockPassword').value = '';
+        clearRestoredResult(false);
+        status('ssDecryptStatus', 'Đã xóa các tệp đã chọn và kết quả khôi phục.');
+    }
+
+    function runComparison() {
+        const text = $('ssPlainText').value;
+        const compareCipher = $('ssCompareCipher').value;
+        const comparePublic = $('ssComparePublic').value;
+        const compareHash = $('ssCompareHash').value;
+
+        if (!text && !$('ssPlainFile').files[0]) {
+            status('ssCompareStatus', 'Hãy nhập nội dung văn bản ở mục 1 để chạy so sánh.', 'error');
+            hideExplanation('ssCompareExplanation');
+            return;
+        }
+        if ($('ssPlainFile').files[0]) {
+            status('ssCompareStatus', 'Phần so sánh hiện dùng nội dung văn bản. Hãy nhập nội dung vào ô văn bản để chạy.', 'error');
+            return;
+        }
+
+        const start = performance.now();
+        let cipherResult = '';
+        let cipherInfo = '';
+
+        try {
+            if (compareCipher === 'DES') {
+                const key = CryptoJS.enc.Utf8.parse('8bytekey');
+                const iv = CryptoJS.enc.Utf8.parse('12345678');
+                cipherResult = CryptoJS.DES.encrypt(text, key, {
+                    iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7
+                }).toString();
+                cipherInfo = 'DES dùng khóa hiệu dụng 56 bit và khối 64 bit. DES hiện đã lỗi thời, kết quả này chỉ minh họa.';
+            } else {
+                const key = CryptoJS.SHA256('SecureShare-demo-AES-key');
+                const iv = CryptoJS.enc.Utf8.parse('1234567890abcdef');
+                cipherResult = CryptoJS.AES.encrypt(text, key, {
+                    iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7
+                }).toString();
+                cipherInfo = 'AES-256 dùng khóa 256 bit và khối 128 bit. Đây là minh họa AES-CBC; quy trình mã hóa tệp chính vẫn dùng cấu hình đã chọn ở mục 1.';
+            }
+        } catch (e) {
+            status('ssCompareStatus', 'Không chạy được mã hóa đối chiếu: ' + e.message, 'error');
+            return;
+        }
+
+        const cipherTime = performance.now() - start;
+        const hashStart = performance.now();
+        const hashResult = compareHash === 'MD5'
+            ? CryptoJS.MD5(text).toString()
+            : CryptoJS.SHA256(text).toString();
+        const hashTime = performance.now() - hashStart;
+
+        const publicInfo = comparePublic === 'ElGamal'
+            ? 'ElGamal dựa trên bài toán logarit rời rạc. Mỗi lần mã hóa thường dùng số ngẫu nhiên mới, nên cùng một thông điệp có thể tạo bản mã khác nhau. Trong demo này ElGamal được giải thích về cơ chế, không dùng để bảo vệ khóa AES trong tệp.'
+            : 'RSA dựa trên độ khó phân tích thừa số nguyên lớn. Trong quy trình tệp thật, RSA-OAEP bảo vệ khóa AES; không mã hóa trực tiếp toàn bộ tài liệu.';
+
+        const hashInfo = compareHash === 'MD5'
+            ? 'MD5 tạo giá trị băm 128 bit (32 ký tự hex), nhưng đã có tấn công va chạm thực tế. Không dùng MD5 để bảo vệ tính toàn vẹn trong ứng dụng thật.'
+            : 'SHA-256 tạo giá trị băm 256 bit (64 ký tự hex), phù hợp hơn cho kiểm tra tính toàn vẹn trong thiết kế này. Băm đơn thuần không thay thế chữ ký số hoặc MAC.';
+
+        status('ssCompareStatus',
+            'So sánh đã hoàn tất.\n' +
+            'Mã hóa: ' + compareCipher + ' — ' + cipherTime.toFixed(3) + ' ms\n' +
+            'Băm: ' + compareHash + ' — ' + hashTime.toFixed(3) + ' ms\n' +
+            'Kết quả mã hóa: ' + cipherResult + '\n' +
+            'Kết quả băm: ' + hashResult,
+            'success');
+
+        showExplanation('ssCompareExplanation', 'ssCompareExplanationBody',
+            '<ul>' +
+            '<li><b>' + escapeHtml(compareCipher) + ':</b> ' + escapeHtml(cipherInfo) + '</li>' +
+            '<li><b>' + escapeHtml(comparePublic) + ':</b> ' + escapeHtml(publicInfo) + '</li>' +
+            '<li><b>' + escapeHtml(compareHash) + ':</b> ' + escapeHtml(hashInfo) + '</li>' +
+            '<li><b>Thời gian đo:</b> mã hóa ' + cipherTime.toFixed(3) +
+            ' ms; băm ' + hashTime.toFixed(3) +
+            ' ms. Với dữ liệu nhỏ, kết quả thay đổi theo trình duyệt và máy tính nên không đủ để kết luận thuật toán nào nhanh hơn trong mọi trường hợp.</li>' +
+            '</ul>');
+    }
+
     $('ssEncryptBtn').addEventListener('click', encryptDocument);
     $('ssDecryptBtn').addEventListener('click', decryptDocument);
+    $('ssClearFilesBtn').addEventListener('click', clearFiles);
+    $('ssClearResultBtn').addEventListener('click', function () {
+        clearRestoredResult(true);
+    });
+    $('ssCompareBtn').addEventListener('click', runComparison);
 
     $('ssDownloadRestoredBtn').addEventListener('click', function () {
         if (!restoredBlob) return;
