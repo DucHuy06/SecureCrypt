@@ -1,4 +1,3 @@
-
 from flask import Blueprint, request, jsonify, render_template
 
 from crypto.des_crypto import DESCrypto
@@ -45,11 +44,16 @@ def elgamal_page():
     return render_template("elgamal.html")
 
 
+@crypto_bp.route("/about", methods=["GET"])
+def learn_page():
+    return render_template("about.html")
+
+
 # =========================
 # DES API
 # =========================
 
-@crypto_bp.route("/des/generate-key", methods=["GET"])
+@crypto_bp.route("/api/des/generate-key", methods=["GET"])
 def des_gen_key():
     return jsonify({
         "status": "success",
@@ -57,7 +61,7 @@ def des_gen_key():
     })
 
 
-@crypto_bp.route("/des/encrypt", methods=["POST"])
+@crypto_bp.route("/api/des/encrypt", methods=["POST"])
 def des_encrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -68,7 +72,7 @@ def des_encrypt():
     )
 
 
-@crypto_bp.route("/des/decrypt", methods=["POST"])
+@crypto_bp.route("/api/des/decrypt", methods=["POST"])
 def des_decrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -83,7 +87,7 @@ def des_decrypt():
 # AES API
 # =========================
 
-@crypto_bp.route("/aes/generate-key", methods=["POST"])
+@crypto_bp.route("/api/aes/generate-key", methods=["POST"])
 def aes_gen_key():
     data = request.get_json(silent=True) or {}
     bits = data.get("bits", 256)
@@ -94,7 +98,7 @@ def aes_gen_key():
     })
 
 
-@crypto_bp.route("/aes/encrypt", methods=["POST"])
+@crypto_bp.route("/api/aes/encrypt", methods=["POST"])
 def aes_encrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -105,7 +109,7 @@ def aes_encrypt():
     )
 
 
-@crypto_bp.route("/aes/decrypt", methods=["POST"])
+@crypto_bp.route("/api/aes/decrypt", methods=["POST"])
 def aes_decrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -120,7 +124,7 @@ def aes_decrypt():
 # MD5 API
 # =========================
 
-@crypto_bp.route("/md5/hash", methods=["POST"])
+@crypto_bp.route("/api/md5/hash", methods=["POST"])
 def md5_hash():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -128,7 +132,7 @@ def md5_hash():
     )
 
 
-@crypto_bp.route("/md5/compare", methods=["POST"])
+@crypto_bp.route("/api/md5/compare", methods=["POST"])
 def md5_compare():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -143,7 +147,7 @@ def md5_compare():
 # SHA-256 API
 # =========================
 
-@crypto_bp.route("/sha256/hash", methods=["POST"])
+@crypto_bp.route("/api/sha256/hash", methods=["POST"])
 def sha256_hash():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -151,7 +155,7 @@ def sha256_hash():
     )
 
 
-@crypto_bp.route("/sha256/compare", methods=["POST"])
+@crypto_bp.route("/api/sha256/compare", methods=["POST"])
 def sha256_compare():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -166,7 +170,7 @@ def sha256_compare():
 # RSA API
 # =========================
 
-@crypto_bp.route("/rsa/generate-keys", methods=["POST"])
+@crypto_bp.route("/api/rsa/generate-keys", methods=["POST"])
 def rsa_gen_keys():
     data = request.get_json(silent=True) or {}
     bits = data.get("bits", 2048)
@@ -174,7 +178,7 @@ def rsa_gen_keys():
     return jsonify(RSACrypto.generate_keypair(bits))
 
 
-@crypto_bp.route("/rsa/encrypt", methods=["POST"])
+@crypto_bp.route("/api/rsa/encrypt", methods=["POST"])
 def rsa_encrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -185,7 +189,7 @@ def rsa_encrypt():
     )
 
 
-@crypto_bp.route("/rsa/decrypt", methods=["POST"])
+@crypto_bp.route("/api/rsa/decrypt", methods=["POST"])
 def rsa_decrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -200,7 +204,7 @@ def rsa_decrypt():
 # ELGAMAL API
 # =========================
 
-@crypto_bp.route("/elgamal/generate-keys", methods=["POST"])
+@crypto_bp.route("/api/elgamal/generate-keys", methods=["POST"])
 def elgamal_gen_keys():
     data = request.get_json(silent=True) or {}
     bits = data.get("bits", 512)
@@ -208,7 +212,7 @@ def elgamal_gen_keys():
     return jsonify(ElGamalCrypto.generate_keypair(bits))
 
 
-@crypto_bp.route("/elgamal/encrypt", methods=["POST"])
+@crypto_bp.route("/api/elgamal/encrypt", methods=["POST"])
 def elgamal_encrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
@@ -219,7 +223,7 @@ def elgamal_encrypt():
     )
 
 
-@crypto_bp.route("/elgamal/decrypt", methods=["POST"])
+@crypto_bp.route("/api/elgamal/decrypt", methods=["POST"])
 def elgamal_decrypt():
     data = request.get_json(silent=True) or {}
     return jsonify(
