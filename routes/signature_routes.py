@@ -158,19 +158,15 @@ def verify_pdf():
             trust_roots = []
             if CERTIFICATE.is_file():
                 try:
-                    from asn1crypto import x509
-                    cert_bytes = CERTIFICATE.read_bytes()
-                    trust_roots.append(x509.Certificate.load(cert_bytes))
+                    from pyhanko.pdf_utils.cryptowrap import load_cert_from_pem
+                    trust_roots.append(load_cert_from_pem(str(CERTIFICATE)))
                 except Exception:
                     try:
-                        from cryptography import x509
-                        from cryptography.hazmat.backends import default_backend
-                        cert_bytes = CERTIFICATE.read_bytes()
-                        cert = x509.load_pem_x509_certificate(cert_bytes, default_backend())
-                        # Fallback nếu dùng pyHanko chuẩn
-                        trust_roots = [CERTIFICATE]
+                        # Fallback dùng hàm đọc chứng thư trực tiếp của pyHanko
+                        from pyhanko.sign.validation import load_certs_from_pem
+                        trust_roots.extend(load_certs_from_pem(str(CERTIFICATE)))
                     except Exception:
-                        trust_roots = [CERTIFICATE]
+                        pass
 
             vc = ValidationContext(trust_roots=trust_roots) if trust_roots else ValidationContext()
 
