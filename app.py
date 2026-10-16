@@ -1,194 +1,221 @@
+
 import os
 import sqlite3
-from flask import Flask, render_template, request, jsonify, session
+from pathlib import Path
+
+from flask import Flask, jsonify, request, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from routes.crypto_routes import crypto_bp
 from routes.file_routes import file_bp
+from routes.signature_routes import signature_bp
+
+# Chỉ giữ demo_bp nếu bạn vẫn cần các trang demo hiện tại.
 from routes.demo_routes import demo_bp
 
-app = Flask(__name__)
-app.secret_key = 'securespace_secure_secret_key_2026'
-app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Tối đa 32MB file upload
 
-# ==================== KHỞI TẠO CƠ SỞ DỮ LIỆU SQLITE CHO CHAT & TÀI KHOẢN ====================
+# ==================== KHỞI TẠO FLASK ====================
+
+BASE_DIR = Path(__file__).resolve().parent
+
+app = Flask(__name__)
+
+app.config["SECRET_KEY"] = os.environ.get(
+    "SECRET_KEY",
+    "dev-only-change-this-secret"
+)
+
+# Giới hạn tổng dung lượng request.
+# File PDF trong signature_routes.py được giới hạn riêng ở 20 MB.
+app.config["MAX_CONTENT_LENGTH"] = 32 * 1024 * 1024
+
+
+# ==================== CƠ SỞ DỮ LIỆU ====================
+
+DATABASE = BASE_DIR / "database.db"
+
+
+def get_db_connection():
+    conn = sqlite3.connect(str(DATABASE))
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
 def init_db():
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    # Bảng người dùng (Lưu thông tin tài khoản và Public Key RSA)
-    c.execute('''CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT UNIQUE NOT NULL,
-                    password TEXT NOT NULL,
-                    public_key TEXT
-                )''')
-    # Bảng tin nhắn mã hóa đầu cuối E2EE
-    c.execute('''CREATE TABLE IF NOT EXISTS messages (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    sender TEXT NOT NULL,
-                    recipient TEXT NOT NULL,
-                    ciphertext TEXT NOT NULL,
-                    iv TEXT NOT NULL,
-                    wrapped_key TEXT NOT NULL,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-                )''')
-    conn.commit()
-    conn.close()
+    """Tạo bảng người dùng nếu bảng chưa tồn tại."""
+    with get_db_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                public_key TEXT
+            )
+        """)
+
 
 init_db()
 
-# ==================== ĐĂNG KÝ API ROUTES ====================
-app.register_blueprint(crypto_bp, url_prefix='/api')
-app.register_blueprint(file_bp, url_prefix='/api')
-app.register_blueprint(demo_bp, url_prefix='/api')
 
-# --- API Xác thực & Tài khoản ---
-@app.route('/api/register', methods=['POST'])
+# ==================== ĐĂNG KÝ TÀI KHOẢN ====================
+
+@app.route("/api/register", methods=["POST"])
 def api_register():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    public_key = data.get('public_key')
-    
+    data = request.get_json(silent=True) or {}
+
+    username = data.get("username", "")
+    password = data.get("password", "")
+
+    if not isinstance(username, str) or not isinstance(password, str):
+        return jsonify(
+            success=False,
+            message="Dữ liệu tài khoản không hợp lệ."
+        ), 400
+
+    username = username.strip()
+
     if not username or not password:
-        return jsonify({"success": False, "message": "Vui lòng nhập đầy đủ tên và mật khẩu!"})
-    
+        return jsonify(
+            success=False,
+            message="Vui lòng nhập tên tài khoản và mật khẩu."
+        ), 400
+
+    if len(username) > 100:
+        return jsonify(
+            success=False,
+            message="Tên tài khoản không được dài quá 100 ký tự."
+        ), 400
+
+    if len(password) < 8:
+        return jsonify(
+            success=False,
+            message="Mật khẩu phải có ít nhất 8 ký tự."
+        ), 400
+
+    hashed_password = generate_password_hash(password)
+
     try:
-        conn = sqlite3.connect('database.db')
-        c = conn.cursor()
-        c.execute("INSERT INTO users (username, password, public_key) VALUES (?, ?, ?)", 
-                  (username, password, public_key))
-        conn.commit()
-        conn.close()
-        return jsonify({"success": True, "message": "Đăng ký tài khoản thành công!"})
+        with get_db_connection() as conn:
+            conn.execute(
+                """
+                INSERT INTO users (username, password)
+                VALUES (?, ?)
+                """,
+                (username, hashed_password)
+            )
+
+        return jsonify(
+            success=True,
+            message="Đăng ký tài khoản thành công."
+        ), 201
+
     except sqlite3.IntegrityError:
-        return jsonify({"success": False, "message": "Tên tài khoản này đã tồn tại trong hệ thống!"})
+        return jsonify(
+            success=False,
+            message="Tên tài khoản đã tồn tại."
+        ), 409
 
-@app.route('/api/login', methods=['POST'])
+
+# ==================== ĐĂNG NHẬP ====================
+
+@app.route("/api/login", methods=["POST"])
 def api_login():
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
-    user = c.fetchone()
-    conn.close()
-    
-    if user:
-        session['username'] = username
-        return jsonify({"success": True, "message": "Đăng nhập thành công!"})
-    return jsonify({"success": False, "message": "Sai tên tài khoản hoặc mật khẩu!"})
+    data = request.get_json(silent=True) or {}
 
-@app.route('/api/users', methods=['GET'])
-def api_get_users():
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute("SELECT username, public_key FROM users")
-    users = [{"username": row[0], "public_key": row[1]} for row in c.fetchall()]
-    conn.close()
-    return jsonify(users)
+    username = data.get("username", "")
+    password = data.get("password", "")
 
-# --- API Nhắn tin mã hóa E2EE ---
-@app.route('/api/messages/send', methods=['POST'])
-def api_send_message():
-    sender = session.get('username')
-    if not sender:
-        return jsonify({"success": False, "message": "Chưa đăng nhập!"}), 401
-    
-    data = request.json
-    recipient = data.get('recipient')
-    ciphertext = data.get('ciphertext')
-    iv = data.get('iv')
-    wrapped_key = data.get('wrapped_key')
-    
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO messages (sender, recipient, ciphertext, iv, wrapped_key) VALUES (?, ?, ?, ?, ?)",
-              (sender, recipient, str(ciphertext), str(iv), str(wrapped_key)))
-    conn.commit()
-    conn.close()
-    return jsonify({"success": True})
+    if not isinstance(username, str) or not isinstance(password, str):
+        return jsonify(
+            success=False,
+            message="Dữ liệu đăng nhập không hợp lệ."
+        ), 400
 
-@app.route('/api/messages/poll', methods=['GET'])
-def api_poll_messages():
-    sender = session.get('username')
-    partner = request.args.get('partner')
-    if not sender:
-        return jsonify([])
-    
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    # Lấy toàn bộ tin nhắn trao đổi giữa 2 người (gửi và nhận) sắp xếp theo thứ tự thời gian
-    c.execute("""SELECT sender, recipient, ciphertext, iv, wrapped_key, timestamp 
-                 FROM messages 
-                 WHERE (sender = ? AND recipient = ?) OR (sender = ? AND recipient = ?) 
-                 ORDER BY id ASC""", (sender, partner, partner, sender))
-    
-    msgs = []
-    for r in c.fetchall():
-        # Chuyển đổi dữ liệu chuỗi/mảng lưu trong db về lại định dạng list số nguyên
-        import json
-        try:
-            ct = json.loads(r[2]) if r[2].startswith('[') else r[2]
-            iv_val = json.loads(r[3]) if r[3].startswith('[') else r[3]
-            wk = json.loads(r[4]) if r[4].startswith('[') else r[4]
-        except:
-            ct, iv_val, wk = r[2], r[3], r[4]
+    username = username.strip()
 
-        msgs.append({
-            "sender": r[0], 
-            "recipient": r[1], 
-            "ciphertext": ct, 
-            "iv": iv_val, 
-            "wrapped_key": wk, 
-            "timestamp": r[5]
-        })
-    conn.close()
-    return jsonify(msgs)
+    with get_db_connection() as conn:
+        user = conn.execute(
+            """
+            SELECT username, password
+            FROM users
+            WHERE username = ?
+            """,
+            (username,)
+        ).fetchone()
 
-# ==================== HTML PAGE ROUTES ====================
-@app.route('/')
-def index():
-    return render_template('index.html')
+    if user and check_password_hash(user["password"], password):
+        session.clear()
+        session["username"] = user["username"]
 
-@app.route('/des')
-def des_route():
-    return render_template('des.html')
+        return jsonify(
+            success=True,
+            message="Đăng nhập thành công."
+        )
 
-@app.route('/aes')
-def aes_route():
-    return render_template('aes.html')
+    return jsonify(
+        success=False,
+        message="Tên tài khoản hoặc mật khẩu không chính xác."
+    ), 401
 
-@app.route('/md5')
-def md5_route():
-    return render_template('md5.html')
 
-@app.route('/sha256')
-def sha256_route():
-    return render_template('sha256.html')
+# ==================== ĐĂNG XUẤT ====================
 
-@app.route('/rsa')
-def rsa_route():
-    return render_template('rsa.html')
+@app.route("/api/logout", methods=["POST"])
+def api_logout():
+    session.clear()
 
-@app.route('/elgamal')
-def elgamal_route():
-    return render_template('elgamal.html')
+    return jsonify(
+        success=True,
+        message="Đăng xuất thành công."
+    )
 
-@app.route('/integrity')
-def integrity_page():
-    return render_template('integrity.html')
 
-@app.route('/demo')
-@app.route('/demos')
-def demo_page():
-    return render_template('demo.html')
+# ==================== KIỂM TRA TÀI KHOẢN ====================
 
-@app.route('/about')
-def about_page():
-    return render_template('about.html')
+@app.route("/api/current_user", methods=["GET"])
+def api_current_user():
+    username = session.get("username")
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    if not username:
+        return jsonify(logged_in=False), 401
+
+    return jsonify(
+        logged_in=True,
+        username=username
+    )
+
+
+# ==================== ĐĂNG KÝ BLUEPRINT ====================
+
+# Các chức năng mã hóa và xử lý file hiện có.
+app.register_blueprint(crypto_bp)
+app.register_blueprint(file_bp)
+
+# Chức năng ký và xác minh chữ ký số PDF.
+app.register_blueprint(signature_bp)
+
+# Giữ các route demo hiện có để tránh làm hỏng giao diện
+# hoặc những chức năng khác đang sử dụng chúng.
+app.register_blueprint(demo_bp)
+
+
+# ==================== XỬ LÝ LỖI UPLOAD ====================
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return jsonify(
+        success=False,
+        message="Dung lượng dữ liệu tải lên vượt quá giới hạn 32 MB."
+    ), 413
+
+
+# ==================== CHẠY ỨNG DỤNG ====================
+
+if __name__ == "__main__":
+    app.run(debug=True)
+@app.route("/signature/health", methods=["GET"])
+def signature_health():
+    return {
+        "success": True,
+        "message": "Signature blueprint is registered"
+    }, 200
