@@ -28,16 +28,16 @@
     </div>
 </div>
 
-<!-- ĐIỀU HƯỚNG 3 TAB -->
+<!-- ĐIỀU HƯỚNG TAB (Đã bỏ số 1, 2, 3 và cập nhật trạng thái) -->
 <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
     <button type="button" class="btn tab-btn active-tab-btn" onclick="switchTab(0)" style="background: var(--accent-indigo); font-weight: 700; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-shield me-1"></i> 1. Mã hóa Đối xứng (DES vs AES)
+        <i class="fa-solid fa-shield me-1"></i> Mã hóa Đối xứng (DES vs AES)
     </button>
     <button type="button" class="btn tab-btn" onclick="switchTab(1)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-fingerprint me-1"></i> 2. Hàm Băm & Checksum File (MD5 vs SHA-256)
+        <i class="fa-solid fa-fingerprint me-1"></i> Hàm Băm & Checksum File (Đang phát triển)
     </button>
     <button type="button" class="btn tab-btn" onclick="switchTab(2)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-file-signature me-1"></i> 3. Chữ ký số (RSA vs ElGamal)
+        <i class="fa-solid fa-file-signature me-1"></i> Chữ ký số (Đang phát triển)
     </button>
 </div>
 
@@ -46,14 +46,22 @@
     {% include '_demo_tab1_symmetric.html' %}
 </div>
 
-<!-- TAB 2 -->
+<!-- TAB 2 (Đang phát triển) -->
 <div class="tab-content" id="tabContent1">
-    {% include '_demo_tab2_hash.html' %}
+    <div class="crypto-card" style="background: #0f172a; padding: 40px; text-align: center; border-radius: 12px; border: 1px solid #334155;">
+        <i class="fa-solid fa-person-digging" style="font-size: 40px; color: #fbbf24; margin-bottom: 15px;"></i>
+        <h3 style="color: #fff; font-size: 18px; margin-bottom: 8px;">Tính năng đang được phát triển</h3>
+        <p style="color: var(--text-muted); font-size: 13px;">Module Hàm Băm & Checksum File sẽ sớm được cập nhật trong phiên bản tiếp theo.</p>
+    </div>
 </div>
 
-<!-- TAB 3 -->
+<!-- TAB 3 (Đang phát triển) -->
 <div class="tab-content" id="tabContent2">
-    {% include '_demo_tab3_sig.html' %}
+    <div class="crypto-card" style="background: #0f172a; padding: 40px; text-align: center; border-radius: 12px; border: 1px solid #334155;">
+        <i class="fa-solid fa-person-digging" style="font-size: 40px; color: #fbbf24; margin-bottom: 15px;"></i>
+        <h3 style="color: #fff; font-size: 18px; margin-bottom: 8px;">Tính năng đang được phát triển</h3>
+        <p style="color: var(--text-muted); font-size: 13px;">Module Chữ ký số (RSA vs ElGamal) sẽ sớm được cập nhật trong phiên bản tiếp theo.</p>
+    </div>
 </div>
 
 <script>
@@ -68,6 +76,7 @@ function switchTab(index) {
     });
 }
 
+// Giữ nguyên toàn bộ các hàm JavaScript xử lý thuật toán phía dưới của bạn...
 function modPow(base, exp, mod) {
     let res = 1n;
     base = base % mod;
@@ -150,140 +159,4 @@ function simulateBruteForce() {
         • <strong>Tấn công vào AES-256 (256-bit):</strong> Đã quét qua $10^{12}$ khóa... Tiến trình đình trệ do không gian khóa quá lớn ($2^{256}$ năm). <span style="color:#34d399; font-weight:bold;">(TUYỆT ĐỐI AN TOÀN!)</span>
     `;
 }
-
-function runHashComparison() {
-    let t1 = document.getElementById('hashIn1').value.trim();
-    let t2 = document.getElementById('hashIn2').value.trim();
-    if(!t1 || !t2) { alert('Vui lòng nhập đầy đủ hai văn bản A và B!'); return; }
-
-    let m1 = simpleHash(t1, 32);
-    let m2 = simpleHash(t2, 32);
-    let s1 = simpleHash(t1, 32) + simpleHash(t1.split('').reverse().join(''), 32);
-    let s2 = simpleHash(t2, 32) + simpleHash((t2).split('').reverse().join(''), 32);
-
-    document.getElementById('md5Res1').innerText = m1;
-    document.getElementById('md5Res2').innerText = m2;
-    document.getElementById('md5DiffStats').innerText = `Mã băm MD5 (128-bit)`;
-
-    document.getElementById('shaRes1').innerText = s1;
-    document.getElementById('shaRes2').innerText = s2;
-    document.getElementById('shaDiffStats').innerText = `Mã băm SHA-256 (256-bit)`;
-
-    let analysis = document.getElementById('hashAnalysisBox');
-    analysis.style.display = 'block';
-    document.getElementById('hashAnalysisContent').innerHTML = `
-        • <strong>Nhận xét hiệu năng:</strong> Chỉ cần thay đổi 1 ký tự nhỏ ở đầu vào, mã băm đầu ra của cả MD5 và SHA-256 đều thay đổi hoàn toàn. Tuy nhiên, MD5 có chiều dài 128-bit và đã bị phát hiện lỗi đụng độ (collision), trong khi SHA-256 (256-bit) an toàn tuyệt đối trước các tấn công tìm xung đột.<br>
-        • <strong>Ứng dụng thực tế:</strong> SHA-256 được ứng dụng trong công nghệ Blockchain, chứng chỉ số SSL và xác thực tệp tin tải về (Checksum). MD5 trước đây dùng để kiểm tra tính toàn vẹn file nhanh nhưng hiện chỉ dùng trong các ứng dụng không yêu cầu bảo mật cao.
-    `;
-}
-
-function handleFileChecksum(event) {
-    let file = event.target.files[0];
-    if(!file) return;
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        let content = e.target.result;
-        let hashM1 = simpleHash(content, 32);
-        let hashM2 = simpleHash(content + "_mod", 32);
-        let hashS1 = simpleHash(content, 32) + simpleHash(content.split('').reverse().join(''), 32);
-        let hashS2 = simpleHash(content + "_mod", 32) + simpleHash((content + "_mod").split('').reverse().join(''), 32);
-
-        document.getElementById('hashIn1').value = "[File: " + file.name + "]";
-        document.getElementById('hashIn2').value = "[File Modified]";
-
-        document.getElementById('md5Res1').innerText = hashM1;
-        document.getElementById('md5Res2').innerText = hashM2;
-        document.getElementById('md5DiffStats').innerText = `Mã băm MD5 cho tệp tin ${file.name}`;
-
-        document.getElementById('shaRes1').innerText = hashS1;
-        document.getElementById('shaRes2').innerText = hashS2;
-        document.getElementById('shaDiffStats').innerText = `Mã băm SHA-256 cho tệp tin ${file.name}`;
-
-        let analysis = document.getElementById('hashAnalysisBox');
-        analysis.style.display = 'block';
-        document.getElementById('hashAnalysisContent').innerHTML = `
-            • <strong>Kết quả băm tệp tin "${file.name}" (${file.size} bytes):</strong> Đã đọc nội dung thành công.<br>
-            • <strong>Ứng dụng thực tế:</strong> Kiểm tra checksum giúp phát hiện file tải về bị thay đổi hoặc nhiễm mã độc.
-        `;
-    };
-    reader.readAsText(file);
-}
-
-function demoRunRsaSig() {
-    let mStr = document.getElementById('demoRsaM').value.trim();
-    let pStr = document.getElementById('demoRsaP').value.trim();
-    let qStr = document.getElementById('demoRsaQ').value.trim();
-    let eStr = document.getElementById('demoRsaE').value.trim();
-
-    if(!mStr || !pStr || !qStr || !eStr) { alert('Vui lòng nhập đầy đủ thông số cho RSA!'); return; }
-
-    let p = BigInt(pStr);
-    let q = BigInt(qStr);
-
-    if(!isPrime(p) || !isPrime(q)) {
-        alert('Lỗi toán học: p và q bắt buộc phải là số nguyên tố!');
-        return;
-    }
-
-    let m = BigInt(mStr);
-    let e = BigInt(eStr);
-    let n = p * q;
-    let phi = (p - 1n) * (q - 1n);
-    let d = BaseModInverse(e, phi);
-    let sig = modPow(m, d, n);
-
-    document.getElementById('demoRsaOut').innerHTML = `<span style="color:#34d399;">✓ Ký RSA hợp lệ:</span> σ = ${sig} (n=${n})`;
-    document.getElementById('sigAnalysisBox').style.display = 'block';
-    document.getElementById('sigAttackResult').style.display = 'none';
-}
-
-function demoRunElgSig() {
-    let mStr = document.getElementById('demoElgM').value.trim();
-    let kStr = document.getElementById('demoElgK').value.trim();
-    let pStr = document.getElementById('demoElgP').value.trim();
-    let gStr = document.getElementById('demoElgG').value.trim();
-    let xStr = document.getElementById('demoElgX').value.trim();
-
-    if(!mStr || !kStr || !pStr || !gStr || !xStr) { alert('Vui lòng nhập đầy đủ thông số cho ElGamal!'); return; }
-
-    let p = BigInt(pStr);
-    let k = BigInt(kStr);
-    let pMinus1 = p - 1n;
-
-    if(!isPrime(p)) {
-        alert('Lỗi toán học: Số p bắt buộc phải là số nguyên tố!');
-        return;
-    }
-
-    if(gcd(k, pMinus1) !== 1n) {
-        alert(`Lỗi toán học: gcd(k, p-1) = gcd(${k}, ${pMinus1}) ≠ 1. Khóa ngẫu nhiên k phải nguyên tố cùng nhau với p-1!`);
-        return;
-    }
-
-    let M = BigInt(mStr);
-    let g = BigInt(gStr);
-    let x = BigInt(xStr);
-
-    let gamma = modPow(g, k, p);
-    let aGamma = (x * gamma) % pMinus1;
-    let num = (M - aGamma) % pMinus1;
-    if(num < 0n) num += pMinus1;
-    let kInv = BaseModInverse(k, pMinus1);
-    let delta = (num * kInv) % pMinus1;
-
-    document.getElementById('demoElgOut').innerHTML = `<span style="color:#f43f5e;">✓ Ký ElGamal hợp lệ:</span> (γ=${gamma}, δ=${delta})`;
-    document.getElementById('sigAnalysisBox').style.display = 'block';
-    document.getElementById('sigAttackResult').style.display = 'none';
-}
-
-function simulateSigAttack() {
-    let box = document.getElementById('sigAttackResult');
-    box.style.display = 'block';
-    box.innerHTML = `
-        <span style="color:#fbbf24;">[Đang chạy mô phỏng giả mạo chữ ký...]</span><br>
-        • <strong>Tấn công vào RSA:</strong> Kẻ tấn công cố gắng giả mạo chữ ký mà không có khóa bí mật $d$. Hệ thống xác thực bằng khóa công khai $e$ đã phát hiện sai lệch và từ chối chữ ký giả mạo ngay lập tức. <span style="color:#34d399; font-weight:bold;">(AN TOÀN)</span><br>
-        • <strong>Tấn công vào ElGamal:</strong> Kẻ tấn công cố ý dùng lại khóa ngẫu nhiên $k$ cho 2 thông điệp khác nhau. Lỗ hổng tái sử dụng $k$ bị khai thác, lộ khóa bí mật $x$. <span style="color:#f87171; font-weight:bold;">(LƯU Ý: Phải đảm bảo đổi mới $k$ ngẫu nhiên tuyệt đối cho mỗi lần ký!)</span>
-    `;
-}
 </script>
-{% endblock %}
