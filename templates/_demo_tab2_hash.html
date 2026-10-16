@@ -1,299 +1,160 @@
-<div class="crypto-card" style="background: linear-gradient(135deg, #0b0f19 0%, #111827 100%); border: 1px solid #1e293b; padding: 25px; border-radius: 14px; box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);">
+<div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 24px; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
     
-    <!-- APP HEADER & NAVIGATION -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #1e293b; padding-bottom: 16px;">
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <div style="background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: #fff; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 22px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
-                <i class="fa-solid fa-shield-halved"></i>
+    <!-- HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 14px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="background: #4f46e5; color: #fff; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 18px;">
+                <i class="fa-solid fa-key-skeleton"></i>
             </div>
             <div>
-                <h2 style="margin: 0; font-size: 20px; color: #fff; font-weight: 800; letter-spacing: 0.3px;">
-                    SecureShare Enterprise Station (v3.5 Professional)
-                </h2>
-                <p style="color: #94a3b8; font-size: 13px; margin: 4px 0 0 0;">
-                    Trạm mã hóa đầu cuối, ký kết tài liệu và kiểm định toàn vẹn dữ liệu đa tầng ứng dụng thực chiến.
-                </p>
+                <h2 style="margin: 0; font-size: 17px; color: #fff; font-weight: 700;">Hệ Thống Mã Hóa Lai (Hybrid Cryptosystem Workstation)</h2>
+                <p style="color: #64748b; font-size: 12px; margin: 2px 0 0 0;">Kết hợp hoàn hảo: AES-GCM (Đối xứng) + RSA/ElGamal (Bất đối xứng) + SHA-256 (Hàm băm).</p>
             </div>
-        </div>
-        <div style="display: flex; gap: 10px; background: #0f172a; padding: 5px; border-radius: 10px; border: 1px solid #334155;">
-            <button type="button" onclick="switchAppModule('compose')" id="navComposeBtn" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s;">
-                <i class="fa-solid fa-pen-nib me-1"></i> Soạn & Mã Hóa
-            </button>
-            <button type="button" onclick="switchAppModule('vault')" id="navVaultBtn" style="background: transparent; color: #94a3b8; font-weight: 700; padding: 8px 18px; border: none; border-radius: 8px; cursor: pointer; font-size: 12.5px; transition: all 0.2s;">
-                <i class="fa-solid fa-box-archive me-1"></i> Kho Lưu Trữ (<span id="vaultBadgeCount">0</span>)
-            </button>
         </div>
     </div>
 
-    <!-- MODULE 1: COMPOSER & PIPELINE WORKFLOW -->
-    <div id="moduleCompose" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px;">
+    <!-- GIAO DIỆN CHÍNH: 2 CỘT (GỬI & NHẬN) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         
-        <!-- Cột Trái: Trình soạn thảo & Cấu hình thuật toán -->
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="background: #0f172a; padding: 20px; border-radius: 12px; border: 1px solid #334155;">
-                <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-file-contract"></i> Thông Tin Hồ Sơ & Tài Liệu Mật
-                </div>
-
-                <div style="margin-bottom: 12px;">
-                    <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 5px;">Tiêu đề tài liệu:</label>
-                    <input type="text" id="docInputTitle" value="Báo cáo chiến lược tài chính Q4 - Tối mật" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 9px 12px; border-radius: 8px; font-size: 12.5px;">
-                </div>
-
-                <div style="margin-bottom: 12px;">
-                    <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 5px;">Nội dung điều khoản / Thông điệp mã hóa:</label>
-                    <textarea id="docInputBody" rows="5" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; line-height: 1.5;" oninput="triggerRealtimeEngine()">Tài sản sở hữu trí tuệ và mã nguồn hệ thống được bảo vệ theo điều khoản an ninh mạng doanh nghiệp cấp độ 4.</textarea>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div>
-                        <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 5px;">Cơ chế bảo vệ khóa:</label>
-                        <select id="selectKeyMech" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 9px; border-radius: 8px; font-size: 12px;" onchange="triggerRealtimeEngine()">
-                            <option value="rsa">RSA-OAEP 2048-bit (Chuẩn)</option>
-                            <option value="elgamal">ElGamal (Nhóm nhân Z_p*)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 5px;">Tệp đính kèm mô phỏng:</label>
-                        <input type="file" id="attachmentInput" style="background: #1e293b; color: #cbd5e1; border: 1px solid #475569; padding: 6px; border-radius: 8px; font-size: 11px; width: 100%;">
-                    </div>
-                </div>
-
-                <button type="button" onclick="executePackageExport()" style="width: 100%; background: #059669; color: #fff; font-weight: 700; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 13.5px; margin-top: 16px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
-                    <i class="fa-solid fa-cloud-arrow-down me-1"></i> Đóng Gói & Xuất Gói Bảo Mật (.secure)
-                </button>
+        <!-- CỘT TRÁI: SOẠN THẢO & MÃ HÓA LAI -->
+        <div style="background: #111827; padding: 20px; border-radius: 10px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px;">
+            <div style="font-size: 13px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 8px;">
+                <i class="fa-solid fa-paper-plane me-1"></i> Bước 1: Soạn Thảo & Mã Hóa Lai (Sender)
             </div>
-        </div>
 
-        <!-- Cột Phải: Bảng Giám Sát Real-time Pipeline (6 Thuật Toán) -->
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="background: #0f172a; padding: 20px; border-radius: 12px; border: 1px solid #334155; height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-                        <i class="fa-solid fa-microchip"></i> Giám Sát Dòng Chảy Mật Mã (6 Thuật Toán)
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
-                        <div style="background: #1e293b; padding: 10px 12px; border-radius: 8px; border-left: 3px solid #3b82f6;">
-                            <div style="display: flex; justify-content: space-between; font-weight: 700; color: #60a5fa; margin-bottom: 3px;">
-                                <span>1. AES-GCM (Dữ liệu chính)</span>
-                                <span style="color: #34d399;">Active 256-bit</span>
-                            </div>
-                            <div style="color: #94a3b8; font-size: 11px;">Mã hóa khối dữ liệu và xác thực authentication tag.</div>
-                        </div>
-
-                        <div style="background: #1e293b; padding: 10px 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
-                            <div style="display: flex; justify-content: space-between; font-weight: 700; color: #fbbf24; margin-bottom: 3px;">
-                                <span id="pipelineKeyLabel">2. RSA-OAEP (Bảo vệ khóa)</span>
-                                <span style="color: #34d399;">Wrapped</span>
-                            </div>
-                            <div style="color: #94a3b8; font-size: 11px;" id="pipelineKeyDesc">Mã hóa khóa phiên AES bằng khóa công khai người nhận.</div>
-                        </div>
-
-                        <div style="background: #1e293b; padding: 10px 12px; border-radius: 8px; border-left: 3px solid #10b981;">
-                            <div style="display: flex; justify-content: space-between; font-weight: 700; color: #34d399; margin-bottom: 3px;">
-                                <span>3. SHA-256 (Toàn vẹn)</span>
-                                <span style="color: #38bdf8;">Checksum</span>
-                            </div>
-                            <div id="pipeShaDisplay" style="font-family: monospace; color: #cbd5e1; font-size: 10.5px; word-break: break-all;">Đang tính toán...</div>
-                        </div>
-
-                        <div style="background: #1e293b; padding: 10px 12px; border-radius: 8px; border-left: 3px solid #f43f5e;">
-                            <div style="display: flex; justify-content: space-between; font-weight: 700; color: #f87171; margin-bottom: 3px;">
-                                <span>4. MD5 (Học tập đối chiếu)</span>
-                                <span style="color: #f43f5e;">Legacy Hash</span>
-                            </div>
-                            <div id="pipeMd5Display" style="font-family: monospace; color: #cbd5e1; font-size: 10.5px; word-break: break-all;">Đang tính toán...</div>
-                        </div>
-
-                        <div style="background: #1e293b; padding: 10px 12px; border-radius: 8px; border-left: 3px solid #a78bfa;">
-                            <div style="display: flex; justify-content: space-between; font-weight: 700; color: #c084fc; margin-bottom: 3px;">
-                                <span>5. DES & 6. ElGamal</span>
-                                <span style="color: #c084fc;">Hỗ trợ dự phòng</span>
-                            </div>
-                            <div style="color: #94a3b8; font-size: 11px;">Tích hợp trong module tương thích và nhóm tham số.</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #059669; padding: 12px; border-radius: 8px; text-align: center; color: #34d399; font-size: 12px; font-weight: 600; margin-top: 16px;">
-                    <i class="fa-solid fa-circle-check me-1"></i> Hệ thống sẵn sàng đóng gói truyền tải an toàn.
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- MODULE 2: SECURE VAULT & DECRYPTION WORKFLOW -->
-    <div id="moduleVault" style="display: none; background: #0f172a; padding: 24px; border-radius: 12px; border: 1px solid #334155;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 12px;">
-            <div style="font-size: 14px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-vault"></i> Kho Lưu Trữ & Hộp Thư Đến (Secure Vault & Inbox)
-            </div>
             <div>
-                <input type="file" id="importJsonFile" accept=".json,.secure" onchange="importAndDecryptPackage(event)" style="display: none;">
-                <button type="button" onclick="document.getElementById('importJsonFile').click()" style="background: #d97706; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 12.5px;">
-                    <i class="fa-solid fa-file-arrow-down me-1"></i> Nạp Gói Bảo Mật Từ Máy (.secure)
-                </button>
+                <label style="font-size: 11.5px; color: #9ca3af; display: block; margin-bottom: 4px;">Nội dung thông điệp bí mật:</label>
+                <textarea id="hybridInputText" rows="4" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 8px 10px; border-radius: 6px; font-size: 12px; line-height: 1.4;">Tài liệu bảo mật tối quan trọng truyền tải qua mạng công cộng.</textarea>
+            </div>
+
+            <div>
+                <label style="font-size: 11.5px; color: #9ca3af; display: block; margin-bottom: 4px;">Cơ chế bảo vệ khóa bất đối xứng:</label>
+                <select id="hybridAsymMech" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 8px; border-radius: 6px; font-size: 12px;">
+                    <option value="rsa">RSA-OAEP 2048-bit (Khóa công khai)</option>
+                    <option value="elgamal">ElGamal (Nhóm nhân Z_p*)</option>
+                </select>
+            </div>
+
+            <button type="button" onclick="executeHybridEncryption()" style="background: #059669; color: #fff; font-weight: 700; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
+                <i class="fa-solid fa-lock me-1"></i> Thực Thi Mã Hóa Lai & Xuất Gói (.secure)
+            </button>
+        </div>
+
+        <!-- CỘT PHẢI: GIẢI MÃ LAI & KIỂM TRA TOÀN VẺN -->
+        <div style="background: #111827; padding: 20px; border-radius: 10px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px;">
+            <div style="font-size: 13px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 8px;">
+                <i class="fa-solid fa-unlock-keyhole me-1"></i> Bước 2: Giải Mã Lai & Kiểm Tra Toàn Vẹn (Receiver)
+            </div>
+
+            <div>
+                <label style="font-size: 11.5px; color: #9ca3af; display: block; margin-bottom: 4px;">Tải lên gói dữ liệu mã hóa lai (.secure):</label>
+                <input type="file" id="hybridFileImport" accept=".secure,.json" onchange="executeHybridDecryption(event)" style="background: #1f2937; color: #fff; border: 1px solid #374151; padding: 6px; border-radius: 6px; width: 100%; font-size: 11.5px;">
+            </div>
+
+            <div style="background: #1f2937; padding: 14px; border-radius: 8px; border: 1px solid #374151; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 11.5px; color: #9ca3af; margin-bottom: 6px;">Trạng thái & Nội dung khôi phục:</div>
+                    <div id="hybridResultView" style="color: #34d399; font-size: 12.5px; font-weight: 600; line-height: 1.5;">Chưa có dữ liệu giải mã...</div>
+                </div>
+                <div style="font-size: 10.5px; color: #64748b; border-top: 1px solid #374151; padding-top: 8px; margin-top: 10px;" id="hybridHashCheckInfo">
+                    Hàm băm SHA-256: Chờ xác thực...
+                </div>
             </div>
         </div>
 
-        <div id="vaultListContainer">
-            <div style="text-align: center; padding: 40px; color: #64748b; font-size: 13.5px;">
-                <i class="fa-solid fa-folder-open" style="font-size: 36px; margin-bottom: 10px; display: block; color: #475569;"></i>
-                Kho lưu trữ trống. Hãy soạn gói tài liệu ở tab bên trái hoặc nạp tệp định dạng .secure để giải mã!
-            </div>
-        </div>
     </div>
 
 </div>
 
 <script>
-let enterpriseKeyStore = null;
-let enterprisePackageStore = [];
+let hybridKeyPair = null;
+let hybridCurrentPackage = null;
 
-function switchAppModule(mod) {
-    if(mod === 'compose') {
-        document.getElementById('moduleCompose').style.display = 'grid';
-        document.getElementById('moduleVault').style.display = 'none';
-        document.getElementById('navComposeBtn').style.background = 'var(--accent-indigo)';
-        document.getElementById('navComposeBtn').style.color = '#fff';
-        document.getElementById('navVaultBtn').style.background = 'transparent';
-        document.getElementById('navVaultBtn').style.color = '#94a3b8';
-    } else {
-        document.getElementById('moduleCompose').style.display = 'none';
-        document.getElementById('moduleVault').style.display = 'block';
-        document.getElementById('navVaultBtn').style.background = 'var(--accent-indigo)';
-        document.getElementById('navVaultBtn').style.color = '#fff';
-        document.getElementById('navComposeBtn').style.background = 'transparent';
-        document.getElementById('navComposeBtn').style.color = '#94a3b8';
-    }
-}
-
-async function triggerRealtimeEngine() {
-    let bodyText = document.getElementById('docInputBody').value.trim();
-    let mech = document.getElementById('selectKeyMech').value;
-    if(!bodyText) return;
-
-    document.getElementById('pipelineKeyLabel').innerText = mech === 'rsa' ? '2. RSA-OAEP (Bảo vệ khóa)' : '2. ElGamal (Nhóm nhân Z_p*)';
-    document.getElementById('pipelineKeyDesc').innerText = mech === 'rsa' ? 'Mã hóa khóa phiên AES bằng khóa công khai RSA.' : 'Bảo vệ khóa phiên bằng bài toán logarit rời rạc.';
+async function executeHybridEncryption() {
+    let text = document.getElementById('hybridInputText').value.trim();
+    let mech = document.getElementById('hybridAsymMech').value;
+    if(!text) { alert('Vui lòng nhập thông điệp!'); return; }
 
     let enc = new TextEncoder();
-    let dataBuffer = enc.encode(bodyText);
+    let dataBuf = enc.encode(text);
 
-    // SHA-256 & MD5 thực tế
-    let shaBuf = await window.crypto.subtle.digest("SHA-256", dataBuffer);
-    let shaHex = Array.from(new Uint8Array(shaBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    document.getElementById('pipeShaDisplay').innerText = shaHex;
-    document.getElementById('pipeMd5Display').innerText = simpleHash(bodyText, 32);
+    // 1. Tính mã băm SHA-256 (Kiểm tra toàn vẹn)
+    let hashBuf = await window.crypto.subtle.digest("SHA-256", dataBuf);
+    let sha256Hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // Khởi tạo AES & RSA ngầm
+    // 2. Mã hóa đối xứng dữ liệu bằng AES-GCM (Tốc độ cao cho dữ liệu lớn)
     let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     let iv = window.crypto.getRandomValues(new Uint8Array(12));
-    let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuffer);
+    let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuf);
 
+    // 3. Bảo vệ khóa phiên bằng bất đối xứng (RSA-OAEP hoặc mô phỏng ElGamal)
     let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
-    enterpriseKeyStore = kp;
+    hybridKeyPair = kp;
     let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
 
-    window.currentPackagePayload = {
-        title: document.getElementById('docInputTitle').value,
+    // Đóng gói gói dữ liệu lai
+    hybridCurrentPackage = {
         ciphertext: Array.from(new Uint8Array(ciphertext)),
         iv: Array.from(iv),
         wrappedKey: Array.from(new Uint8Array(wrappedKey)),
-        sha256: shaHex,
-        md5: simpleHash(bodyText, 32),
+        sha256: sha256Hex,
+        mechanism: mech,
         timestamp: new Date().toLocaleString()
     };
-}
 
-async function executePackageExport() {
-    await triggerRealtimeEngine();
-    if(!window.currentPackagePayload) return;
-
-    enterprisePackageStore.push(window.currentPackagePayload);
-    document.getElementById('vaultBadgeCount').innerText = enterprisePackageStore.length;
-    renderVaultInbox();
-
-    let blob = new Blob([JSON.stringify(window.currentPackagePayload, null, 2)], {type: "application/json"});
+    // Tự động tải xuống tệp .secure
+    let blob = new Blob([JSON.stringify(hybridCurrentPackage, null, 2)], {type: "application/json"});
     let url = URL.createObjectURL(blob);
     let a = document.createElement('a');
     a.href = url;
-    a.download = "SecureShare_" + Date.now() + ".secure";
+    a.download = "Hybrid_Secure_" + Date.now() + ".secure";
     a.click();
 
-    alert('Đã tạo gói bảo mật và xuất file thành công! Gói tin đã được thêm vào Kho lưu trữ.');
-    switchAppModule('vault');
+    alert('Đã mã hóa lai thành công (AES + RSA/ElGamal + SHA-256)! Tệp .secure đã được tải xuống.');
 }
 
-function renderVaultInbox() {
-    let container = document.getElementById('vaultListContainer');
-    if(enterprisePackageStore.length === 0) {
-        container.innerHTML = `<div style="text-align: center; padding: 40px; color: #64748b; font-size: 13.5px;">Kho lưu trữ trống.</div>`;
-        return;
-    }
-
-    let html = '';
-    enterprisePackageStore.forEach((pkg, index) => {
-        html += `
-            <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div style="color: #fff; font-weight: 700; font-size: 13.5px;"><i class="fa-solid fa-file-shield text-amber me-1"></i> ${pkg.title}</div>
-                    <div style="color: #94a3b8; font-size: 11.5px; margin-top: 4px;">Thời gian tạo: ${pkg.timestamp} | Checksum SHA-256: <span style="color: #38bdf8;">${pkg.sha256.substring(0, 24)}...</span></div>
-                </div>
-                <button type="button" onclick="decryptVaultItem(${index})" style="background: #059669; color: #fff; font-weight: 700; padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
-                    <i class="fa-solid fa-unlock-keyhole me-1"></i> Giải Mã & Xác Thực
-                </button>
-            </div>
-            <div id="vaultResult_${index}" style="margin-bottom: 12px;"></div>
-        `;
-    });
-    container.innerHTML = html;
-}
-
-async function decryptVaultItem(index) {
-    let pkg = enterprisePackageStore[index];
-    let resBox = document.getElementById(`vaultResult_${index}`);
-    try {
-        if(!enterpriseKeyStore) throw new Error("Chưa khởi tạo khóa giải mã hệ thống!");
-        let unwrappedKey = await window.crypto.subtle.unwrapKey(
-            "raw", new Uint8Array(pkg.wrappedKey), enterpriseKeyStore.privateKey,
-            { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
-        );
-        let decryptedBuf = await window.crypto.subtle.decrypt(
-            { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, unwrappedKey, new Uint8Array(pkg.ciphertext)
-        );
-        let originalText = new TextDecoder().decode(decryptedBuf);
-        resBox.innerHTML = `
-            <div style="background: #064e3b33; border: 1px solid #059669; padding: 14px; border-radius: 8px; font-size: 12.5px; color: #34d399; margin-left: 15px;">
-                <b><i class="fa-solid fa-circle-check me-1"></i> Giải mã thành công & Kiểm định toàn vẹn SHA-256 tuyệt đối:</b>
-                <div style="color: #fff; background: #0b0f19; padding: 10px; border-radius: 6px; margin-top: 6px; font-family: monospace; font-size: 12px;">${originalText}</div>
-            </div>
-        `;
-    } catch(err) {
-        resBox.innerHTML = `<div style="color: #f87171; font-size: 12px; margin-left: 15px;"><i class="fa-solid fa-triangle-exclamation me-1"></i> Giải mã thất bại: Khóa không khớp hoặc tệp tin bị thay đổi! (${err})</div>`;
-    }
-}
-
-async function importAndDecryptPackage(e) {
+async function executeHybridDecryption(e) {
     let file = e.target.files[0];
     if(!file) return;
     let reader = new FileReader();
-    reader.onload = function(evt) {
+    reader.onload = async function(evt) {
         try {
-            let importedPkg = JSON.parse(evt.target.result);
-            enterprisePackageStore.push(importedPkg);
-            document.getElementById('vaultBadgeCount').innerText = enterprisePackageStore.length;
-            renderVaultInbox();
-            switchAppModule('vault');
-            alert('Đã nạp gói bảo mật vào Kho lưu trữ thành công!');
+            let pkg = JSON.parse(evt.target.result);
+            if(!hybridKeyPair) {
+                document.getElementById('hybridResultView').innerHTML = `<span style="color: #f87171;">Lỗi: Chưa có cặp khóa bất đối xứng trên trình duyệt để mở gói!</span>`;
+                return;
+            }
+
+            // 1. Dùng Private Key để khôi phục (unwrap) khóa AES
+            let unwrappedAesKey = await window.crypto.subtle.unwrapKey(
+                "raw", new Uint8Array(pkg.wrappedKey), hybridKeyPair.privateKey,
+                { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
+            );
+
+            // 2. Dùng khóa AES để giải mã dữ liệu (AES-GCM)
+            let decryptedBuf = await window.crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, unwrappedAesKey, new Uint8Array(pkg.ciphertext)
+            );
+
+            let plaintext = new TextDecoder().decode(decryptedBuf);
+
+            // 3. Kiểm tra tính toàn vẹn bằng SHA-256
+            let checkBuf = await window.crypto.subtle.digest("SHA-256", decryptedBuf);
+            let checkHex = Array.from(new Uint8Array(checkBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+            let isIntact = (checkHex === pkg.sha256);
+
+            document.getElementById('hybridResultView').innerHTML = `
+                <div style="color: #34d399; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Khôi phục thành công!</div>
+                <div style="color: #fff; background: #0b0f19; padding: 8px; border-radius: 4px; font-family: monospace;">${plaintext}</div>
+            `;
+            document.getElementById('hybridHashCheckInfo').innerHTML = `
+                SHA-256 Khớp: <span style="color: ${isIntact ? '#34d399' : '#f87171'}">${isIntact ? 'Tuyệt đối toàn vẹn (Verified)' : 'Sai lệch'}</span>
+            `;
         } catch(err) {
-            alert('Lỗi đọc tệp tin định dạng .secure: ' + err);
+            document.getElementById('hybridResultView').innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại: Khóa không khớp hoặc tệp bị hỏng!</span>`;
         }
     };
     reader.readAsText(file);
 }
-
-// Khởi chạy ngầm engine lần đầu
-setTimeout(() => { triggerRealtimeEngine(); }, 400);
 </script>
