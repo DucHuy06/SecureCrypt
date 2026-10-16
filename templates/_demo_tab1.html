@@ -1,229 +1,372 @@
+
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-scale-balanced text-indigo"></i> So sánh Trực diện & Tương tác: Các Cặp Thuật toán Mật mã Chủ đạo
+        <i class="fa-solid fa-scale-balanced text-indigo"></i>
+        So sánh trực diện & tương tác: Các thuật toán mật mã
     </div>
-    <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
-        Hệ thống phân tích và so sánh theo từng cặp thuật toán. Nhập dữ liệu tại từng mục để kiểm chứng song song kết quả đầu ra thực tế.
+
+    <p style="color:var(--text-muted);font-size:13.5px;line-height:1.6;margin-bottom:20px;">
+        Nhập dữ liệu vào từng mục để thực thi thuật toán, xem kết quả mã hóa hoặc băm và kiểm tra giải mã.
+        AES-GCM và SHA-256 sử dụng Web Crypto API của trình duyệt.
     </p>
 
-    <!-- CẶP 1: MÃ HÓA ĐỐI XỨNG (DES vs AES-256) -->
-    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
-            <i class="fa-solid fa-shield me-1"></i> 1. Cặp Mã hóa Khối Đối xứng: DES vs. AES-256
-        </div>
-        
-        <div style="margin-bottom: 12px;">
-            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập văn bản mã hóa đối xứng:</label>
-            <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
-                <input type="text" id="inputSym" placeholder="Nhập văn bản..." value="" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
-                <button type="button" onclick="runPair1()" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Mã hóa</button>
-            </div>
+    <!-- CẶP 1: AES-256-GCM -->
+    <section style="background:#0f172a;padding:18px;border-radius:10px;border:1px solid #334155;margin-bottom:20px;">
+        <div style="font-weight:700;color:#38bdf8;margin-bottom:12px;font-size:14.5px;">
+            <i class="fa-solid fa-shield me-1"></i>
+            1. Mã hóa đối xứng: DES và AES-256-GCM
         </div>
 
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
-                <thead>
-                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
-                        <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
-                        <th style="padding: 10px; width: 37%; color: #f87171;">DES (56-bit)</th>
-                        <th style="padding: 10px; width: 37%; color: #34d399;">AES-256 (256-bit)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc / Không gian</td>
-                        <td style="padding: 10px;">Mạng Feistel (Khóa 56-bit)</td>
-                        <td style="padding: 10px;">Mạng SPN (Khóa 256-bit)</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b; display: none;" id="rowRes1">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả thực thi</td>
-                        <td style="padding: 10px; font-family: monospace; color: #f87171; word-break: break-all;" id="resDES"></td>
-                        <td style="padding: 10px; font-family: monospace; color: #34d399; word-break: break-all;" id="resAES"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đánh giá thực tế</td>
-                        <td style="padding: 10px; color: #f87171;">Đã lỗi thời, dễ bị vét cạn.</td>
-                        <td style="padding: 10px; color: #34d399;">Chuẩn vàng toàn cầu, an toàn tuyệt đối.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        <p style="font-size:12.5px;color:#cbd5e1;line-height:1.6;">
+            DES sử dụng khóa hiệu dụng 56-bit và đã lỗi thời. Bản demo thực thi AES-256-GCM thực tế;
+            không giả vờ rằng kết quả AES là kết quả DES.
+        </p>
 
-    <!-- CẶP 2: HÀM BĂM (MD5 vs SHA-256) -->
-    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
-            <i class="fa-solid fa-fingerprint me-1"></i> 2. Cặp Hàm Băm & Toàn vẹn: MD5 vs. SHA-256
+        <label for="inputSym" style="font-size:12px;color:#cbd5e1;display:block;margin-bottom:4px;">
+            Văn bản cần mã hóa
+        </label>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;">
+            <input id="inputSym" type="text" value="" autocomplete="off"
+                placeholder="Nhập văn bản..."
+                style="min-width:0;background:#1e293b;color:#fff;border:1px solid #475569;padding:9px;border-radius:6px;">
+            <button type="button" onclick="SecureTab1.runPair1()"
+                style="background:var(--accent-indigo);color:#fff;font-weight:700;padding:8px 14px;border:0;border-radius:6px;cursor:pointer;">
+                Mã hóa
+            </button>
         </div>
 
-        <div style="margin-bottom: 12px;">
-            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập chuỗi tạo mã băm:</label>
-            <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
-                <input type="text" id="inputHash" placeholder="Nhập chuỗi..." value="" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
-                <button type="button" onclick="runPair2()" style="background: #059669; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Tạo băm</button>
-            </div>
+        <div id="rowRes1" hidden style="margin-top:14px;overflow-wrap:anywhere;color:#cbd5e1;font-size:13px;">
+            <p><strong style="color:#34d399;">AES-256-GCM — bản mã Base64</strong></p>
+            <pre id="resAES" style="white-space:pre-wrap;overflow-wrap:anywhere;color:#34d399;"></pre>
+            <p><strong style="color:#60a5fa;">IV ngẫu nhiên — Base64</strong></p>
+            <pre id="resIV" style="white-space:pre-wrap;overflow-wrap:anywhere;"></pre>
+            <p><strong style="color:#fbbf24;">Giải mã kiểm tra</strong></p>
+            <pre id="resAESPlain" style="white-space:pre-wrap;overflow-wrap:anywhere;"></pre>
+            <p id="resAESStatus" role="status"></p>
+        </div>
+    </section>
+
+    <!-- CẶP 2: SHA-256 -->
+    <section style="background:#0f172a;padding:18px;border-radius:10px;border:1px solid #334155;margin-bottom:20px;">
+        <div style="font-weight:700;color:#38bdf8;margin-bottom:12px;font-size:14.5px;">
+            <i class="fa-solid fa-fingerprint me-1"></i>
+            2. Hàm băm: MD5 và SHA-256
         </div>
 
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
-                <thead>
-                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
-                        <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
-                        <th style="padding: 10px; width: 37%; color: #f87171;">MD5 (128-bit)</th>
-                        <th style="padding: 10px; width: 37%; color: #34d399;">SHA-256 (256-bit)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Khả năng đụng độ</td>
-                        <td style="padding: 10px; color: #f87171;">Yếu, đã phát hiện lỗi trùng.</td>
-                        <td style="padding: 10px; color: #34d399;">Tuyệt đối an toàn.</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b; display: none;" id="rowRes2">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả Digest</td>
-                        <td style="padding: 10px; font-family: monospace; color: #f87171; word-break: break-all;" id="resMD5"></td>
-                        <td style="padding: 10px; font-family: monospace; color: #34d399; word-break: break-all;" id="resSHA"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Ứng dụng</td>
-                        <td style="padding: 10px;">Checksum nhanh không bảo mật.</td>
-                        <td style="padding: 10px;">Blockchain, SSL, Ký số.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        <p style="font-size:12.5px;color:#cbd5e1;line-height:1.6;">
+            MD5 có lỗ hổng va chạm và không nên dùng cho bảo mật. Bản demo thực thi SHA-256 thật.
+            SHA-256 là hàm băm, không phải mã hóa; không thể giải mã hash để lấy lại văn bản gốc.
+        </p>
 
-    <!-- CẶP 3: MÃ HÓA BẤT ĐỐI XỨNG (RSA vs ElGamal) -->
-    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
-            <i class="fa-solid fa-key me-1"></i> 3. Cặp Mã hóa Bất đối xứng: RSA vs. ElGamal
+        <label for="inputHash" style="font-size:12px;color:#cbd5e1;display:block;margin-bottom:4px;">
+            Chuỗi cần băm
+        </label>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;">
+            <input id="inputHash" type="text" value="" autocomplete="off"
+                placeholder="Nhập chuỗi..."
+                style="min-width:0;background:#1e293b;color:#fff;border:1px solid #475569;padding:9px;border-radius:6px;">
+            <button type="button" onclick="SecureTab1.runPair2()"
+                style="background:#059669;color:#fff;font-weight:700;padding:8px 14px;border:0;border-radius:6px;cursor:pointer;">
+                Tạo hash
+            </button>
         </div>
 
-        <div style="margin-bottom: 12px;">
-            <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nhập thông điệp mã hóa bất đối xứng:</label>
-            <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
-                <input type="text" id="inputSig" placeholder="Nhập thông điệp..." value="" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">
-                <button type="button" onclick="runPair3()" style="background: #d97706; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">Thực thi</button>
-            </div>
+        <div id="rowRes2" hidden style="margin-top:14px;overflow-wrap:anywhere;color:#cbd5e1;font-size:13px;">
+            <p><strong style="color:#34d399;">SHA-256 — 256-bit digest</strong></p>
+            <pre id="resSHA" style="white-space:pre-wrap;overflow-wrap:anywhere;color:#34d399;"></pre>
+        </div>
+    </section>
+
+    <!-- CẶP 3: RSA VÀ ELGAMAL -->
+    <section style="background:#0f172a;padding:18px;border-radius:10px;border:1px solid #334155;">
+        <div style="font-weight:700;color:#38bdf8;margin-bottom:12px;font-size:14.5px;">
+            <i class="fa-solid fa-key me-1"></i>
+            3. Mã hóa bất đối xứng: RSA và ElGamal
         </div>
 
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
-                <thead>
-                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
-                        <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
-                        <th style="padding: 10px; width: 37%; color: #fbbf24;">RSA</th>
-                        <th style="padding: 10px; width: 37%; color: #f43f5e;">ElGamal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Cơ sở toán học</td>
-                        <td style="padding: 10px;">Phân tích thừa số nguyên tố lớn ($n = p \times q$)</td>
-                        <td style="padding: 10px;">Logarit rời rạc trên nhóm nhân $\mathbb{Z}_p^*$</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b; display: none;" id="rowRes3">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả thực thi</td>
-                        <td style="padding: 10px; font-family: monospace; color: #fbbf24; word-break: break-all;" id="resRSA"></td>
-                        <td style="padding: 10px; font-family: monospace; color: #f43f5e; word-break: break-all;" id="resElg"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đặc điểm</td>
-                        <td style="padding: 10px;">Mã hóa/giải mã khóa công khai.</td>
-                        <td style="padding: 10px;">Mã hóa bất đối xứng dùng số ngẫu nhiên.</td>
-                    </tr>
-                </tbody>
-            </table>
+        <p style="font-size:12.5px;color:#cbd5e1;line-height:1.6;">
+            Đây là minh họa học thuật với tham số nhỏ. Mỗi byte UTF-8 được xử lý riêng để có thể
+            kiểm tra mã hóa và giải mã. Không sử dụng các khóa này cho dữ liệu thật.
+        </p>
+
+        <label for="inputSig" style="font-size:12px;color:#cbd5e1;display:block;margin-bottom:4px;">
+            Thông điệp cần kiểm thử
+        </label>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;">
+            <input id="inputSig" type="text" value="" autocomplete="off"
+                placeholder="Nhập thông điệp..."
+                style="min-width:0;background:#1e293b;color:#fff;border:1px solid #475569;padding:9px;border-radius:6px;">
+            <button type="button" onclick="SecureTab1.runPair3()"
+                style="background:#d97706;color:#fff;font-weight:700;padding:8px 14px;border:0;border-radius:6px;cursor:pointer;">
+                Thực thi
+            </button>
         </div>
-    </div>
+
+        <div id="rowRes3" hidden style="margin-top:14px;color:#cbd5e1;font-size:13px;overflow-wrap:anywhere;">
+            <p><strong style="color:#fbbf24;">RSA — bản mã</strong></p>
+            <pre id="resRSA" style="white-space:pre-wrap;overflow-wrap:anywhere;color:#fbbf24;"></pre>
+            <p><strong style="color:#f43f5e;">ElGamal — các cặp bản mã</strong></p>
+            <pre id="resElg" style="white-space:pre-wrap;overflow-wrap:anywhere;color:#f43f5e;"></pre>
+        </div>
+    </section>
+
+    <div id="tab1Error" role="alert" style="display:none;color:#f87171;margin-top:12px;"></div>
 </div>
 
 <script>
-// Hàm phụ trợ tạo mã băm MD5 động
-function computeMD5Mock(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) - hash) + str.charCodeAt(i);
-        hash |= 0;
+(function () {
+    // Dùng namespace riêng để tránh trùng tên hàm với các tab khác.
+    const api = window.SecureTab1 = window.SecureTab1 || {};
+
+    function byId(id) {
+        return document.getElementById(id);
     }
-    let hex = Math.abs(hash).toString(16);
-    while (hex.length < 32) {
-        hex += hex;
+
+    function showError(message) {
+        const el = byId("tab1Error");
+        if (!el) return;
+        el.textContent = message;
+        el.style.display = "block";
     }
-    return hex.substring(0, 32);
-}
 
-// Thực thi Cặp 1: DES (64-bit block hex) vs AES-256
-async function runPair1() {
-    let val = document.getElementById('inputSym').value.trim();
-    if(!val) { alert('Vui lòng nhập văn bản!'); return; }
-    
-    document.getElementById('rowRes1').style.display = 'table-row';
-
-    let desBase64Mock = btoa(val).split('').reverse().join('') + "==";
-    document.getElementById('resDES').innerText = desBase64Mock.substring(0, 16) + " [DES Cipher]";
-
-    try {
-        let enc = new TextEncoder();
-        let key = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
-        let iv = window.crypto.getRandomValues(new Uint8Array(12));
-        let ct = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: iv}, key, enc.encode(val));
-        let hex = Array.from(new Uint8Array(ct)).map(b => b.toString(16).padStart(2, '0')).join('');
-        document.getElementById('resAES').innerText = hex + " [AES-256-GCM]";
-    } catch(e) {
-        document.getElementById('resAES').innerText = "Lỗi mã hóa AES";
+    function clearError() {
+        const el = byId("tab1Error");
+        if (!el) return;
+        el.textContent = "";
+        el.style.display = "none";
     }
-}
 
-// Thực thi Cặp 2: MD5 vs SHA-256
-async function runPair2() {
-    let val = document.getElementById('inputHash').value.trim();
-    if(!val) { alert('Vui lòng nhập chuỗi băm!'); return; }
-    
-    document.getElementById('rowRes2').style.display = 'table-row';
-    
-    let md5Val = computeMD5Mock(val);
-    document.getElementById('resMD5').innerText = md5Val + " [MD5]";
-
-    try {
-        let buf = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(val));
-        let hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        document.getElementById('resSHA').innerText = hex + " [SHA-256]";
-    } catch(e) {
-        document.getElementById('resSHA').innerText = "Lỗi hàm băm";
+    function toHex(buffer) {
+        return Array.from(new Uint8Array(buffer))
+            .map(byte => byte.toString(16).padStart(2, "0"))
+            .join("");
     }
-}
 
-// Thực thi Cặp 3: Mô phỏng chuẩn số học mô-đun cho RSA & ElGamal
-function runPair3() {
-    let val = document.getElementById('inputSig').value.trim();
-    if(!val) { alert('Vui lòng nhập thông điệp!'); return; }
-    
-    document.getElementById('rowRes3').style.display = 'table-row';
+    function toBase64(bytes) {
+        let binary = "";
+        for (const byte of bytes) binary += String.fromCharCode(byte);
+        return btoa(binary);
+    }
 
-    // Chuyển chuỗi thành giá trị số nguyên M
-    let M = 0n;
-    if (!isNaN(val)) {
-        M = BigInt(val);
-    } else {
-        for (let i = 0; i < val.length; i++) {
-            M = M * 256n + BigInt(val.charCodeAt(i));
+    function modPow(base, exponent, modulus) {
+        let result = 1n;
+        base %= modulus;
+
+        while (exponent > 0n) {
+            if (exponent % 2n === 1n) {
+                result = result * base % modulus;
+            }
+            base = base * base % modulus;
+            exponent /= 2n;
         }
+        return result;
     }
-    M = (M % 97n) + 2n;
 
-    // 1. RSA chuẩn học thuật (n = 323, e = 17)
-    let n = 323n;
-    let e = 17n;
-    let rsaCipher = (M ** e) % n;
-    document.getElementById('resRSA').innerText = `M = ${M} ➔ C = (M^${e}) mod ${n} = ${rsaCipher} [RSA Textbook]`;
+    function modInverse(a, modulus) {
+        // Euclidean algorithm
+        let oldR = a, r = modulus;
+        let oldS = 1n, s = 0n;
 
-    // 2. ElGamal chuẩn nhóm nhân Z_p* (p = 23, g = 5, h = 8, k = 3)
-    let p = 23n, g = 5n, h = 8n, k = 3n;
-    let c1 = (g ** k) % p;
-    let s = (h ** k) % p;
-    let c2 = (M * s) % p;
-    document.getElementById('resElg').innerText = `M = ${M} ➔ (c1 = ${c1}, c2 = ${c2}) [ElGamal Z_p*]`;
-}
+        while (r !== 0n) {
+            const q = oldR / r;
+            [oldR, r] = [r, oldR - q * r];
+            [oldS, s] = [s, oldS - q * s];
+        }
+
+        if (oldR !== 1n) {
+            throw new Error("Không tìm được nghịch đảo modulo.");
+        }
+
+        return ((oldS % modulus) + modulus) % modulus;
+    }
+
+    function randomBetween(min, max) {
+        // Sinh số nguyên trong [min, max] bằng Web Crypto, tránh modulo bias.
+        const range = max - min + 1;
+        const limit = Math.floor(0x100000000 / range) * range;
+        const array = new Uint32Array(1);
+        let value;
+
+        do {
+            crypto.getRandomValues(array);
+            value = array[0];
+        } while (value >= limit);
+
+        return min + (value % range);
+    }
+
+    api.runPair1 = async function () {
+        clearError();
+
+        const input = byId("inputSym");
+        const value = input ? input.value : "";
+
+        if (!value.length) {
+            showError("Vui lòng nhập văn bản cần mã hóa.");
+            return;
+        }
+
+        if (!window.crypto || !crypto.subtle) {
+            showError("Web Crypto API không khả dụng. Hãy chạy ứng dụng trên localhost hoặc HTTPS.");
+            return;
+        }
+
+        const resultRow = byId("rowRes1");
+        resultRow.hidden = false;
+        byId("resAES").textContent = "Đang mã hóa...";
+        byId("resIV").textContent = "";
+        byId("resAESPlain").textContent = "";
+        byId("resAESStatus").textContent = "";
+
+        try {
+            const plaintext = new TextEncoder().encode(value);
+            const key = await crypto.subtle.generateKey(
+                { name: "AES-GCM", length: 256 },
+                true,
+                ["encrypt", "decrypt"]
+            );
+
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt(
+                { name: "AES-GCM", iv },
+                key,
+                plaintext
+            );
+
+            const decrypted = await crypto.subtle.decrypt(
+                { name: "AES-GCM", iv },
+                key,
+                encrypted
+            );
+
+            byId("resAES").textContent =
+                toBase64(new Uint8Array(encrypted));
+            byId("resIV").textContent = toBase64(iv);
+            byId("resAESPlain").textContent =
+                new TextDecoder().decode(decrypted);
+            byId("resAESStatus").textContent =
+                "Giải mã kiểm tra: " +
+                (new TextDecoder().decode(decrypted) === value
+                    ? "THÀNH CÔNG"
+                    : "THẤT BẠI");
+        } catch (error) {
+            byId("resAES").textContent = "Lỗi: " + error.message;
+            showError("Không thể thực thi AES-GCM trong trình duyệt này.");
+        }
+    };
+
+    api.runPair2 = async function () {
+        clearError();
+
+        const input = byId("inputHash");
+        const value = input ? input.value : "";
+
+        if (!value.length) {
+            showError("Vui lòng nhập chuỗi cần băm.");
+            return;
+        }
+
+        if (!window.crypto || !crypto.subtle) {
+            showError("Web Crypto API không khả dụng. Hãy chạy ứng dụng trên localhost hoặc HTTPS.");
+            return;
+        }
+
+        byId("rowRes2").hidden = false;
+        byId("resSHA").textContent = "Đang tính SHA-256...";
+
+        try {
+            const digest = await crypto.subtle.digest(
+                "SHA-256",
+                new TextEncoder().encode(value)
+            );
+            byId("resSHA").textContent = toHex(digest);
+        } catch (error) {
+            byId("resSHA").textContent = "Lỗi: " + error.message;
+            showError("Không thể tính SHA-256.");
+        }
+    };
+
+    api.runPair3 = function () {
+        clearError();
+
+        const input = byId("inputSig");
+        const value = input ? input.value : "";
+
+        if (!value.length) {
+            showError("Vui lòng nhập thông điệp cần kiểm thử.");
+            return;
+        }
+
+        if (typeof BigInt !== "function") {
+            showError("Trình duyệt không hỗ trợ BigInt nên không thể chạy demo RSA/ElGamal.");
+            return;
+        }
+
+        byId("rowRes3").hidden = false;
+
+        try {
+            const bytes = Array.from(new TextEncoder().encode(value));
+
+            // RSA textbook: p=17, q=19, n=323, phi=288, e=17, d=17.
+            // Mỗi byte (0..255) nhỏ hơn n.
+            const n = 323n;
+            const e = 17n;
+            const d = 17n;
+
+            const rsaCipher = bytes.map(byte =>
+                modPow(BigInt(byte), e, n)
+            );
+            const rsaPlain = rsaCipher.map(cipher =>
+                Number(modPow(cipher, d, n))
+            );
+            const rsaDecoded = new TextDecoder().decode(
+                new Uint8Array(rsaPlain)
+            );
+
+            byId("resRSA").textContent =
+                "n = 323, e = 17, d = 17\n" +
+                "Bản mã theo byte: [" + rsaCipher.join(", ") + "]\n" +
+                "Giải mã: " + rsaDecoded + "\n" +
+                "Kiểm tra: " + (rsaDecoded === value ? "THÀNH CÔNG" : "THẤT BẠI");
+
+            // ElGamal textbook demo trên số nguyên tố p=467.
+            // 2 là phần tử sinh modulo 467; x là khóa bí mật; h=g^x mod p.
+            const p = 467n;
+            const g = 2n;
+            const x = 127n;
+            const h = modPow(g, x, p);
+
+            const elgamal = bytes.map(byte => {
+                const m = BigInt(byte);
+                const k = BigInt(randomBetween(1, 465));
+                const c1 = modPow(g, k, p);
+                const shared = modPow(h, k, p);
+                const c2 = m * shared % p;
+
+                const receiverShared = modPow(c1, x, p);
+                const inverse = modInverse(receiverShared, p);
+                const decoded = c2 * inverse % p;
+
+                return { c1, c2, decoded };
+            });
+
+            const elgamalPlain = elgamal.map(item => Number(item.decoded));
+            const elgamalDecoded = new TextDecoder().decode(
+                new Uint8Array(elgamalPlain)
+            );
+
+            byId("resElg").textContent =
+                "p = 467, g = 2, h = g^x mod p = " + h + "\n" +
+                "Bản mã (c1, c2) theo byte:\n" +
+                elgamal.map(item => `(${item.c1}, ${item.c2})`).join(" ") +
+                "\nGiải mã: " + elgamalDecoded +
+                "\nKiểm tra: " +
+                (elgamalDecoded === value ? "THÀNH CÔNG" : "THẤT BẠI");
+        } catch (error) {
+            byId("resRSA").textContent = "Lỗi RSA: " + error.message;
+            byId("resElg").textContent = "Lỗi ElGamal: " + error.message;
+            showError("Không thể thực thi RSA/ElGamal: " + error.message);
+        }
+    };
+})();
 </script>
