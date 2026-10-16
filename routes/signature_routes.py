@@ -1,9 +1,6 @@
 from pathlib import Path
 from io import BytesIO
-import tempfile
-import subprocess
 import logging
-import shutil
 import sys
 
 from flask import Blueprint, request, jsonify, send_file
@@ -13,6 +10,9 @@ from pyhanko.sign import signers
 from pyhanko.sign.fields import SigFieldSpec
 from pyhanko.sign.signers import PdfSignatureMetadata
 from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
+from pyhanko.pdf_utils.reader import PdfFileReader
+from pyhanko.sign.validation import validate_pdf_signature, ValidationContext
+from pyhanko.keys import load_cert_from_pem
 
 
 signature_bp = Blueprint(
@@ -124,7 +124,6 @@ def sign_pdf():
 
     except Exception as e:
         logger.exception("PDF signing failed")
-        # Trả về nguyên bản lỗi chi tiết từ Python để dễ debug
         return jsonify(
             success=False,
             message=f"Lỗi ký PDF: {str(e)}"
@@ -144,60 +143,59 @@ def verify_pdf():
             message=error
         ), 400
 
-    python_executable = sys.executable
-
     try:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            pdf_path = Path(temp_dir) / "document.pdf"
-            pdf_path.write_bytes(pdf_data)
+        with BytesIO(pdf_data) as fd:
+            reader = PdfFileReader(fd)
+            sig_fields = reader.embedded_signatures
 
-            cmd = [
-                python_executable,
-                "-m",
-                "pyhanko",
-                "sign",
-                "validate",
-                "--pretty-print",
-            ]
+            if not sig_fields:
+                return jsonify(
+                    success=True,
+                    valid=False,
+                    trusted=False,
+                    message="Tài liệu PDF không chứa chữ ký số nào.",
+                    details="Không tìm thấy trường chữ ký trong file PDF."
+                )
+
+            trust_roots = []
             if CERTIFICATE.is_file():
-                cmd.extend(["--trust", str(CERTIFICATE)])
-            cmd.append(str(pdf_path))
+                try:
+                    trust_roots.append(load_cert_from_pem(str(CERTIFICATE)))
+                except Exception:
+                    pass
 
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=30,
-                check=False,
-            )
+            vc = ValidationContext(trust_roots=trust_roots)
 
-            report = (
-                (result.stdout or "")
-                + "\n"
-                + (result.stderr or "")
-            ).strip()
+            report_lines = []
+            all_valid = True
 
-            logger.info(
-                "PDF verification CLI completed: returncode=%s, report=%s",
-                result.returncode,
-                report[-3000:],
-            )
+            for sig_field in sig_fields:
+                try:
+                    status = validate_pdf_signature(
+                        reader,
+                        sig_field,
+                        validation_context=vc
+                    )
+                    intact = status.intact
+                    valid = status.valid
+                    
+                    report_lines.append(f"Chữ ký '{sig_field}': Toàn vẹn (intact)={intact}, Hợp lệ (valid)={valid}")
+                    
+                    if not (intact and valid):
+                        all_valid = False
+                except Exception as ex:
+                    all_valid = False
+                    report_lines.append(f"Chữ ký '{sig_field}' lỗi xác minh: {str(ex)}")
 
-            is_valid = (result.returncode == 0)
+            report_text = "\n".join(report_lines)
 
             return jsonify(
                 success=True,
-                valid=is_valid,
-                trusted=is_valid,
-                message="Đã hoàn tất kiểm tra chữ ký.",
-                details=report[-6000:],
+                valid=all_valid,
+                trusted=all_valid,
+                message="Đã hoàn tất kiểm tra chữ ký tài liệu." if all_valid else "Chữ ký không hợp lệ hoặc không đáng tin cậy.",
+                details=report_text,
             )
-
-    except subprocess.TimeoutExpired:
-        return jsonify(
-            success=False,
-            message="Quá thời gian thực hiện xác minh PDF (Timeout)."
-        ), 504
 
     except Exception as e:
         logger.exception("PDF verification failed")
