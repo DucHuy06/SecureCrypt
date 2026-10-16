@@ -151,16 +151,20 @@ def verify_pdf():
             pdf_path = Path(temp_dir) / "document.pdf"
             pdf_path.write_bytes(pdf_data)
 
+            cmd = [
+                python_executable,
+                "-m",
+                "pyhanko",
+                "sign",
+                "validate",
+                "--pretty-print",
+            ]
+            if CERTIFICATE.is_file():
+                cmd.extend(["--trust", str(CERTIFICATE)])
+            cmd.append(str(pdf_path))
+
             result = subprocess.run(
-                [
-                    python_executable,
-                    "-m",
-                    "pyhanko",
-                    "sign",
-                    "validate",
-                    "--pretty-print",
-                    str(pdf_path),
-                ],
+                cmd,
                 capture_output=True,
                 text=True,
                 timeout=30,
@@ -179,10 +183,12 @@ def verify_pdf():
                 report[-3000:],
             )
 
+            is_valid = (result.returncode == 0)
+
             return jsonify(
                 success=True,
-                valid=(result.returncode == 0),
-                trusted=False,
+                valid=is_valid,
+                trusted=is_valid,
                 message="Đã hoàn tất kiểm tra chữ ký.",
                 details=report[-6000:],
             )
