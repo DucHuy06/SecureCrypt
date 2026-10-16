@@ -209,9 +209,6 @@ def request_entity_too_large(error):
         message="Dung lượng dữ liệu tải lên vượt quá giới hạn 32 MB."
     ), 413
 
-
 # ==================== CHẠY ỨNG DỤNG ====================
-
 if __name__ == "__main__":
     app.run(debug=True)
-```
