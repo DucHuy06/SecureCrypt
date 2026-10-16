@@ -1,9 +1,8 @@
-
 import os
 import sqlite3
 from pathlib import Path
 
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request, session, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from routes.crypto_routes import crypto_bp
@@ -53,6 +52,20 @@ def init_db():
 
 
 init_db()
+
+
+# ==================== ROUTE GIAO DIỆN CHÍNH (TRÁNH LỖI 404) ====================
+
+@app.route("/", methods=["GET"])
+def index_page():
+    """Trang chủ chính của ứng dụng."""
+    return render_template("index.html")
+
+
+@app.route("/demo", methods=["GET"])
+def demo_page():
+    """Trang giao diện demo chung."""
+    return render_template("demo.html")
 
 
 # ==================== ĐĂNG KÝ TÀI KHOẢN ====================
