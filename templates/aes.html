@@ -57,7 +57,7 @@
     </div>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
-        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext Output (Kết quả mã hóa Base64/Hex):</label>
+        <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Ciphertext Output (Kết quả mã hóa Base64):</label>
         <button type="button" onclick="copyInput('aesCiphertext')" style="padding: 4px 12px; font-size: 12px; background: #334155;">
             <i class="fa-solid fa-copy"></i> Copy Ciphertext
         </button>
@@ -97,9 +97,6 @@
 </div>
 
 <script>
-let lastEncryptedPlaintext = "";
-let lastUsedKey = "";
-
 function stringToHex(str) {
     let hex = '';
     for (let i = 0; i < str.length; i++) {
@@ -147,10 +144,6 @@ async function encryptAES() {
     if(!text) { alert('Vui lòng nhập văn bản rõ Plaintext!'); return; }
     if(!key) { alert('Vui lòng nhập khóa AES Key (Hex) hoặc bấm "Gen 128-bit / 256-bit"!'); return; }
 
-    lastEncryptedPlaintext = text;
-    lastUsedKey = key;
-
-    let ciphertext = '';
     try {
         let res = await fetch('/api/aes/encrypt', {
             method: 'POST',
@@ -158,34 +151,39 @@ async function encryptAES() {
             body: JSON.stringify({ plaintext: text, key: key })
         });
         let data = await res.json();
-        ciphertext = data.ciphertext || data.result || btoa(text);
+        
+        if (!res.ok || data.status === 'error') {
+            alert('Lỗi mã hóa từ Server: ' + (data.message || 'Không xác định'));
+            return;
+        }
+
+        let ciphertext = data.ciphertext;
+        document.getElementById('aesCiphertext').value = ciphertext;
+
+        let textHex = stringToHex(text);
+        let keyLenBits = key.length * 4;
+        let rounds = keyLenBits === 256 ? 14 : 10;
+
+        document.getElementById('aesEncryptVisualStep').style.display = 'block';
+        document.getElementById('aesEncryptTraceContent').innerHTML = `
+            <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[LUỒNG MÃ HÓA AES ĐỘNG (AES-${keyLenBits} ENCRYPTION TRACE)]</div>
+            <div>• <strong>Plaintext Gốc:</strong> "${text}" ➔ <strong>Hex ASCII:</strong> <span style="color:#f59e0b">${textHex}</span></div>
+            <div>• <strong>AES Key (${keyLenBits}-bit Hex):</strong> <span style="color:#6366f1">${key}</span></div>
+            <div>• <strong>Chuyển đổi Ma trận Trạng thái (4x4 State Matrix):</strong> Khởi tạo State từ 16-byte blocks.</div>
+            <div>• <strong>Lịch Mở Rộng Khóa (Key Expansion):</strong> Sinh ra ${rounds + 1} Round Keys (${rounds} vòng biến đổi).</div>
+            <br>
+            <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 4px;">[CÁC BƯỚC BIẾN ĐỔI TRONG MỖI VÒNG (ROUND OPERATIONS)]</div>
+            <div>1. <strong>SubBytes:</strong> Thay thế từng byte phi tuyến tính qua bảng S-Box.</div>
+            <div>2. <strong>ShiftRows:</strong> Dịch chuyển các hàng ma trận 4x4.</div>
+            <div>3. <strong>MixColumns:</strong> Nhân ma trận cột trên trường hữu hạn Galois GF(2⁸).</div>
+            <div>4. <strong>AddRoundKey:</strong> XOR ma trận State với Round Key của vòng đó.</div>
+            <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+                ➔ CIPHERTEXT ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
+            </div>
+        `;
     } catch(e) {
-        ciphertext = btoa(text);
+        alert('Lỗi kết nối đến Server API: ' + e.message);
     }
-
-    document.getElementById('aesCiphertext').value = ciphertext;
-
-    let textHex = stringToHex(text);
-    let keyLenBits = key.length * 4;
-    let rounds = keyLenBits === 256 ? 14 : 10;
-
-    document.getElementById('aesEncryptVisualStep').style.display = 'block';
-    document.getElementById('aesEncryptTraceContent').innerHTML = `
-        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[LUỒNG MÃ HÓA AES ĐỘNG (AES-${keyLenBits} ENCRYPTION TRACE)]</div>
-        <div>• <strong>Plaintext Gốc:</strong> "${text}" ➔ <strong>Hex ASCII:</strong> <span style="color:#f59e0b">${textHex}</span></div>
-        <div>• <strong>AES Key (${keyLenBits}-bit Hex):</strong> <span style="color:#6366f1">${key}</span></div>
-        <div>• <strong>Chuyển đổi Ma trận Trạng thái (4x4 State Matrix):</strong> Khởi tạo State từ 16-byte blocks.</div>
-        <div>• <strong>Lịch Mở Rộng Khóa (Key Expansion):</strong> Sinh ra ${rounds + 1} Round Keys (${rounds} vòng biến đổi).</div>
-        <br>
-        <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 4px;">[CÁC BƯỚC BIẾN ĐỔI TRONG MỖI VÒNG (ROUND OPERATIONS)]</div>
-        <div>1. <strong>SubBytes:</strong> Thay thế từng byte phi tuyến tính qua bảng S-Box.</div>
-        <div>2. <strong>ShiftRows:</strong> Dịch chuyển các hàng ma trận 4x4.</div>
-        <div>3. <strong>MixColumns:</strong> Nhân ma trận cột trên trường hữu hạn Galois GF(2⁸).</div>
-        <div>4. <strong>AddRoundKey:</strong> XOR ma trận State với Round Key của vòng đó.</div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ➔ CIPHERTEXT ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
-        </div>
-    `;
 }
 
 async function decryptAES() {
@@ -197,22 +195,6 @@ async function decryptAES() {
 
     document.getElementById('aesDecryptVisualStep').style.display = 'block';
 
-    if (lastUsedKey && currentKey !== lastUsedKey) {
-        document.getElementById('aesDecryptedPlaintext').value = "❌ [LỖI GIẢI MÃ: DỮ LIỆU RÁC DO SAI KHÓA]";
-        document.getElementById('aesDecryptTraceContent').innerHTML = `
-            <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[❌ LỖI GIẢI MÃ: SAI KHÓA AES KEY]</div>
-            <div>• <strong>Ciphertext Đẩy Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-            <div>• <strong>AES Key Thử Giải Mã:</strong> <span style="color:#f43f5e">${currentKey}</span> (KHÔNG KHỚP với Khóa mã hóa gốc: ${lastUsedKey})</div>
-            <br>
-            <div style="color: #cbd5e1; line-height: 1.6;">
-                • <strong>Nguyên lý Mật mã học AES:</strong> Mã hóa khối AES yêu cầu đúng Key để tính toán ma trận nghịch đảo. Giải mã với sai khóa sẽ tạo ra lỗi mờ ma trận (Padding Fault) hoặc giải ra chuỗi bit rác không thể đọc.
-            </div>
-        `;
-        return;
-    }
-
-    let decryptedText = lastEncryptedPlaintext || "Văn bản mã hóa đã khôi phục!";
-    
     try {
         let res = await fetch('/api/aes/decrypt', {
             method: 'POST',
@@ -220,20 +202,31 @@ async function decryptAES() {
             body: JSON.stringify({ ciphertext: cipherText, key: currentKey })
         });
         let data = await res.json();
-        if(data.plaintext) decryptedText = data.plaintext;
-    } catch(e) {}
+        
+        if (!res.ok || data.status === 'error') {
+            document.getElementById('aesDecryptedPlaintext').value = "❌ [LỖI GIẢI MÃ]";
+            document.getElementById('aesDecryptTraceContent').innerHTML = `
+                <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[❌ LỖI GIẢI MÃ AES]</div>
+                <div>• <strong>Chi tiết:</strong> ${data.message || 'Sai khóa hoặc dữ liệu mã hóa không hợp lệ'}</div>
+            `;
+            return;
+        }
 
-    document.getElementById('aesDecryptedPlaintext').value = decryptedText;
+        let decryptedText = data.plaintext;
+        document.getElementById('aesDecryptedPlaintext').value = decryptedText;
 
-    document.getElementById('aesDecryptTraceContent').innerHTML = `
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[✓ LUỒNG GIẢI MÃ THÀNH CÔNG (DECRYPTION SUCCESS)]</div>
-        <div>• <strong>Ciphertext Đầu Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-        <div>• <strong>AES Key Dùng Giải Mã:</strong> <span style="color:#10b981">${currentKey}</span> (Trùng khớp 100%)</div>
-        <div>• <strong>Chạy Ma trận Ngược:</strong> InvShiftRows ➔ InvSubBytes ➔ AddRoundKey ➔ InvMixColumns.</div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ ĐÃ KHÔI PHỤC HOÀN TOÀN PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
-        </div>
-    `;
+        document.getElementById('aesDecryptTraceContent').innerHTML = `
+            <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[✓ LUỒNG GIẢI MÃ THÀNH CÔNG (DECRYPTION SUCCESS)]</div>
+            <div>• <strong>Ciphertext Đầu Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+            <div>• <strong>AES Key Dùng Giải Mã:</strong> <span style="color:#10b981">${currentKey}</span></div>
+            <div>• <strong>Chạy Ma trận Ngược:</strong> InvShiftRows ➔ InvSubBytes ➔ AddRoundKey ➔ InvMixColumns.</div>
+            <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+                ✓ ĐÃ KHÔI PHỤC HOÀN TOÀN PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
+            </div>
+        `;
+    } catch(e) {
+        alert('Lỗi kết nối đến Server API: ' + e.message);
+    }
 }
 </script>
 {% endblock %}
