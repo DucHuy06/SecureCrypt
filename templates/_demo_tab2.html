@@ -440,8 +440,12 @@
             const base = input.name.replace(/\.[^.]+$/, '')
                 .replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100) || 'document';
 
+            // Tải tệp .secure trước, sau đó dùng setTimeout để tải tệp .private.secure tránh bị trình duyệt chặn
             downloadJson(packageData, base + '.secure');
-            downloadJson(privatePackage, base + '.private.secure');
+            setTimeout(() => {
+                downloadJson(privatePackage, base + '.private.secure');
+            }, 500);
+
             rawKey.fill(0);
 
             status('ssEncryptStatus',
