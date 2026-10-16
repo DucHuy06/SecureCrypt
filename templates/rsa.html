@@ -36,11 +36,11 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="rsaP" value="" placeholder="Nhập giá trị p...">
+            <input type="text" id="rsaP" value="" placeholder="Nhập giá trị p (ví dụ: 977)...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố q:</label>
-            <input type="text" id="rsaQ" value="" placeholder="Nhập giá trị q...">
+            <input type="text" id="rsaQ" value="" placeholder="Nhập giá trị q (ví dụ: 17)...">
         </div>
     </div>
 
@@ -91,8 +91,8 @@
         <i class="fa-solid fa-lock text-indigo"></i> 2. Thao tác Mã hóa văn bản
     </div>
 
-    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc / Các số nguyên M (cách nhau bằng dấu cách):</label>
-    <textarea id="rsaPlaintext" rows="2" placeholder="Nhập thông điệp cần mã hóa..."></textarea>
+    <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc / Các số nguyên M (nhỏ hơn n, cách nhau bằng dấu cách):</label>
+    <textarea id="rsaPlaintext" rows="2" placeholder="Nhập thông điệp M (Ví dụ: 123)..."></textarea>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
         <div>
@@ -255,6 +255,12 @@ function generateRSAKeys() {
     document.getElementById('rsaPrivateD').value = d.toString();
     document.getElementById('rsaPrivateN').value = n.toString();
 
+    // Tự động điền luôn vào ô mã hóa và giải mã cho tiện test
+    document.getElementById('rsaEncryptKeyE').value = e.toString();
+    document.getElementById('rsaEncryptKeyN').value = n.toString();
+    document.getElementById('rsaDecryptKeyD').value = d.toString();
+    document.getElementById('rsaDecryptKeyN').value = n.toString();
+
     document.getElementById('rsaKeyVisualStep').style.display = 'block';
     document.getElementById('rsaKeyTraceText').innerHTML = `
         <div style="color: var(--accent-amber); font-weight: bold; margin-bottom: 6px;">[BƯỚC 1: XÂY DỰNG KHÓA]</div>
@@ -262,7 +268,7 @@ function generateRSAKeys() {
         <div>• <strong>Tính tích khóa chung (n):</strong> n = p × q = <span style="color:#06b6d4">${n.toString()}</span></div>
         <div>• <strong>Tính hàm số Euler Phi:</strong> φ(n) = (p-1)(q-1) = <span style="color:#06b6d4">${phi.toString()}</span></div>
         <div>• <strong>Số mũ công khai (e):</strong> <span style="color:#06b6d4">${e.toString()}</span> | <strong>Số mũ bí mật (d):</strong> <span style="color:#10b981">${d.toString()}</span></div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT: Cấp khóa thành công.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT: Cấp khóa thành công. Khóa đã được tự động điền vào các ô bên dưới.</div>
     `;
 }
 
@@ -309,16 +315,24 @@ function encryptRSA() {
     let summaryList = [];
     let parts = text.split(/[\s,]+/);
 
-    parts.forEach(numStr => {
-        if(!numStr) return;
+    for (let numStr of parts) {
+        if(!numStr) continue;
         let m = BigInt(numStr);
+        if (m >= n) {
+            alert(`Lỗi: Thông điệp M = ${m} phải nhỏ hơn khóa chung n = ${n} theo chuẩn toán học RSA!`);
+            return;
+        }
         let resObj = modPowCompact(m, e, n);
         cipherArr.push(resObj.result.toString());
         summaryList.push(`Khối M = ${m} ➔ Số mũ e = ${e} (nhị phân: <code>${resObj.bin}</code>) ➔ ${m}<sup>${e}</sup> mod ${n} = <span style="color:#f43f5e">${resObj.result}</span>`);
-    });
+    }
 
     let ciphertext = cipherArr.join(' ');
     document.getElementById('rsaCiphertext').value = ciphertext;
+    
+    // Tự động điền luôn bản mã sang ô giải mã cho tiện test
+    document.getElementById('rsaDecryptCiphertext').value = ciphertext;
+
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
         <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[QUÁ TRÌNH MÃ HÓA (SQUARE-AND-MULTIPLY)]</div>
@@ -349,13 +363,13 @@ function decryptRSA() {
     let plainResults = [];
     let summaryList = [];
 
-    cipherArr.forEach(cStr => {
-        if(!cStr) return;
+    for (let cStr of cipherArr) {
+        if(!cStr) continue;
         let cipherVal = BigInt(cStr);
         let resObj = modPowCompact(cipherVal, d, n);
         plainResults.push(resObj.result.toString());
         summaryList.push(`Khối mã C = ${cipherVal} ➔ Số mũ d = ${d} (nhị phân: <code>${resObj.bin}</code>) ➔ ${cipherVal}<sup>${d}</sup> mod ${n} = <strong style="color:#34d399">${resObj.result}</strong>`);
-    });
+    }
 
     let decryptedText = plainResults.join(' ');
     document.getElementById('rsaDecryptedPlaintext').value = decryptedText;
