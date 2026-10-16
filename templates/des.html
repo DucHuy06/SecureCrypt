@@ -146,38 +146,43 @@ async function encryptDES() {
     lastEncryptedPlaintext = text;
     lastUsedKey = key;
 
-    let ciphertext = '';
     try {
         let res = await fetch('/api/des/encrypt', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ plaintext: text, key: key })
         });
+        
         let data = await res.json();
-        ciphertext = data.ciphertext || data.result || btoa(text);
+        
+        if (!res.ok) {
+            alert('Lỗi mã hóa từ Server: ' + (data.message || 'Không xác định'));
+            return;
+        }
+
+        let ciphertext = data.ciphertext || data.result;
+        document.getElementById('desCiphertext').value = ciphertext;
+
+        let textHex = stringToHex(text);
+        let key56 = key.substring(0, 14);
+        let l0 = key.substring(0, 8);
+        let r0 = key.substring(8, 16);
+
+        document.getElementById('desEncryptVisualStep').style.display = 'block';
+        document.getElementById('desEncryptTraceContent').innerHTML = `
+            <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[LUỒNG MÃ HÓA DES ĐỘNG (ENCRYPTION TRACE)]</div>
+            <div>• <strong>Plaintext Gốc:</strong> "${text}" ➔ <strong>Hex ASCII:</strong> <span style="color:#f59e0b">${textHex}</span></div>
+            <div>• <strong>DES Key Dùng Mã Hóa:</strong> <span style="color:#6366f1">${key}</span></div>
+            <div>• <strong>PC-1 Permutation (64bit ➔ 56bit):</strong> C₀D₀ = <span style="color:#e2e8f0">${key56}</span></div>
+            <div>• <strong>IP Split:</strong> L₀ = <span style="color:#06b6d4">${l0}</span> | R₀ = <span style="color:#06b6d4">${r0}</span></div>
+            <div>• <strong>Chạy 16 vòng Mạng Feistel (Round 1 ➔ Round 16)...</strong></div>
+            <div style="color: var(--accent-emerald); font-weight: bold; margin-top:6px;">
+                ➔ CIPHERTEXT ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
+            </div>
+        `;
     } catch(e) {
-        ciphertext = btoa(text);
+        alert('Lỗi kết nối đến Server API: ' + e.message);
     }
-
-    document.getElementById('desCiphertext').value = ciphertext;
-
-    let textHex = stringToHex(text);
-    let key56 = key.substring(0, 14);
-    let l0 = key.substring(0, 8);
-    let r0 = key.substring(8, 16);
-
-    document.getElementById('desEncryptVisualStep').style.display = 'block';
-    document.getElementById('desEncryptTraceContent').innerHTML = `
-        <div style="color: var(--accent-cyan); font-weight: bold; margin-bottom: 6px;">[LUỒNG MÃ HÓA DES ĐỘNG (ENCRYPTION TRACE)]</div>
-        <div>• <strong>Plaintext Gốc:</strong> "${text}" ➔ <strong>Hex ASCII:</strong> <span style="color:#f59e0b">${textHex}</span></div>
-        <div>• <strong>DES Key Dùng Mã Hóa:</strong> <span style="color:#6366f1">${key}</span></div>
-        <div>• <strong>PC-1 Permutation (64bit ➔ 56bit):</strong> C₀D₀ = <span style="color:#e2e8f0">${key56}</span></div>
-        <div>• <strong>IP Split:</strong> L₀ = <span style="color:#06b6d4">${l0}</span> | R₀ = <span style="color:#06b6d4">${r0}</span></div>
-        <div>• <strong>Chạy 16 vòng Mạng Feistel (Round 1 ➔ Round 16)...</strong></div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top:6px;">
-            ➔ CIPHERTEXT ĐẦU RA: <span style="color:#f43f5e">${ciphertext}</span>
-        </div>
-    `;
 }
 
 async function decryptDES() {
@@ -189,43 +194,39 @@ async function decryptDES() {
 
     document.getElementById('desDecryptVisualStep').style.display = 'block';
 
-    if (lastUsedKey && currentKey !== lastUsedKey) {
-        document.getElementById('desDecryptedPlaintext').value = "❌ [LỖI GIẢI MÃ: DỮ LIỆU RÁC DO SAI KHÓA]";
-        document.getElementById('desDecryptTraceContent').innerHTML = `
-            <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[❌ LỖI GIẢI MÃ: SAI KHÓA DES KEY]</div>
-            <div>• <strong>Ciphertext Đẩy Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-            <div>• <strong>DES Key Thử Giải Mã:</strong> <span style="color:#f43f5e">${currentKey}</span> (KHÔNG KHỚP với Khóa mã hóa gốc: ${lastUsedKey})</div>
-            <br>
-            <div style="color: #cbd5e1; line-height: 1.6;">
-                • <strong>Nguyên lý Mật mã học:</strong> Thuật toán DES áp dụng mã hóa đối xứng. Khi giải mã bằng sai khóa, ma trận bit biến đổi sai lệch hoàn toàn nên không thể phục hồi dữ liệu gốc.
-            </div>
-        `;
-        return;
-    }
-
-    let decryptedText = lastEncryptedPlaintext || "huy";
-    
     try {
         let res = await fetch('/api/des/decrypt', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ ciphertext: cipherText, key: currentKey })
         });
+        
         let data = await res.json();
-        if(data.plaintext) decryptedText = data.plaintext;
-    } catch(e) {}
+        
+        if (!res.ok) {
+            document.getElementById('desDecryptedPlaintext').value = "❌ [LỖI GIẢI MÃ]";
+            document.getElementById('desDecryptTraceContent').innerHTML = `
+                <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[❌ LỖI GIẢI MÃ DES]</div>
+                <div>• <strong>Chi tiết:</strong> ${data.message || 'Sai khóa hoặc dữ liệu không hợp lệ'}</div>
+            `;
+            return;
+        }
 
-    document.getElementById('desDecryptedPlaintext').value = decryptedText;
+        let decryptedText = data.plaintext;
+        document.getElementById('desDecryptedPlaintext').value = decryptedText;
 
-    document.getElementById('desDecryptTraceContent').innerHTML = `
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[✓ LUỒNG GIẢI MÃ THÀNH CÔNG (DECRYPTION SUCCESS)]</div>
-        <div>• <strong>Ciphertext Đầu Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
-        <div>• <strong>DES Key Dùng Giải Mã:</strong> <span style="color:#10b981">${currentKey}</span> (Trùng khớp 100%)</div>
-        <div>• <strong>Chạy ngược 16 vòng Feistel (K₁₆ ➔ K₁)...</strong></div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
-            ✓ ĐÃ KHÔI PHỤC HOÀN TOÀN PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
-        </div>
-    `;
+        document.getElementById('desDecryptTraceContent').innerHTML = `
+            <div style="color: var(--accent-emerald); font-weight: bold; margin-bottom: 6px;">[✓ LUỒNG GIẢI MÃ THÀNH CÔNG (DECRYPTION SUCCESS)]</div>
+            <div>• <strong>Ciphertext Đầu Vào:</strong> <span style="color:#f43f5e">${cipherText}</span></div>
+            <div>• <strong>DES Key Dùng Giải Mã:</strong> <span style="color:#10b981">${currentKey}</span></div>
+            <div>• <strong>Chạy ngược 16 vòng Feistel (K₁₆ ➔ K₁)...</strong></div>
+            <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">
+                ✓ ĐÃ KHÔI PHỤC HOÀN TOÀN PLAIN TEXT GỐC: "<span style="color:#ffffff">${decryptedText}</span>"
+            </div>
+        `;
+    } catch(e) {
+        alert('Lỗi kết nối đến Server API: ' + e.message);
+    }
 }
 </script>
 {% endblock %}
