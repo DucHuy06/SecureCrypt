@@ -140,7 +140,7 @@
 </div>
 
 <script>
-// Hàm hỗ trợ băm MD5 động
+// Hàm phụ trợ tạo mã băm MD5 động
 function computeMD5Mock(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -161,24 +161,16 @@ async function runPair1() {
     
     document.getElementById('rowRes1').style.display = 'table-row';
 
-    // DES chuẩn mô phỏng kích thước khối 64-bit (16 ký tự Hex)
-    let desHashAcc = 0;
-    for (let i = 0; i < val.length; i++) {
-        desHashAcc = ((desHashAcc << 5) - desHashAcc) + val.charCodeAt(i);
-        desHashAcc |= 0;
-    }
-    let desHexBlock = (Math.abs(desHashAcc) * 997).toString(16).padStart(16, '0').substring(0, 16);
-    document.getElementById('resDES').innerText = desHexBlock + " [DES 64-bit Block]";
+    let desBase64Mock = btoa(val).split('').reverse().join('') + "==";
+    document.getElementById('resDES').innerText = desBase64Mock.substring(0, 16) + " [DES Cipher]";
 
-    // AES-256 thực tế
     try {
         let enc = new TextEncoder();
         let key = await window.crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
         let iv = window.crypto.getRandomValues(new Uint8Array(12));
         let ct = await window.crypto.subtle.encrypt({name: "AES-GCM", iv: iv}, key, enc.encode(val));
         let hex = Array.from(new Uint8Array(ct)).map(b => b.toString(16).padStart(2, '0')).join('');
-        let shortAes = hex.substring(0, 48) + "...";
-        document.getElementById('resAES').innerText = shortAes + " [AES-256-GCM]";
+        document.getElementById('resAES').innerText = hex + " [AES-256-GCM]";
     } catch(e) {
         document.getElementById('resAES').innerText = "Lỗi mã hóa AES";
     }
@@ -203,28 +195,35 @@ async function runPair2() {
     }
 }
 
-// Thực thi Cặp 3: RSA (Tối ưu độ dài hiển thị) vs ElGamal
-async function runPair3() {
+// Thực thi Cặp 3: Mô phỏng chuẩn số học mô-đun cho RSA & ElGamal
+function runPair3() {
     let val = document.getElementById('inputSig').value.trim();
     if(!val) { alert('Vui lòng nhập thông điệp!'); return; }
     
     document.getElementById('rowRes3').style.display = 'table-row';
-    try {
-        let kp = await window.crypto.subtle.generateKey({name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256"}, true, ["encrypt", "decrypt"]);
-        let ct = await window.crypto.subtle.encrypt({name: "RSA-OAEP"}, kp.publicKey, new TextEncoder().encode(val));
-        let hex = Array.from(new Uint8Array(ct)).map(b => b.toString(16).padStart(2, '0')).join('');
-        
-        // Cắt gọn RSA cân đối khung nhìn bảng
-        let shortRsa = hex.substring(0, 40) + "..." + hex.substring(hex.length - 12);
-        document.getElementById('resRSA').innerText = shortRsa + " [RSA-OAEP]";
-    } catch(e) {
-        document.getElementById('resRSA').innerText = "Lỗi RSA";
-    }
 
-    // Mô phỏng ElGamal chuẩn công thức số học mô đun
-    let g = 5n, p = 2377n, r = 314n;
-    let c1 = Number((g ** r) % p);
-    let elgSample = "(c1=" + c1 + ", CipherBlock:" + btoa(val) + ") [ElGamal]";
-    document.getElementById('resElg').innerText = elgSample;
+    // Chuyển chuỗi thành giá trị số nguyên M
+    let M = 0n;
+    if (!isNaN(val)) {
+        M = BigInt(val);
+    } else {
+        for (let i = 0; i < val.length; i++) {
+            M = M * 256n + BigInt(val.charCodeAt(i));
+        }
+    }
+    M = (M % 97n) + 2n;
+
+    // 1. RSA chuẩn học thuật (n = 323, e = 17)
+    let n = 323n;
+    let e = 17n;
+    let rsaCipher = (M ** e) % n;
+    document.getElementById('resRSA').innerText = `M = ${M} ➔ C = (M^${e}) mod ${n} = ${rsaCipher} [RSA Textbook]`;
+
+    // 2. ElGamal chuẩn nhóm nhân Z_p* (p = 23, g = 5, h = 8, k = 3)
+    let p = 23n, g = 5n, h = 8n, k = 3n;
+    let c1 = (g ** k) % p;
+    let s = (h ** k) % p;
+    let c2 = (M * s) % p;
+    document.getElementById('resElg').innerText = `M = ${M} ➔ (c1 = ${c1}, c2 = ${c2}) [ElGamal Z_p*]`;
 }
 </script>
