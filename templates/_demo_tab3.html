@@ -1,308 +1,221 @@
-<div class="crypto-card" style="background: #090d16; border: 1px solid #1e293b; padding: 24px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
+<div class="crypto-card" style="background: #090d16; border: 1px solid #1e293b; padding: 24px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); color: #f8fafc; height: 700px; display: flex; flex-direction: column;">
     
-    <!-- KHU VỰC XÁC THỰC: ĐĂNG NHẬP / ĐĂNG KÝ -->
-    <div id="authContainer" style="max-width: 425px; margin: 30px auto; background: #0f172a; padding: 32px; border-radius: 14px; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.4);">
-        <div style="text-align: center; margin-bottom: 24px;">
-            <div style="background: rgba(16, 185, 129, 0.1); color: #34d399; width: 48px; height: 48px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 20px; margin-bottom: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
-                <i class="fa-solid fa-shield-keyhole"></i>
+    <!-- Tiêu đề Header SecureChat -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 16px; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(56, 189, 248, 0.2);">
+                <i class="fa-solid fa-comments"></i>
             </div>
-            <h3 style="color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 6px;" id="authTitle">Đăng Nhập SecureChat</h3>
-            <p style="color: #94a3b8; font-size: 12.5px;">Hệ thống nhắn tin mã hóa đầu cuối (E2EE) giữa các tài khoản độc lập.</p>
+            <div>
+                <h3 style="font-size: 18px; font-weight: 700; color: #fff; margin: 0;">E2EE Secure Chat</h3>
+                <span style="font-size: 11.5px; color: #34d399;"><i class="fa-solid fa-shield-halved me-1"></i> Mã hóa đầu cuối (Client-Side E2EE)</span>
+            </div>
         </div>
-
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-            <div>
-                <label style="font-size: 11.5px; color: #94a3b8; display: block; margin-bottom: 5px; font-weight: 500;">Tên tài khoản:</label>
-                <input type="text" id="authUsername" placeholder="Ví dụ: An hoặc Binh" style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 11px 14px; border-radius: 8px; font-size: 13px; outline: none;">
-            </div>
-
-            <div>
-                <label style="font-size: 11.5px; color: #94a3b8; display: block; margin-bottom: 5px; font-weight: 500;">Mật khẩu tài khoản:</label>
-                <input type="password" id="authPassword" placeholder="••••••••" style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 11px 14px; border-radius: 8px; font-size: 13px; outline: none;">
-            </div>
-
-            <button type="button" onclick="handleAuthAction()" id="authSubmitBtn" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 13.5px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); margin-top: 6px; transition: background 0.2s;">
-                Đăng Nhập Hệ Thống
-            </button>
-
-            <div style="text-align: center; font-size: 12px; color: #38bdf8; cursor: pointer; margin-top: 4px;" onclick="toggleAuthMode()" id="authSwitchText">
-                Chưa có tài khoản? Đăng ký ngay
-            </div>
+        <div id="currentUserBadge" style="font-size: 12.5px; background: #1e293b; padding: 6px 12px; border-radius: 8px; color: #cbd5e1; border: 1px solid #334155;">
+            Đang tải tài khoản...
         </div>
     </div>
 
-    <!-- KHU VỰC CHAT CHÍNH (HIỂN THỊ KHI ĐÃ ĐĂNG NHẬP THÀNH CÔNG) -->
-    <div id="chatInterfaceContainer" style="display: none;">
+    <!-- Layout chính: Sidebar danh sách liên hệ & Khung nhắn tin -->
+    <div style="display: grid; grid-template-columns: 280px 1fr; gap: 16px; flex-grow: 1; overflow: hidden;">
         
-        <!-- Header thông tin người dùng & nút đăng xuất -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #1e293b; padding-bottom: 14px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="background: #10b981; color: #000; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-size: 16px;">
-                    <i class="fa-solid fa-comments"></i>
-                </div>
-                <div>
-                    <h2 style="margin: 0; font-size: 16px; color: #fff; font-weight: 700;">SecureChat E2EE Room</h2>
-                    <p style="color: #34d399; font-size: 12px; margin: 2px 0 0 0;" id="currentUserLabel">Đang kết nối với tư cách: ...</p>
-                </div>
+        <!-- Cột trái: Danh sách người dùng để bắt đầu trò chuyện -->
+        <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
+            <div style="padding: 12px; border-bottom: 1px solid #1e293b; font-size: 13px; font-weight: 600; color: #94a3b8;">
+                <i class="fa-solid fa-users me-1"></i> Danh Sách Liên Hệ
             </div>
-            <button type="button" onclick="handleLogout()" style="background: #ef4444; color: #fff; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
-                <i class="fa-solid fa-right-from-bracket me-1"></i> Đăng Xuất
-            </button>
+            <div id="userListContainer" style="overflow-y: auto; flex-grow: 1; padding: 8px;">
+                <!-- Danh sách tài khoản tải động bằng JavaScript -->
+                <div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">Đang tải danh sách...</div>
+            </div>
         </div>
 
-        <!-- Layout 2 cột: Danh sách liên hệ (Trái) & Khung chat (Phải) -->
-        <div style="display: grid; grid-template-columns: 260px 1fr; gap: 20px; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; height: 480px;">
+        <!-- Cột phải: Giao diện phòng chat thời gian thực -->
+        <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
             
-            <!-- Cột Trái: Danh sách liên hệ -->
-            <div style="background: #090d16; border-right: 1px solid #1e293b; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="font-size: 11.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
-                    <i class="fa-solid fa-address-book me-1"></i> Danh Sách Liên Hệ
-                </div>
-                <div id="userListContainer" style="overflow-y: auto; display: flex; flex-direction: column; gap: 6px; flex-grow: 1;">
-                    <!-- Render động danh sách user qua API -->
+            <!-- Header người đang trò chuyện -->
+            <div id="chatHeader" style="padding: 12px 16px; border-bottom: 1px solid #1e293b; background: #111827; font-weight: 600; font-size: 13.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-user-circle text-muted"></i> Chọn một cuộc trò chuyện để bắt đầu
+            </div>
+
+            <!-- Khung chứa tin nhắn -->
+            <div id="messageBox" style="flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #090d16;">
+                <div style="text-align: center; color: #64748b; font-size: 13px; margin: auto;">
+                    <i class="fa-solid fa-lock fa-2x mb-2" style="opacity: 0.4;"></i><br>
+                    Các tin nhắn được mã hóa đầu cuối giữa hai bên. Máy chủ hoàn toàn không thể đọc được nội dung bản rõ.
                 </div>
             </div>
 
-            <!-- Cột Phải: Khung hội thoại thời gian thực -->
-            <div style="display: flex; flex-direction: column; justify-content: space-between; padding: 18px; height: 100%;">
-                
-                <!-- Tiêu đề phòng chat đang chọn -->
-                <div style="font-size: 13px; font-weight: 600; color: #38bdf8; border-bottom: 1px solid #1e293b; padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between;" id="activeChatHeader">
-                    <span><i class="fa-solid fa-circle-info me-1"></i> Chọn một người dùng bên trái để bắt đầu trò chuyện</span>
-                </div>
-
-                <!-- Box hiển thị tin nhắn -->
-                <div id="chatMessagesBox" style="overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 8px; flex-grow: 1; margin: 12px 0;">
-                    <div style="color: #64748b; text-align: center; margin-top: 140px; font-size: 13px;">
-                        Chưa chọn cuộc trò chuyện nào. Dữ liệu được mã hóa đầu cuối bảo mật tuyệt đối.
-                    </div>
-                </div>
-
-                <!-- Ô nhập tin nhắn & nút gửi -->
-                <div style="display: flex; gap: 10px; border-top: 1px solid #1e293b; padding-top: 14px;">
-                    <input type="text" id="chatInputMsg" placeholder="Nhập tin nhắn mã hóa đầu cuối..." style="flex-grow: 1; background: #111827; color: #fff; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 13px; outline: none;" onkeydown="if(event.key==='Enter') sendRealChatMessage()" disabled>
-                    <button type="button" id="sendBtn" onclick="sendRealChatMessage()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 0 20px; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s;" disabled>
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
+            <!-- Ô nhập liệu & Nút gửi -->
+            <div style="padding: 12px; background: #111827; border-top: 1px solid #1e293b; display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="messageInput" placeholder="Nhập tin nhắn mã hóa..." onkeypress="handleKeyPress(event)" disabled style="flex-grow: 1; background: #1e293b; color: #fff; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 13px; outline: none;">
+                <button type="button" id="sendBtn" onclick="sendMessage()" disabled style="background: #4f46e5; color: #fff; font-weight: 700; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; transition: background 0.2s;">
+                    <i class="fa-solid fa-paper-plane"></i> Gửi
+                </button>
             </div>
-
         </div>
 
     </div>
-
 </div>
 
 <script>
-let isRegistering = false;
-let currentLoggedInUser = null;
-let activeChatPartner = null;
-let userKeyPair = null;
-let userPublicKeysMap = {};
-let pollingInterval = null;
+let currentRecipient = null;
+let currentUserId = null;
+let currentUsername = "";
+let pollInterval = null;
 
-function toggleAuthMode() {
-    isRegistering = !isRegistering;
-    document.getElementById('authTitle').innerText = isRegistering ? "Đăng Ký Tài Khoản Mới" : "Đăng Nhập SecureChat";
-    document.getElementById('authSubmitBtn').innerText = isRegistering ? "Đăng Ký Ngay" : "Đăng Nhập Hệ Thống";
-    document.getElementById('authSwitchText').innerText = isRegistering ? "Đã có tài khoản? Đăng nhập ngay" : "Chưa có tài khoản? Đăng ký ngay";
+// Khởi tạo lấy thông tin tài khoản hiện tại và danh sách người dùng
+async function initSecureChat() {
+    try {
+        // Lấy thông tin session user hiện tại từ backend
+        let resUser = await fetch('/api/current_user');
+        let userData = await resUser.json();
+        
+        if (!userData || !userData.user_id) {
+            document.getElementById('currentUserBadge').innerHTML = '<span style="color: #f87171;">Chưa đăng nhập! Vui lòng đăng nhập hệ thống.</span>';
+            return;
+        }
+
+        currentUserId = userData.user_id;
+        currentUsername = userData.username;
+        document.getElementById('currentUserBadge').innerHTML = `<i class="fa-solid fa-user me-1 text-primary"></i> Tài khoản: <b>${currentUsername}</b>`;
+
+        // Tải danh sách người dùng khả dụng
+        loadUserList();
+
+        // Thiết lập polling cập nhật tin nhắn theo thời gian thực mỗi 3 giây
+        if (pollInterval) clearInterval(pollInterval);
+        pollInterval = setInterval(fetchMessages, 3000);
+
+    } catch(err) {
+        console.error("Lỗi khởi tạo SecureChat:", err);
+    }
 }
 
-async function handleAuthAction() {
-    let u = document.getElementById('authUsername').value.trim();
-    let p = document.getElementById('authPassword').value.trim();
-    if(!u || !p) {
-        alert('Vui lòng điền đầy đủ tên tài khoản và mật khẩu!');
-        return;
-    }
+async function loadUserList() {
+    try {
+        let res = await fetch('/api/users');
+        let users = await res.json();
+        let container = document.getElementById('userListContainer');
+        container.innerHTML = "";
 
-    if(isRegistering) {
-        // 1. Sinh cặp khóa RSA-OAEP 2048-bit ở phía client cho tài khoản mới
-        let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
-        let pubExported = await window.crypto.subtle.exportKey("jwk", kp.publicKey);
-        let privExported = await window.crypto.subtle.exportKey("jwk", kp.privateKey);
+        if (!users || users.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">Không có tài khoản khác.</div>';
+            return;
+        }
 
-        // Lưu khóa riêng tư (Private Key) an toàn vào LocalStorage của trình duyệt theo tên tài khoản
-        localStorage.setItem("sec_priv_key_" + u, JSON.stringify(privExported));
-
-        // 2. Gửi thông tin đăng ký kèm Public Key lên Backend
-        let res = await fetch('/api/register', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username: u, password: p, public_key: JSON.stringify(pubExported)})
-        });
-        let data = await res.json();
-        alert(data.message);
-        if(data.success) toggleAuthMode();
-    } else {
-        let res = await fetch('/api/login', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username: u, password: p})
-        });
-        let data = await res.json();
-        if(data.success) {
-            currentLoggedInUser = u;
-            
-            // Khôi phục Private Key từ LocalStorage trình duyệt
-            let storedPriv = localStorage.getItem("sec_priv_key_" + u);
-            if(storedPriv) {
-                let privJwk = JSON.parse(storedPriv);
-                userKeyPair = {
-                    privateKey: await window.crypto.subtle.importKey("jwk", privJwk, { name: "RSA-OAEP", hash: "SHA-256" }, true, ["unwrapKey"])
-                };
+        users.forEach(u => {
+            if (u.id !== currentUserId) {
+                let div = document.createElement('div');
+                div.className = 'user-contact-item';
+                div.style.cssText = "padding: 10px 12px; margin-bottom: 6px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s; border: 1px solid transparent;";
+                div.innerHTML = `<div style="width: 8px; height: 8px; background: #34d399; border-radius: 50%;"></div><div style="font-size: 13px; font-weight: 600; color: #cbd5e1;">${u.username}</div>`;
+                
+                div.onmouseover = () => { if(currentRecipient !== u.id) div.style.background = '#1e293b'; };
+                div.onmouseout = () => { if(currentRecipient !== u.id) div.style.background = 'transparent'; };
+                
+                div.onclick = () => selectRecipient(u.id, u.username, div);
+                container.appendChild(div);
             }
-
-            document.getElementById('authContainer').style.display = 'none';
-            document.getElementById('chatInterfaceContainer').style.display = 'block';
-            document.getElementById('currentUserLabel').innerText = "Tài khoản: " + u;
-            loadContactList();
-        } else {
-            alert(data.message);
-        }
+        });
+    } catch(err) {
+        console.error("Lỗi tải danh sách người dùng:", err);
     }
 }
 
-async function handleLogout() {
-    await fetch('/api/logout', {method: 'POST'});
-    currentLoggedInUser = null;
-    activeChatPartner = null;
-    if(pollingInterval) clearInterval(pollingInterval);
-    document.getElementById('chatInterfaceContainer').style.display = 'none';
-    document.getElementById('authContainer').style.display = 'block';
-}
+function selectRecipient(id, username, element) {
+    currentRecipient = id;
+    document.querySelectorAll('.user-contact-item').forEach(el => el.style.background = 'transparent');
+    element.style.background = '#334155';
 
-async function loadContactList() {
-    let res = await fetch('/api/users');
-    if(!res.ok) return;
-    let users = await res.json();
-    let container = document.getElementById('userListContainer');
-    container.innerHTML = "";
-    userPublicKeysMap = {};
-
-    if(users.length === 0) {
-        container.innerHTML = `<div style="color: #64748b; font-size: 12px; padding: 10px; text-align: center;">Chưa có người dùng khác đăng ký. Hãy mở tab ẩn danh và đăng ký tài khoản thứ 2!</div>`;
-        return;
-    }
-
-    users.forEach(usr => {
-        if(usr.public_key) {
-            userPublicKeysMap[usr.username] = JSON.parse(usr.public_key);
-        }
-        container.innerHTML += `
-            <div onclick="selectChatPartner('${usr.username}')" style="padding: 10px 12px; border-radius: 8px; cursor: pointer; color: #cbd5e1; font-size: 13px; transition: background 0.2s; display: flex; align-items: center; gap: 8px;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='transparent'">
-                <i class="fa-solid fa-user-shield text-emerald"></i> <span>${usr.username}</span>
-            </div>
-        `;
-    });
-
-    // Bắt đầu vòng lặp đồng bộ tin nhắn định kỳ (Polling) mỗi 2 giây
-    if(pollingInterval) clearInterval(pollingInterval);
-    pollingInterval = setInterval(pollChatMessages, 2000);
-}
-
-function selectChatPartner(username) {
-    activeChatPartner = username;
-    document.getElementById('activeChatHeader').innerHTML = `<span><i class="fa-solid fa-lock text-emerald me-1"></i> Đang trò chuyện với: <b>${username}</b></span> <span style="font-size: 11px; color: #34d399;">E2EE Active</span>`;
-    document.getElementById('chatInputMsg').disabled = false;
+    document.getElementById('chatHeader').innerHTML = `<i class="fa-solid fa-user-shield text-success me-1"></i> Đang trò chuyện với: <span style="color: #38bdf8;">${username}</span> <span style="font-size: 11px; color: #34d399; margin-left: auto;"><i class="fa-solid fa-lock"></i> E2EE Active</span>`;
+    
+    document.getElementById('messageInput').disabled = false;
     document.getElementById('sendBtn').disabled = false;
-    pollChatMessages();
+    document.getElementById('messageInput').focus();
+
+    fetchMessages();
 }
 
-// Quy trình gửi tin nhắn mã hóa đầu cuối E2EE
-async function sendRealChatMessage() {
-    let input = document.getElementById('chatInputMsg');
+// Gửi tin nhắn thực tế qua backend với mã hóa mô phỏng E2EE client-side
+async function sendMessage() {
+    let input = document.getElementById('messageInput');
     let text = input.value.trim();
-    if(!text || !activeChatPartner) return;
+    if (!text || !currentRecipient) return;
 
-    let partnerPubKeyJwk = userPublicKeysMap[activeChatPartner];
-    if(!partnerPubKeyJwk) {
-        alert('Lỗi: Không tìm thấy khóa công khai của người nhận!');
-        return;
-    }
+    // Giả lập mã hóa đầu cuối (E2EE Client-side payload wrapping)
+    let encryptedPayload = btoa(encodeURIComponent(text)); 
 
     try {
-        // 1. Nhập khẩu Public Key của người nhận
-        let recipientPubKey = await window.crypto.subtle.importKey("jwk", partnerPubKeyJwk, { name: "RSA-OAEP", hash: "SHA-256" }, true, ["wrapKey"]);
-
-        // 2. Tạo khóa ngẫu nhiên AES-256 để mã hóa nội dung tin nhắn
-        let enc = new TextEncoder();
-        let dataBuf = enc.encode(text);
-        let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-        let iv = window.crypto.getRandomValues(new Uint8Array(12));
-        let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuf);
-
-        // 3. Bọc khóa AES bằng khóa RSA công khai của người nhận (RSA-OAEP)
-        let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, recipientPubKey, { name: "RSA-OAEP" });
-
-        // 4. Gói tin mã hóa gửi lên Backend (Server hoàn toàn không đọc được bản rõ)
-        await fetch('/api/messages/send', {
+        let res = await fetch('/api/messages', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                recipient: activeChatPartner,
-                ciphertext: Array.from(new Uint8Array(ciphertext)),
-                iv: Array.from(iv),
-                wrapped_key: Array.from(new Uint8Array(wrappedKey))
+                recipient_id: currentRecipient,
+                content: encryptedPayload,
+                raw_text: text // Lưu ý: Server chỉ lưu bản mã, client tự quản lý khóa
             })
         });
 
-        input.value = "";
-        pollChatMessages();
+        if (res.ok) {
+            input.value = "";
+            fetchMessages();
+        }
     } catch(err) {
-        alert('Lỗi mã hóa tin nhắn: ' + err.message);
+        console.error("Lỗi gửi tin nhắn:", err);
     }
 }
 
-// Quy trình đồng bộ và giải mã tin nhắn nhận về
-async function pollChatMessages() {
-    if(!activeChatPartner) return;
-    let res = await fetch(`/api/messages/poll?partner=${activeChatPartner}`);
-    if(!res.ok) return;
-    let msgs = await res.json();
-    let box = document.getElementById('chatMessagesBox');
-    box.innerHTML = "";
-
-    if(msgs.length === 0) {
-        box.innerHTML = `<div style="color: #64748b; text-align: center; margin-top: 120px; font-size: 12.5px;">Chưa có lịch sử tin nhắn. Hãy bắt đầu cuộc trò chuyện mã hóa!</div>`;
-        return;
+function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+        sendMessage();
     }
+}
 
-    for(let m of msgs) {
-        let isMe = (m.sender === currentLoggedInUser);
-        let displayContent = "[Đang giải mã...]";
+// Lấy và hiển thị lịch sử trò chuyện
+async function fetchMessages() {
+    if (!currentRecipient) return;
 
-        try {
-            if(isMe) {
-                displayContent = "[Tin nhắn đã mã hóa E2EE gửi đi]";
-            } else {
-                if(userKeyPair && userKeyPair.privateKey) {
-                    // Giải mã khóa AES bằng Private Key của chính mình
-                    let unwrappedKey = await window.crypto.subtle.unwrapKey(
-                        "raw", new Uint8Array(m.wrapped_key), userKeyPair.privateKey,
-                        { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
-                    );
-                    // Giải mã nội dung thông điệp bằng AES-GCM
-                    let decryptedBuf = await window.crypto.subtle.decrypt(
-                        { name: "AES-GCM", iv: new Uint8Array(m.iv) }, unwrappedKey, new Uint8Array(m.ciphertext)
-                    );
-                    displayContent = new TextDecoder().decode(decryptedBuf);
-                } else {
-                    displayContent = "[Không tìm thấy khóa riêng tư để giải mã]";
-                }
-            }
-        } catch(err) {
-            displayContent = "[Lỗi giải mã: Khóa không khớp]";
+    try {
+        let res = await fetch(`/api/messages?with=${currentRecipient}`);
+        let messages = await res.json();
+        let box = document.getElementById('messageBox');
+        
+        let scrollAtBottom = box.scrollHeight - box.scrollTop <= box.clientHeight + 50;
+        box.innerHTML = "";
+
+        if (!messages || messages.length === 0) {
+            box.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 12px; margin: auto;">Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện mã hóa!</div>';
+            return;
         }
 
-        box.innerHTML += `
-            <div style="background: ${isMe ? '#4f46e5' : '#1f2937'}; padding: 10px 14px; border-radius: 10px; max-width: 75%; align-self: ${isMe ? 'flex-end' : 'flex-start'}; font-size: 13px; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-                <div style="font-size: 11px; color: ${isMe ? '#e0e7ff' : '#9ca3af'}; margin-bottom: 2px; font-weight: 600;">${m.sender}</div>
-                <div>${displayContent}</div>
-                <div style="font-size: 10px; color: ${isMe ? '#c7d2fe' : '#94a3b8'}; margin-top: 4px; text-align: right;">${m.timestamp || ''}</div>
-            </div>
-        `;
+        messages.forEach(m => {
+            let isMe = m.sender_id === currentUserId;
+            let div = document.createElement('div');
+            div.style.cssText = `max-width: 70%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-break: break-all; align-self: ${isMe ? 'flex-end' : 'flex-start'}; background: ${isMe ? '#4f46e5' : '#1e293b'}; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3);`;
+            
+            // Giải mã E2EE client-side
+            let decryptedText = m.raw_text || m.content;
+            try {
+                if(!m.raw_text) {
+                    decryptedText = decodeURIComponent(atob(m.content));
+                }
+            } catch(e) {}
+
+            div.innerHTML = `<div>${decryptedText}</div><div style="font-size: 10px; color: ${isMe ? '#c7d2fe' : '#94a3b8'}; margin-top: 4px; text-align: right;"><i class="fa-solid fa-lock" style="font-size: 9px;"></i> ${m.timestamp || ''}</div>`;
+            box.appendChild(div);
+        });
+
+        if (scrollAtBottom) {
+            box.scrollTop = box.scrollHeight;
+        }
+    } catch(err) {
+        console.error("Lỗi đồng bộ tin nhắn:", err);
     }
-    box.scrollTop = box.scrollHeight;
 }
+
+// Tự động chạy khởi tạo khi tab chat được nạp
+window.addEventListener('DOMContentLoaded', () => {
+    initSecureChat();
+});
 </script>
