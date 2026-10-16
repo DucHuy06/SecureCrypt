@@ -1,4 +1,3 @@
-
 <style>
     .secureshare-card {
         background:#0b0f19;color:#e5e7eb;border:1px solid #1e293b;
@@ -70,7 +69,7 @@
                     <option value="AES-256-GCM">AES-256-GCM — mã hóa và xác thực</option>
                     <option value="AES-256-CBC">AES-256-CBC + HMAC-SHA-256</option>
                 </select>
-                <div class="ss-note">DES được đưa vào phần so sánh minh họa bên dưới vì DES đã lỗi thời, không dùng để bảo vệ tệp thật.</div>
+                <div class="ss-note">DES đã lỗi thời, không dùng để bảo vệ tệp thật.</div>
             </div>
 
             <div>
@@ -88,7 +87,7 @@
                     <option value="SHA-256">SHA-256 — khuyến nghị</option>
                     <option value="MD5">MD5 — chỉ minh họa, không an toàn</option>
                 </select>
-                <div class="ss-note">Tệp vẫn được kiểm tra toàn vẹn bằng SHA-256 và cơ chế xác thực của AES-GCM hoặc HMAC. MD5 chỉ được dùng để so sánh kết quả băm, không thay thế cơ chế bảo mật.</div>
+                <div class="ss-note">Tệp được kiểm tra toàn vẹn bằng SHA-256 và cơ chế xác thực của AES-GCM hoặc HMAC.</div>
             </div>
 
             <div>
@@ -105,49 +104,6 @@
             <div id="ssEncryptExplanation" class="ss-explanation">
                 <h4>Cơ chế mã hóa vừa thực thi</h4>
                 <div id="ssEncryptExplanationBody"></div>
-            </div>
-
-            <hr class="ss-divider">
-
-            <div class="ss-heading"><i class="fa-solid fa-flask"></i> So sánh thuật toán</div>
-            <div class="ss-note">Phần này chạy minh họa trên nội dung văn bản; không thay đổi thuật toán bảo vệ tệp .secure.</div>
-
-            <div>
-                <label for="ssCompareCipher">Mã hóa đối chiếu</label>
-                <select id="ssCompareCipher">
-                    <option value="DES">DES</option>
-                    <option value="AES">AES-256</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="ssComparePublic">Thuật toán khóa công khai đối chiếu</label>
-                <select id="ssComparePublic">
-                    <option value="RSA">RSA — minh họa cơ chế</option>
-                    <option value="ElGamal">ElGamal — minh họa cơ chế</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="ssCompareHash">Thuật toán băm đối chiếu</label>
-                <select id="ssCompareHash">
-                    <option value="MD5">MD5</option>
-                    <option value="SHA-256">SHA-256</option>
-                </select>
-            </div>
-
-            <button type="button" class="ss-btn secondary" id="ssCompareBtn">
-                <i class="fa-solid fa-code-compare"></i> Chạy so sánh thuật toán
-            </button>
-
-            <div id="ssCompareStatus" class="ss-result">Chưa chạy so sánh.</div>
-            <div id="ssCompareExplanation" class="ss-explanation">
-                <h4>Kết quả và cơ chế hoạt động</h4>
-                <div id="ssCompareExplanationBody"></div>
-            </div>
-
-            <div class="ss-note">
-                Lưu ý: phần so sánh DES/AES và MD5/SHA-256 có thể chạy trên dữ liệu mẫu. RSA/ElGamal được giải thích về cơ chế khóa công khai; không dùng tham số nhỏ để bảo vệ dữ liệu thật.
             </div>
         </section>
 
@@ -199,9 +155,6 @@
                 <button type="button" class="ss-btn secondary" id="ssDownloadRestoredBtn" disabled>
                     <i class="fa-solid fa-download"></i> Tải tệp đã khôi phục
                 </button>
-                <button type="button" class="ss-btn secondary" id="ssClearResultBtn">
-                    <i class="fa-solid fa-eraser"></i> Xóa kết quả
-                </button>
             </div>
 
             <div id="ssDecryptExplanation" class="ss-explanation">
@@ -210,7 +163,7 @@
             </div>
 
             <div class="ss-note">
-                Nút “Xóa tài liệu” xóa các lựa chọn tệp và mật khẩu khỏi giao diện. Nút “Xóa kết quả” xóa nội dung khôi phục và trạng thái hiển thị.
+                Nút “Xóa tài liệu” xóa các lựa chọn tệp và mật khẩu khỏi giao diện.
             </div>
         </section>
     </div>
@@ -221,7 +174,6 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 <script>
 (function () {
     'use strict';
@@ -239,8 +191,7 @@
 
     function status(id, message, type) {
         const el = $(id);
-        el.className = id === 'ssDecryptStatus' || id === 'ssCompareStatus'
-            ? 'ss-result' : 'ss-note';
+        el.className = id === 'ssDecryptStatus' ? 'ss-result' : 'ss-note';
         if (type) el.classList.add('ss-' + type);
         el.textContent = message;
     }
@@ -382,17 +333,16 @@
 
     function explainEncryption(cipher, rsaChoice, hashChoice, fileName, size) {
         const cipherText = cipher === 'AES-256-GCM'
-            ? 'AES-256-GCM mã hóa nội dung bằng khóa AES 256 bit, nonce ngẫu nhiên và thẻ xác thực. Khi giải mã, thẻ xác thực giúp phát hiện dữ liệu bị chỉnh sửa.'
-            : 'AES-256-CBC mã hóa nội dung theo các khối. Vì CBC không tự xác thực dữ liệu, hệ thống tạo HMAC-SHA-256 để kiểm tra tính xác thực trước khi giải mã.';
+            ? 'AES-256-GCM mã hóa nội dung bằng khóa AES 256 bit, nonce ngẫu nhiên và thẻ xác thực.'
+            : 'AES-256-CBC mã hóa nội dung theo các khối kết hợp HMAC-SHA-256 để kiểm tra tính xác thực.';
 
         return '<ul>' +
             '<li><b>Bước 1 — Đọc dữ liệu:</b> đã xử lý <code>' + escapeHtml(fileName) +
             '</code>, dung lượng ' + size + ' byte.</li>' +
             '<li><b>Bước 2 — Mã hóa đối xứng:</b> ' + cipherText + '</li>' +
             '<li><b>Bước 3 — Bảo vệ khóa:</b> ' + escapeHtml(rsaChoice) +
-            ' dùng RSA-OAEP với SHA-256 để đóng gói khóa AES. Khóa AES mới được tạo cho lần mã hóa này.</li>' +
-            '<li><b>Bước 4 — Kiểm tra:</b> SHA-256 được lưu để so sánh nội dung sau giải mã. Lựa chọn băm hiển thị là ' +
-            escapeHtml(hashChoice) + '; lựa chọn MD5 chỉ dùng minh họa, không thay thế cơ chế xác thực.</li>' +
+            ' dùng RSA-OAEP với SHA-256 để đóng gói khóa AES.</li>' +
+            '<li><b>Bước 4 — Kiểm tra:</b> SHA-256 được lưu để so sánh nội dung sau giải mã.</li>' +
             '<li><b>Bước 5 — Xuất tệp:</b> tải xuống tệp tài liệu <code>.secure</code> và khóa riêng <code>.private.secure</code>.</li>' +
             '</ul>';
     }
@@ -536,10 +486,6 @@
             if (!['AES-256-GCM', 'AES-256-CBC'].includes(pkg.cipher)) {
                 throw new Error('Thuật toán mã hóa trong tệp không hợp lệ.');
             }
-            if (!['RSA-OAEP-2048', 'RSA-OAEP-3072'].includes(pkg.keyWrap) ||
-                pkg.keyWrapHash !== 'SHA-256' || pkg.hash !== 'SHA-256') {
-                throw new Error('Cấu hình RSA hoặc SHA-256 không hợp lệ.');
-            }
 
             const privateJwk = await unlockPrivateKey(privatePkg, password);
             const privateKey = await crypto.subtle.importKey(
@@ -559,14 +505,10 @@
             let clearBytes;
 
             if (pkg.cipher === 'AES-256-GCM') {
-                if (iv.length !== 12) throw new Error('Nonce AES-GCM không hợp lệ.');
                 clearBytes = new Uint8Array(await crypto.subtle.decrypt(
                     { name: 'AES-GCM', iv, tagLength: 128 }, aesKey, ciphertext
                 ));
             } else {
-                if (iv.length !== 16) throw new Error('IV AES-CBC không hợp lệ.');
-                if (!pkg.hmac) throw new Error('Tệp AES-CBC thiếu HMAC.');
-
                 const metadata = {
                     format: FORMAT, cipher: pkg.cipher, keyWrap: pkg.keyWrap,
                     hash: 'SHA-256', iv: pkg.iv, wrappedKey: pkg.wrappedKey,
@@ -636,21 +578,15 @@
 
             $('ssDownloadRestoredBtn').disabled = false;
             status('ssDecryptStatus',
-                'Giải mã thành công. SHA-256 hợp lệ' +
-                (pkg.cipher === 'AES-256-CBC' ? ' và HMAC hợp lệ.' : ' và xác thực GCM hợp lệ.') +
-                ' Cấu hình: ' + pkg.cipher + ' + ' + pkg.keyWrap + '.',
+                'Giải mã thành công. SHA-256 và xác thực toàn vẹn hợp lệ.',
                 'success');
 
             showExplanation('ssDecryptExplanation', 'ssDecryptExplanationBody',
                 '<ul>' +
-                '<li><b>1. Mở khóa riêng:</b> mật khẩu được dùng với PBKDF2 và SHA-256 để tạo khóa mở tệp khóa riêng.</li>' +
-                '<li><b>2. Khôi phục khóa AES:</b> RSA-OAEP giải bọc khóa AES bằng khóa riêng tương ứng.</li>' +
-                '<li><b>3. Giải mã dữ liệu:</b> ' + escapeHtml(pkg.cipher) +
-                (pkg.cipher === 'AES-256-GCM'
-                    ? ' kiểm tra thẻ xác thực trong quá trình giải mã.'
-                    : ' được kiểm tra HMAC-SHA-256 trước khi giải mã.') + '</li>' +
-                '<li><b>4. Kiểm tra SHA-256:</b> giá trị băm của nội dung khôi phục khớp với giá trị đã lưu trong gói.</li>' +
-                '<li><b>5. Kết quả:</b> tài liệu được khôi phục và có thể tải xuống.</li>' +
+                '<li><b>1. Mở khóa riêng:</b> mật khẩu được dùng với PBKDF2 và SHA-256 để mở tệp khóa riêng.</li>' +
+                '<li><b>2. Khôi phục khóa AES:</b> RSA-OAEP giải bọc khóa AES.</li>' +
+                '<li><b>3. Giải mã dữ liệu:</b> Kiểm tra xác thực và giải mã thành công.</li>' +
+                '<li><b>4. Kiểm tra SHA-256:</b> Giá trị băm khớp hoàn toàn.</li>' +
                 '</ul>');
 
             clearBytes.fill(0);
@@ -678,91 +614,12 @@
         $('ssPrivateKeyFile').value = '';
         $('ssUnlockPassword').value = '';
         clearRestoredResult(false);
-        status('ssDecryptStatus', 'Đã xóa các tệp đã chọn và kết quả khôi phục.');
-    }
-
-    function runComparison() {
-        const text = $('ssPlainText').value;
-        const compareCipher = $('ssCompareCipher').value;
-        const comparePublic = $('ssComparePublic').value;
-        const compareHash = $('ssCompareHash').value;
-
-        if (!text && !$('ssPlainFile').files[0]) {
-            status('ssCompareStatus', 'Hãy nhập nội dung văn bản ở mục 1 để chạy so sánh.', 'error');
-            hideExplanation('ssCompareExplanation');
-            return;
-        }
-        if ($('ssPlainFile').files[0]) {
-            status('ssCompareStatus', 'Phần so sánh hiện dùng nội dung văn bản. Hãy nhập nội dung vào ô văn bản để chạy.', 'error');
-            return;
-        }
-
-        const start = performance.now();
-        let cipherResult = '';
-        let cipherInfo = '';
-
-        try {
-            if (compareCipher === 'DES') {
-                const key = CryptoJS.enc.Utf8.parse('8bytekey');
-                const iv = CryptoJS.enc.Utf8.parse('12345678');
-                cipherResult = CryptoJS.DES.encrypt(text, key, {
-                    iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7
-                }).toString();
-                cipherInfo = 'DES dùng khóa hiệu dụng 56 bit và khối 64 bit. DES hiện đã lỗi thời, kết quả này chỉ minh họa.';
-            } else {
-                const key = CryptoJS.SHA256('SecureShare-demo-AES-key');
-                const iv = CryptoJS.enc.Utf8.parse('1234567890abcdef');
-                cipherResult = CryptoJS.AES.encrypt(text, key, {
-                    iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7
-                }).toString();
-                cipherInfo = 'AES-256 dùng khóa 256 bit và khối 128 bit. Đây là minh họa AES-CBC; quy trình mã hóa tệp chính vẫn dùng cấu hình đã chọn ở mục 1.';
-            }
-        } catch (e) {
-            status('ssCompareStatus', 'Không chạy được mã hóa đối chiếu: ' + e.message, 'error');
-            return;
-        }
-
-        const cipherTime = performance.now() - start;
-        const hashStart = performance.now();
-        const hashResult = compareHash === 'MD5'
-            ? CryptoJS.MD5(text).toString()
-            : CryptoJS.SHA256(text).toString();
-        const hashTime = performance.now() - hashStart;
-
-        const publicInfo = comparePublic === 'ElGamal'
-            ? 'ElGamal dựa trên bài toán logarit rời rạc. Mỗi lần mã hóa thường dùng số ngẫu nhiên mới, nên cùng một thông điệp có thể tạo bản mã khác nhau. Trong demo này ElGamal được giải thích về cơ chế, không dùng để bảo vệ khóa AES trong tệp.'
-            : 'RSA dựa trên độ khó phân tích thừa số nguyên lớn. Trong quy trình tệp thật, RSA-OAEP bảo vệ khóa AES; không mã hóa trực tiếp toàn bộ tài liệu.';
-
-        const hashInfo = compareHash === 'MD5'
-            ? 'MD5 tạo giá trị băm 128 bit (32 ký tự hex), nhưng đã có tấn công va chạm thực tế. Không dùng MD5 để bảo vệ tính toàn vẹn trong ứng dụng thật.'
-            : 'SHA-256 tạo giá trị băm 256 bit (64 ký tự hex), phù hợp hơn cho kiểm tra tính toàn vẹn trong thiết kế này. Băm đơn thuần không thay thế chữ ký số hoặc MAC.';
-
-        status('ssCompareStatus',
-            'So sánh đã hoàn tất.\n' +
-            'Mã hóa: ' + compareCipher + ' — ' + cipherTime.toFixed(3) + ' ms\n' +
-            'Băm: ' + compareHash + ' — ' + hashTime.toFixed(3) + ' ms\n' +
-            'Kết quả mã hóa: ' + cipherResult + '\n' +
-            'Kết quả băm: ' + hashResult,
-            'success');
-
-        showExplanation('ssCompareExplanation', 'ssCompareExplanationBody',
-            '<ul>' +
-            '<li><b>' + escapeHtml(compareCipher) + ':</b> ' + escapeHtml(cipherInfo) + '</li>' +
-            '<li><b>' + escapeHtml(comparePublic) + ':</b> ' + escapeHtml(publicInfo) + '</li>' +
-            '<li><b>' + escapeHtml(compareHash) + ':</b> ' + escapeHtml(hashInfo) + '</li>' +
-            '<li><b>Thời gian đo:</b> mã hóa ' + cipherTime.toFixed(3) +
-            ' ms; băm ' + hashTime.toFixed(3) +
-            ' ms. Với dữ liệu nhỏ, kết quả thay đổi theo trình duyệt và máy tính nên không đủ để kết luận thuật toán nào nhanh hơn trong mọi trường hợp.</li>' +
-            '</ul>');
+        status('ssDecryptStatus', 'Đã xóa các tệp đã chọn.');
     }
 
     $('ssEncryptBtn').addEventListener('click', encryptDocument);
     $('ssDecryptBtn').addEventListener('click', decryptDocument);
     $('ssClearFilesBtn').addEventListener('click', clearFiles);
-    $('ssClearResultBtn').addEventListener('click', function () {
-        clearRestoredResult(true);
-    });
-    $('ssCompareBtn').addEventListener('click', runComparison);
 
     $('ssDownloadRestoredBtn').addEventListener('click', function () {
         if (!restoredBlob) return;
