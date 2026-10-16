@@ -1,678 +1,1085 @@
-<div id="secureChatApp" class="crypto-card">
+
+<div id="digitalSignatureApp" class="crypto-card">
   <style>
-    #secureChatApp {
-      background: #090d16;
+    #digitalSignatureApp {
+      --ds-bg: #090d16;
+      --ds-panel: #0f172a;
+      --ds-border: #263650;
+      --ds-muted: #94a3b8;
+      --ds-primary: #4f46e5;
+      background: var(--ds-bg);
       color: #f8fafc;
       border: 1px solid #1e293b;
       padding: 24px;
       border-radius: 18px;
-      height: 760px;
-      max-height: 85vh;
-      min-height: 560px;
-      display: flex;
-      flex-direction: column;
       font-family: inherit;
       box-sizing: border-box;
     }
 
-    #secureChatApp * { box-sizing: border-box; }
-    #secureChatApp button,
-    #secureChatApp input { font: inherit; }
-    #secureChatApp button { cursor: pointer; }
-    #secureChatApp button:disabled { opacity: .55; cursor: not-allowed; }
-
-    #secureChatApp .sc-muted {
-      color: #94a3b8;
-      font-size: 12px;
+    #digitalSignatureApp *,
+    #digitalSignatureApp *::before,
+    #digitalSignatureApp *::after {
+      box-sizing: border-box;
     }
 
-    #secureChatApp .sc-primary {
-      background: #4f46e5;
-      color: white;
-      border: 0;
+    #digitalSignatureApp button,
+    #digitalSignatureApp input,
+    #digitalSignatureApp textarea {
+      font: inherit;
     }
 
-    #secureChatApp .sc-secondary {
-      background: #1e293b;
-      color: #e2e8f0;
-      border: 1px solid #334155;
+    #digitalSignatureApp button {
+      cursor: pointer;
     }
 
-    #secureChatApp .sc-btn {
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
+    #digitalSignatureApp button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
     }
 
-    #secureChatApp .sc-input {
-      width: 100%;
-      background: #0f172a;
-      color: #f8fafc;
-      border: 1px solid #334155;
-      padding: 11px 12px;
-      border-radius: 8px;
-      outline: none;
+    #digitalSignatureApp .ds-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 20px;
+      margin-bottom: 22px;
+      border: 1px solid #1e3a70;
+      border-radius: 14px;
+      background: linear-gradient(110deg, #101b39, #0b1225);
+    }
+
+    #digitalSignatureApp .ds-brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
       min-width: 0;
     }
 
-    #secureChatApp .sc-input:focus { border-color: #818cf8; }
+    #digitalSignatureApp .ds-brand-icon {
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+      background: var(--ds-primary);
+      border-radius: 13px;
+      font-size: 25px;
+    }
 
-    #secureChatApp .sc-header {
+    #digitalSignatureApp .ds-header h2 {
+      font-size: 22px;
+      margin: 0 0 7px;
+      overflow-wrap: anywhere;
+    }
+
+    #digitalSignatureApp .ds-muted {
+      color: var(--ds-muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    #digitalSignatureApp .ds-algorithm {
+      padding: 12px 15px;
+      border: 1px solid #24458a;
+      border-radius: 10px;
+      background: #0b1b3d;
+      min-width: 190px;
+    }
+
+    #digitalSignatureApp .ds-algorithm strong {
+      display: block;
+      color: #93b4ff;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    #digitalSignatureApp .ds-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    #digitalSignatureApp .ds-panel {
+      min-width: 0;
+      padding: 17px;
+      border: 1px solid var(--ds-border);
+      border-radius: 13px;
+      background: linear-gradient(150deg, #0c1830, #0c1426);
+    }
+
+    #digitalSignatureApp .ds-panel h3 {
+      font-size: 17px;
+      margin: 0 0 10px;
+    }
+
+    #digitalSignatureApp .ds-step {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 1px solid #1e293b;
-      padding-bottom: 16px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
-    #secureChatApp .sc-layout {
-      flex: 1;
-      min-height: 0;
+    #digitalSignatureApp .ds-step-number {
       display: grid;
-      grid-template-columns: 240px minmax(0, 1fr);
-      gap: 14px;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #4338ca;
+      font-size: 17px;
+      font-weight: 800;
+      flex-shrink: 0;
     }
 
-    #secureChatApp .sc-sidebar,
-    #secureChatApp .sc-conversation {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 12px;
-      min-height: 0;
+    #digitalSignatureApp .ds-dropzone {
+      display: flex;
+      min-height: 185px;
+      padding: 18px;
+      margin-top: 16px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      border: 1px dashed #5274ad;
+      border-radius: 10px;
+      background: #0a1530;
+    }
+
+    #digitalSignatureApp .ds-dropzone i {
+      color: #818cf8;
+      font-size: 32px;
+    }
+
+    #digitalSignatureApp .ds-file-input {
+      display: none;
+    }
+
+    #digitalSignatureApp .ds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid #334b75;
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      color: #e2e8f0;
+      background: #111e38;
+      transition: filter .15s, background .15s;
+    }
+
+    #digitalSignatureApp .ds-btn:hover {
+      filter: brightness(1.15);
+    }
+
+    #digitalSignatureApp .ds-btn-primary {
+      color: white;
+      border-color: transparent;
+      background: linear-gradient(100deg, #4f46e5, #4338ca);
+    }
+
+    #digitalSignatureApp .ds-btn-outline {
+      width: 100%;
+      background: transparent;
+      border-color: #3657a3;
+    }
+
+    #digitalSignatureApp .ds-btn-wide {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 15px;
+    }
+
+    #digitalSignatureApp .ds-file-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      margin-top: 13px;
+      padding: 12px;
+      border: 1px solid #29416c;
+      border-radius: 9px;
+      background: #0b1730;
+    }
+
+    #digitalSignatureApp .ds-file-icon {
+      font-size: 26px;
+      color: #f87171;
+      flex-shrink: 0;
+    }
+
+    #digitalSignatureApp .ds-file-name {
+      font-weight: 700;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    #digitalSignatureApp .ds-file-details {
+      min-width: 0;
+      flex: 1;
+    }
+
+    #digitalSignatureApp .ds-remove {
+      border: 0;
+      color: #cbd5e1;
+      background: transparent;
+      padding: 6px;
+    }
+
+    #digitalSignatureApp .ds-info {
+      margin-top: 13px;
+      border: 1px solid #29416c;
+      border-radius: 9px;
       overflow: hidden;
     }
 
-    #secureChatApp .sc-sidebar {
-      display: flex;
-      flex-direction: column;
-    }
-
-    #secureChatApp .sc-side-title {
-      padding: 14px;
-      border-bottom: 1px solid #1e293b;
-      color: #94a3b8;
-      font-size: 12px;
+    #digitalSignatureApp .ds-info-title {
+      padding: 10px;
+      border-bottom: 1px solid #29416c;
+      font-size: 13px;
       font-weight: 700;
     }
 
-    #secureChatApp .sc-rooms {
-      padding: 8px;
-      overflow-y: auto;
+    #digitalSignatureApp .ds-info-body {
+      display: grid;
+      grid-template-columns: minmax(80px, .8fr) minmax(0, 1.2fr);
+      gap: 9px;
+      padding: 12px;
+      font-size: 12px;
     }
 
-    #secureChatApp .sc-room {
+    #digitalSignatureApp .ds-info-body span:nth-child(odd) {
+      color: #a8bde1;
+    }
+
+    #digitalSignatureApp .ds-field {
+      margin-top: 16px;
+    }
+
+    #digitalSignatureApp .ds-field label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    #digitalSignatureApp .ds-input,
+    #digitalSignatureApp .ds-textarea {
       display: block;
       width: 100%;
-      text-align: left;
-      padding: 11px;
-      margin-bottom: 5px;
-      border: 0;
+      min-width: 0;
+      padding: 11px 12px;
+      color: #f8fafc;
+      background: #091329;
+      border: 1px solid #2d4368;
       border-radius: 8px;
-      background: transparent;
-      color: #cbd5e1;
-      font-size: 13px;
+      outline: none;
+    }
+
+    #digitalSignatureApp .ds-input:focus,
+    #digitalSignatureApp .ds-textarea:focus {
+      border-color: #818cf8;
+    }
+
+    #digitalSignatureApp .ds-textarea {
+      min-height: 125px;
+      resize: vertical;
       overflow-wrap: anywhere;
-    }
-
-    #secureChatApp .sc-room.active {
-      background: #4f46e5;
-      color: white;
-    }
-
-    #secureChatApp .sc-conversation {
-      display: flex;
-      flex-direction: column;
-    }
-
-    #secureChatApp .sc-room-header {
-      padding: 13px 16px;
-      background: #111827;
-      border-bottom: 1px solid #1e293b;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    #secureChatApp .sc-messages {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: #090d16;
-    }
-
-    #secureChatApp .sc-message {
-      max-width: 85%;
-      padding: 10px 13px;
-      border-radius: 12px;
-      font-size: 13px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
-    }
-
-    #secureChatApp .sc-message.mine {
-      align-self: flex-end;
-      background: #4f46e5;
-    }
-
-    #secureChatApp .sc-message.other {
-      align-self: flex-start;
-      background: #1e293b;
-    }
-
-    #secureChatApp .sc-message-meta {
-      font-size: 10px;
-      color: #cbd5e1;
-      margin-top: 5px;
-      text-align: right;
-    }
-
-    #secureChatApp .sc-compose {
-      padding: 12px;
-      display: flex;
-      gap: 8px;
-      background: #111827;
-      border-top: 1px solid #1e293b;
-    }
-
-    #secureChatApp .sc-status {
+      font-family: monospace;
       font-size: 12px;
-      line-height: 1.5;
-      margin-top: 10px;
+    }
+
+    #digitalSignatureApp .ds-key-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    #digitalSignatureApp .ds-notice {
+      margin-top: 13px;
+      padding: 11px;
+      border: 1px solid #755a2c;
+      border-radius: 8px;
+      color: #fcd99a;
+      background: #291f12;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    #digitalSignatureApp .ds-status {
+      display: none;
+      margin-top: 13px;
+      padding: 11px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.6;
       overflow-wrap: anywhere;
     }
 
-    #secureChatApp .sc-status.error { color: #f87171; }
-    #secureChatApp .sc-status.success { color: #34d399; }
-
-    #secureChatApp .sc-auth {
-      margin: auto;
-      width: 100%;
-      max-width: 420px;
-      padding: 24px;
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 14px;
+    #digitalSignatureApp .ds-status.success {
+      display: block;
+      color: #6ee7b7;
+      border: 1px solid #087f5b;
+      background: #052e2b;
     }
 
-    #secureChatApp .sc-auth h3 {
-      margin: 0 0 8px;
-      font-size: 20px;
+    #digitalSignatureApp .ds-status.error {
+      display: block;
+      color: #fca5a5;
+      border: 1px solid #991b1b;
+      background: #2a1018;
     }
 
-    #secureChatApp .sc-auth-form {
+    #digitalSignatureApp .ds-status.info {
+      display: block;
+      color: #bfdbfe;
+      border: 1px solid #1d4ed8;
+      background: #101f40;
+    }
+
+    #digitalSignatureApp .ds-checklist {
+      display: grid;
+      gap: 9px;
+      padding: 13px;
+      margin-top: 15px;
+      border: 1px solid #1e3458;
+      border-radius: 9px;
+      background: #0a1428;
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+
+    #digitalSignatureApp .ds-checklist i {
+      color: #34d399;
+      margin-right: 6px;
+    }
+
+    #digitalSignatureApp .ds-result {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid #29416c;
+      border-radius: 10px;
+      background: #0b1730;
+    }
+
+    #digitalSignatureApp .ds-result h4 {
+      margin: 0 0 12px;
+      font-size: 15px;
+    }
+
+    #digitalSignatureApp .ds-result-status {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #3657a3;
+      border-radius: 9px;
+      background: #101f40;
+      font-size: 12px;
+      line-height: 1.6;
     }
 
-    #secureChatApp .sc-hidden { display: none !important; }
+    #digitalSignatureApp .ds-result-status i {
+      font-size: 20px;
+      color: #93c5fd;
+    }
 
-    #secureChatApp .sc-empty {
-      margin: auto;
-      text-align: center;
+    #digitalSignatureApp .ds-result-status.success {
+      border-color: #087f5b;
+      background: #052e2b;
+    }
+
+    #digitalSignatureApp .ds-result-status.success i {
+      color: #34d399;
+    }
+
+    #digitalSignatureApp .ds-result-status.error {
+      border-color: #991b1b;
+      background: #2a1018;
+    }
+
+    #digitalSignatureApp .ds-result-status.error i {
+      color: #f87171;
+    }
+
+    #digitalSignatureApp .ds-result-row {
+      display: grid;
+      grid-template-columns: 105px minmax(0, 1fr);
+      gap: 8px;
+      margin-top: 9px;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    #digitalSignatureApp .ds-result-row span:first-child {
       color: #94a3b8;
-      font-size: 13px;
-      padding: 20px;
+    }
+
+    #digitalSignatureApp .ds-footer {
+      margin-top: 18px;
+      color: #9caecb;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    #digitalSignatureApp .ds-hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1050px) {
+      #digitalSignatureApp .ds-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #digitalSignatureApp .ds-verify-column {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 650px) {
+      #digitalSignatureApp {
+        padding: 13px;
+      }
+
+      #digitalSignatureApp .ds-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      #digitalSignatureApp .ds-verify-column {
+        grid-column: auto;
+      }
+
+      #digitalSignatureApp .ds-header h2 {
+        font-size: 18px;
+      }
+
+      #digitalSignatureApp .ds-key-actions {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 
   <!-- HEADER -->
-  <div class="sc-header">
-    <div style="display:flex;align-items:center;gap:12px;min-width:0">
-      <div style="width:40px;height:40px;border-radius:11px;background:#4f46e5;display:grid;place-items:center;flex-shrink:0">
-        <i class="fa-solid fa-shield-halved"></i>
+  <header class="ds-header">
+    <div class="ds-brand">
+      <div class="ds-brand-icon">
+        <i class="fa-solid fa-file-signature"></i>
       </div>
       <div>
-        <h3 style="margin:0 0 4px;font-size:18px">SecureChat (E2EE)</h3>
-        <div class="sc-muted">Nhắn tin mã hóa đầu cuối chuẩn AES-GCM</div>
+        <h2>Digital Signature (Chữ ký số PDF)</h2>
+        <div class="ds-muted">
+          Ký tài liệu PDF và kiểm tra tính toàn vẹn của chữ ký số.
+        </div>
       </div>
     </div>
 
-    <div style="text-align:right">
-      <div id="scAccountLabel" style="font-size:12px;color:#34d399">
-        Chưa đăng nhập
-      </div>
-      <button id="scLogoutBtn" type="button"
-        class="sc-btn sc-secondary sc-hidden" style="margin-top:6px">
-        Đăng xuất
-      </button>
+    <div class="ds-algorithm">
+      <strong><i class="fa-solid fa-shield-halved"></i> Định hướng thuật toán</strong>
+      <div style="font-size:13px">RSA / SHA-256</div>
+      <div class="ds-muted">Chữ ký số trên tài liệu PDF</div>
     </div>
+  </header>
+
+  <div class="ds-grid">
+
+    <!-- CỘT 1: CHỌN PDF ĐỂ KÝ -->
+    <section class="ds-panel">
+      <div class="ds-step">
+        <span class="ds-step-number">1</span>
+        <h3>Tải lên PDF</h3>
+      </div>
+
+      <p class="ds-muted">
+        Chọn tài liệu PDF mà bạn muốn ký số.
+      </p>
+
+      <label for="dsSignFile" class="ds-dropzone" id="dsSignDropzone">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        <strong>Kéo thả file PDF vào đây</strong>
+        <span class="ds-muted">hoặc chọn file từ máy tính</span>
+        <span class="ds-btn ds-btn-primary">
+          <i class="fa-solid fa-folder-open"></i> Chọn file PDF
+        </span>
+        <span class="ds-muted">Tối đa 10 MB</span>
+      </label>
+
+      <input
+        type="file"
+        id="dsSignFile"
+        class="ds-file-input"
+        accept=".pdf,application/pdf"
+      >
+
+      <div id="dsSignFileCard" class="ds-file-card ds-hidden">
+        <i class="fa-solid fa-file-pdf ds-file-icon"></i>
+        <div class="ds-file-details">
+          <div class="ds-file-name" id="dsSignFileName"></div>
+          <div class="ds-muted" id="dsSignFileSize"></div>
+        </div>
+        <button
+          type="button"
+          id="dsRemoveSignFile"
+          class="ds-remove"
+          aria-label="Bỏ file PDF"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="ds-info">
+        <div class="ds-info-title">
+          <i class="fa-solid fa-circle-info"></i> Thông tin tài liệu
+        </div>
+        <div class="ds-info-body">
+          <span>Tên file:</span>
+          <span id="dsInfoName">Chưa chọn file</span>
+          <span>Kích thước:</span>
+          <span id="dsInfoSize">—</span>
+          <span>Định dạng:</span>
+          <span id="dsInfoType">—</span>
+        </div>
+      </div>
+
+      <div id="dsSignStatus" class="ds-status" role="status" aria-live="polite"></div>
+    </section>
+
+    <!-- CỘT 2: KHÓA VÀ KÝ SỐ -->
+    <section class="ds-panel">
+      <div class="ds-step">
+        <span class="ds-step-number">2</span>
+        <h3>Ký số tài liệu</h3>
+      </div>
+
+      <p class="ds-muted">
+        Cung cấp khóa riêng và chứng thư số tương ứng để ký PDF.
+      </p>
+
+      <div class="ds-field">
+        <label for="dsPrivateKey">Khóa riêng (Private Key PEM)</label>
+        <textarea
+          id="dsPrivateKey"
+          class="ds-textarea"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="-----BEGIN PRIVATE KEY-----&#10;Dán khóa riêng của bạn vào đây&#10;-----END PRIVATE KEY-----"
+        ></textarea>
+      </div>
+
+      <div class="ds-field">
+        <label for="dsCertificate">Chứng thư số (Certificate PEM)</label>
+        <textarea
+          id="dsCertificate"
+          class="ds-textarea"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="-----BEGIN CERTIFICATE-----&#10;Dán chứng thư số tương ứng vào đây&#10;-----END CERTIFICATE-----"
+        ></textarea>
+      </div>
+
+      <div class="ds-key-actions">
+        <label for="dsCertificateFile" class="ds-btn" style="margin:0">
+          <i class="fa-solid fa-folder-open"></i> Tải chứng thư
+        </label>
+        <input
+          type="file"
+          id="dsCertificateFile"
+          class="ds-file-input"
+          accept=".pem,.crt,.cer"
+        >
+        <button type="button" id="dsClearKeys" class="ds-btn">
+          <i class="fa-solid fa-eraser"></i> Xóa trường khóa
+        </button>
+      </div>
+
+      <div class="ds-notice">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Không dùng khóa riêng thật hoặc khóa nhạy cảm trên website demo
+        khi chưa kiểm tra cách máy chủ xử lý và bảo vệ dữ liệu.
+      </div>
+
+      <button
+        type="button"
+        id="dsSignButton"
+        class="ds-btn ds-btn-primary ds-btn-wide"
+      >
+        <i class="fa-solid fa-file-signature"></i> Ký tài liệu PDF
+      </button>
+
+      <div id="dsSigningStatus" class="ds-status" role="status" aria-live="polite"></div>
+
+      <div class="ds-checklist">
+        <div><i class="fa-solid fa-circle-check"></i> Kiểm tra đầu vào PDF</div>
+        <div><i class="fa-solid fa-circle-check"></i> Sử dụng khóa riêng để ký</div>
+        <div><i class="fa-solid fa-circle-check"></i> Nhúng chữ ký vào tài liệu PDF</div>
+        <div><i class="fa-solid fa-circle-check"></i> Kiểm tra kết quả trước khi tải xuống</div>
+      </div>
+    </section>
+
+    <!-- CỘT 3: XÁC MINH CHỮ KÝ -->
+    <section class="ds-panel ds-verify-column">
+      <div class="ds-step">
+        <span class="ds-step-number">3</span>
+        <h3>Xác minh chữ ký</h3>
+      </div>
+
+      <p class="ds-muted">
+        Chọn PDF đã ký để kiểm tra chữ ký và tính toàn vẹn tài liệu.
+      </p>
+
+      <label for="dsVerifyFile" class="ds-dropzone">
+        <i class="fa-solid fa-shield-halved"></i>
+        <strong>Chọn PDF cần xác minh</strong>
+        <span class="ds-muted">Tài liệu cần có chữ ký số PDF</span>
+        <span class="ds-btn ds-btn-primary">
+          <i class="fa-solid fa-folder-open"></i> Chọn file PDF
+        </span>
+      </label>
+
+      <input
+        type="file"
+        id="dsVerifyFile"
+        class="ds-file-input"
+        accept=".pdf,application/pdf"
+      >
+
+      <div id="dsVerifyFileCard" class="ds-file-card ds-hidden">
+        <i class="fa-solid fa-file-pdf ds-file-icon"></i>
+        <div class="ds-file-details">
+          <div class="ds-file-name" id="dsVerifyFileName"></div>
+          <div class="ds-muted" id="dsVerifyFileSize"></div>
+        </div>
+        <button
+          type="button"
+          id="dsRemoveVerifyFile"
+          class="ds-remove"
+          aria-label="Bỏ file xác minh"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <button
+        type="button"
+        id="dsVerifyButton"
+        class="ds-btn ds-btn-outline ds-btn-wide"
+      >
+        <i class="fa-solid fa-magnifying-glass"></i> Xác minh chữ ký
+      </button>
+
+      <div id="dsVerifyStatus" class="ds-status" role="status" aria-live="polite"></div>
+
+      <div class="ds-result">
+        <h4><i class="fa-solid fa-clipboard-check"></i> Kết quả xác minh</h4>
+
+        <div id="dsResultBanner" class="ds-result-status">
+          <i class="fa-solid fa-circle-info"></i>
+          <div>
+            <strong id="dsResultTitle">Chưa xác minh</strong>
+            <div id="dsResultDescription" class="ds-muted">
+              Chọn một tài liệu PDF và nhấn xác minh để kiểm tra chữ ký.
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-result-row">
+          <span>Tên người ký:</span>
+          <span id="dsResultSigner">Chưa có dữ liệu</span>
+        </div>
+        <div class="ds-result-row">
+          <span>Thuật toán:</span>
+          <span id="dsResultAlgorithm">Chưa có dữ liệu</span>
+        </div>
+        <div class="ds-result-row">
+          <span>Tính toàn vẹn:</span>
+          <span id="dsResultIntegrity">Chưa kiểm tra</span>
+        </div>
+        <div class="ds-result-row">
+          <span>Chứng thư:</span>
+          <span id="dsResultCertificate">Chưa kiểm tra độ tin cậy</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="dsDownloadButton"
+        class="ds-btn ds-btn-outline ds-btn-wide"
+        disabled
+      >
+        <i class="fa-solid fa-download"></i> Tải PDF đã ký
+      </button>
+    </section>
   </div>
 
-  <!-- ĐĂNG NHẬP / ĐĂNG KÝ -->
-  <section id="scAuthView" class="sc-auth">
-    <h3 id="scAuthTitle">Đăng nhập SecureChat</h3>
-    <p class="sc-muted">
-      Đăng ký hoặc đăng nhập để trò chuyện bảo mật.
-    </p>
+  <div class="ds-footer">
+    <i class="fa-solid fa-circle-info"></i>
+    <strong>Lưu ý:</strong>
+    Giao diện này chưa tự thực hiện ký số. Kết quả ký và xác minh chỉ được hiển thị
+    khi backend thực sự xử lý và trả về kết quả. Chữ ký hợp lệ về mặt mật mã
+    không đồng nghĩa chứng thư của người ký đã được xác nhận đáng tin cậy.
+  </div>
 
-    <div style="display:flex;gap:8px;margin-top:18px">
-      <button id="scLoginTab" class="sc-btn sc-primary"
-        type="button" style="flex:1">
-        Đăng nhập
-      </button>
+  <script>
+  (() => {
+    const root = document.getElementById('digitalSignatureApp');
+    if (!root || root.dataset.initialized === 'true') return;
+    root.dataset.initialized = 'true';
 
-      <button id="scRegisterTab" class="sc-btn sc-secondary"
-        type="button" style="flex:1">
-        Đăng ký
-      </button>
-    </div>
+    const $ = id => document.getElementById(id);
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-    <form id="scAuthForm" class="sc-auth-form">
-      <div>
-        <label for="scUsername" class="sc-muted">Tên tài khoản</label>
-        <input id="scUsername" class="sc-input" name="username"
-          autocomplete="username" required minlength="3" maxlength="40"
-          placeholder="Nhập tên tài khoản">
-      </div>
+    let signFile = null;
+    let verifyFile = null;
+    let signedDownloadUrl = null;
 
-      <div>
-        <label for="scPassword" class="sc-muted">Mật khẩu</label>
-        <input id="scPassword" class="sc-input" name="password"
-          type="password" autocomplete="current-password"
-          required minlength="6" maxlength="128"
-          placeholder="Nhập mật khẩu">
-      </div>
-
-      <button id="scAuthSubmit" type="submit"
-        class="sc-btn sc-primary">
-        Đăng nhập
-      </button>
-    </form>
-
-    <div id="scAuthStatus" class="sc-status"
-      role="status" aria-live="polite"></div>
-  </section>
-
-  <!-- GIAO DIỆN CHAT -->
-  <section id="scChatView" class="sc-layout sc-hidden">
-    <aside class="sc-sidebar">
-      <div class="sc-side-title">NGƯỜI DÙNG</div>
-
-      <div style="padding:8px;border-bottom:1px solid #1e293b">
-        <button id="scRefreshUsers" class="sc-btn sc-secondary"
-          type="button" style="width:100%">
-          Làm mới danh sách
-        </button>
-      </div>
-
-      <div id="scRooms" class="sc-rooms">
-        <div class="sc-empty">Đang tải người dùng…</div>
-      </div>
-    </aside>
-
-    <section class="sc-conversation">
-      <div class="sc-room-header">
-        <div style="min-width:0">
-          <div id="scRoomTitle" style="font-weight:700">
-            Chọn người trò chuyện
-          </div>
-          <div id="scRoomSubtitle" class="sc-muted" style="margin-top:4px">
-            Chọn tài khoản ở cột bên trái
-          </div>
-        </div>
-
-        <span id="scConnectionStatus" class="sc-muted">
-          Đã kết nối E2EE
-        </span>
-      </div>
-
-      <div id="scMessages" class="sc-messages" aria-live="polite">
-        <div class="sc-empty">
-          Chọn một tài khoản để bắt đầu trò chuyện mã hóa.
-        </div>
-      </div>
-
-      <form id="scComposeForm" class="sc-compose">
-        <input id="scMessageInput" class="sc-input"
-          type="text" maxlength="4000" autocomplete="off"
-          placeholder="Nhập tin nhắn bảo mật..." disabled>
-
-        <button id="scSendBtn" type="submit"
-          class="sc-btn sc-primary" disabled
-          aria-label="Gửi tin nhắn">
-          <i class="fa-solid fa-paper-plane"></i>
-        </button>
-      </form>
-    </section>
-  </section>
-
-  <div id="scGlobalStatus" class="sc-status"
-    role="status" aria-live="polite"></div>
-</div>
-
-<script>
-(() => {
-  'use strict';
-
-  const root = document.getElementById('secureChatApp');
-  if (!root || root.dataset.initialized === 'true') return;
-  root.dataset.initialized = 'true';
-
-  const $ = (id) => document.getElementById(id);
-
-  const state = {
-    username: null,
-    authMode: 'login',
-    partner: null,
-    messages: [],
-    pollTimer: null
-  };
-
-  // Quản lý tài khoản & tin nhắn hoàn toàn độc lập trên LocalStorage để test đa tab dễ dàng
-  const DB = {
-    getUsers() {
-      try { return JSON.parse(localStorage.getItem('sc_users') || '[]'); } catch { return []; }
-    },
-    saveUsers(users) {
-      localStorage.setItem('sc_users', JSON.stringify(users));
-    },
-    getCurrentUser() {
-      return localStorage.getItem('sc_current_user');
-    },
-    setCurrentUser(username) {
-      if (username) localStorage.setItem('sc_current_user', username);
-      else localStorage.removeItem('sc_current_user');
-    },
-    getMessages() {
-      try { return JSON.parse(localStorage.getItem('sc_messages') || '[]'); } catch { return []; }
-    },
-    saveMessages(msgs) {
-      localStorage.setItem('sc_messages', JSON.stringify(msgs));
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
     }
-  };
 
-  async function getSharedKey(user1, user2) {
-    const sorted = [user1, user2].sort().join(':');
-    const enc = new TextEncoder().encode(sorted);
-    const hash = await crypto.subtle.digest('SHA-256', enc);
-    return crypto.subtle.importKey(
-      'raw',
-      hash,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['encrypt', 'decrypt']
-    );
-  }
+    function showStatus(id, message, type = 'info') {
+      const el = $(id);
+      el.textContent = message;
+      el.className = 'ds-status ' + type;
+    }
 
-  async function encryptMessage(text, partnerName) {
-    if (!state.username || !partnerName) return text;
-    try {
-      const key = await getSharedKey(state.username, partnerName);
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const encoded = new TextEncoder().encode(text);
-      const encrypted = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv: iv },
-        key,
-        encoded
+    function clearStatus(id) {
+      const el = $(id);
+      el.textContent = '';
+      el.className = 'ds-status';
+    }
+
+    function isPdf(file) {
+      return !!file &&
+        file.name.toLowerCase().endsWith('.pdf') &&
+        (file.type === 'application/pdf' || file.type === '');
+    }
+
+    function setFile(inputFile, file, kind) {
+      if (file && !isPdf(file)) {
+        showStatus(
+          kind === 'sign' ? 'dsSignStatus' : 'dsVerifyStatus',
+          'Vui lòng chọn tệp PDF hợp lệ.',
+          'error'
+        );
+        return;
+      }
+
+      if (file && file.size > MAX_FILE_SIZE) {
+        showStatus(
+          kind === 'sign' ? 'dsSignStatus' : 'dsVerifyStatus',
+          'Tệp vượt quá giới hạn 10 MB.',
+          'error'
+        );
+        return;
+      }
+
+      if (kind === 'sign') {
+        signFile = file;
+        $('dsSignFileCard').classList.toggle('ds-hidden', !file);
+        $('dsInfoName').textContent = file ? file.name : 'Chưa chọn file';
+        $('dsInfoSize').textContent = file ? formatSize(file.size) : '—';
+        $('dsInfoType').textContent = file ? 'PDF' : '—';
+        $('dsSignFileName').textContent = file ? file.name : '';
+        $('dsSignFileSize').textContent = file ? formatSize(file.size) : '';
+        clearStatus('dsSignStatus');
+      } else {
+        verifyFile = file;
+        $('dsVerifyFileCard').classList.toggle('ds-hidden', !file);
+        $('dsVerifyFileName').textContent = file ? file.name : '';
+        $('dsVerifyFileSize').textContent = file ? formatSize(file.size) : '';
+        clearStatus('dsVerifyStatus');
+      }
+
+      inputFile.value = '';
+    }
+
+    function clearVerificationResult() {
+      $('dsResultBanner').className = 'ds-result-status';
+      $('dsResultTitle').textContent = 'Chưa xác minh';
+      $('dsResultDescription').textContent =
+        'Chọn một tài liệu PDF và nhấn xác minh để kiểm tra chữ ký.';
+      $('dsResultSigner').textContent = 'Chưa có dữ liệu';
+      $('dsResultAlgorithm').textContent = 'Chưa có dữ liệu';
+      $('dsResultIntegrity').textContent = 'Chưa kiểm tra';
+      $('dsResultCertificate').textContent = 'Chưa kiểm tra độ tin cậy';
+    }
+
+    function setVerificationResult(result) {
+      const valid = result.valid === true;
+      const banner = $('dsResultBanner');
+
+      banner.className = 'ds-result-status ' + (valid ? 'success' : 'error');
+      banner.querySelector('i').className = valid
+        ? 'fa-solid fa-circle-check'
+        : 'fa-solid fa-circle-xmark';
+
+      $('dsResultTitle').textContent = valid
+        ? 'Chữ ký hợp lệ'
+        : 'Chữ ký không hợp lệ';
+
+      $('dsResultDescription').textContent =
+        result.message || 'Backend đã hoàn tất kiểm tra chữ ký.';
+
+      $('dsResultSigner').textContent = result.signer || 'Không xác định';
+      $('dsResultAlgorithm').textContent = result.algorithm || 'Không có dữ liệu';
+      $('dsResultIntegrity').textContent =
+        result.integrity === true ? 'Không phát hiện thay đổi trái phép'
+        : result.integrity === false ? 'Phát hiện thay đổi hoặc lỗi kiểm tra'
+        : 'Chưa xác định';
+
+      $('dsResultCertificate').textContent =
+        result.certificate_trusted === true ? 'Được xác minh là đáng tin cậy'
+        : result.certificate_trusted === false ? 'Chưa được xác nhận đáng tin cậy'
+        : 'Chưa xác định';
+
+      showStatus(
+        'dsVerifyStatus',
+        result.message || (valid ? 'Xác minh hoàn tất.' : 'Không xác minh được chữ ký.'),
+        valid ? 'success' : 'error'
       );
-      return 'E2EE:' + JSON.stringify({
-        iv: btoa(String.fromCharCode(...iv)),
-        data: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+    }
+
+    async function postFile(url, file, fields = {}) {
+      const formData = new FormData();
+      formData.append('file', file, file.name);
+
+      Object.entries(fields).forEach(([key, value]) => {
+        formData.append(key, value);
       });
-    } catch (e) {
-      console.error('Lỗi mã hóa:', e);
-      return text;
-    }
-  }
 
-  async function decryptMessage(cipherString, partnerName) {
-    if (!cipherString || !cipherString.startsWith('E2EE:')) return cipherString;
-    try {
-      const parsed = JSON.parse(cipherString.substring(5));
-      const iv = Uint8Array.from(atob(parsed.iv), c => c.charCodeAt(0));
-      const data = Uint8Array.from(atob(parsed.data), c => c.charCodeAt(0));
-      const key = await getSharedKey(state.username, partnerName);
-      const decrypted = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: iv },
-        key,
-        data
-      );
-      return new TextDecoder().decode(decrypted);
-    } catch (e) {
-      console.error('Lỗi giải mã:', e);
-      return '[Tin nhắn được mã hóa hoặc sai khóa giải mã]';
-    }
-  }
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin'
+      });
 
-  function setStatus(id, message, type = '') {
-    const element = $(id);
-    if (!element) return;
-    element.textContent = message || '';
-    element.className = 'sc-status' + (type ? ' ' + type : '');
-  }
+      const contentType = response.headers.get('content-type') || '';
 
-  function showEmptyMessage(message, container = $('scMessages')) {
-    container.replaceChildren();
-    const element = document.createElement('div');
-    element.className = 'sc-empty';
-    element.textContent = message;
-    container.appendChild(element);
-  }
+      if (!response.ok) {
+        let message = 'Yêu cầu thất bại (' + response.status + ').';
 
-  function setAuthMode(mode) {
-    state.authMode = mode;
-    const isRegister = mode === 'register';
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          message = data.message || message;
+        }
 
-    $('scAuthTitle').textContent = isRegister ? 'Đăng ký SecureChat' : 'Đăng nhập SecureChat';
-    $('scAuthSubmit').textContent = isRegister ? 'Đăng ký tài khoản' : 'Đăng nhập';
-    $('scLoginTab').className = 'sc-btn ' + (!isRegister ? 'sc-primary' : 'sc-secondary');
-    $('scRegisterTab').className = 'sc-btn ' + (isRegister ? 'sc-primary' : 'sc-secondary');
-    setStatus('scAuthStatus', '');
-  }
+        throw new Error(message);
+      }
 
-  function showChatView(username) {
-    state.username = username;
-    DB.setCurrentUser(username);
+      if (contentType.includes('application/json')) {
+        return { type: 'json', data: await response.json() };
+      }
 
-    $('scAuthView').classList.add('sc-hidden');
-    $('scChatView').classList.remove('sc-hidden');
-    $('scLogoutBtn').classList.remove('sc-hidden');
-
-    $('scAccountLabel').textContent = 'Tài khoản: ' + username;
-    $('scConnectionStatus').textContent = 'Đã kết nối E2EE';
-
-    loadUsers();
-    startPolling();
-  }
-
-  function showAuthView() {
-    stopPolling();
-    state.username = null;
-    state.partner = null;
-    DB.setCurrentUser(null);
-
-    $('scAuthView').classList.remove('sc-hidden');
-    $('scChatView').classList.add('sc-hidden');
-    $('scLogoutBtn').classList.add('sc-hidden');
-
-    $('scAccountLabel').textContent = 'Chưa đăng nhập';
-    $('scRoomTitle').textContent = 'Chọn người trò chuyện';
-    $('scMessageInput').disabled = true;
-    $('scSendBtn').disabled = true;
-    showEmptyMessage('Chọn một tài khoản để bắt đầu trò chuyện.');
-  }
-
-  function handleAuth(event) {
-    event.preventDefault();
-    const username = $('scUsername').value.trim();
-    const password = $('scPassword').value;
-
-    if (!username || !password) {
-      setStatus('scAuthStatus', 'Vui lòng nhập đầy đủ thông tin.', 'error');
-      return;
+      return {
+        type: 'file',
+        blob: await response.blob(),
+        filename: getDownloadFilename(response, 'signed_document.pdf')
+      };
     }
 
-    const users = DB.users;
+    function getDownloadFilename(response, fallback) {
+      const disposition = response.headers.get('content-disposition') || '';
+      const match = disposition.match(/filename="?([^";]+)"?/i);
+      return match ? match[1] : fallback;
+    }
 
-    if (state.authMode === 'register') {
-      if (users.some(u => u.username === username)) {
-        setStatus('scAuthStatus', 'Tên tài khoản này đã tồn tại.', 'error');
+    function downloadBlob(blob, filename) {
+      if (signedDownloadUrl) URL.revokeObjectURL(signedDownloadUrl);
+
+      signedDownloadUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = signedDownloadUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    $('dsSignFile').addEventListener('change', event => {
+      setFile(event.target, event.target.files[0] || null, 'sign');
+    });
+
+    $('dsVerifyFile').addEventListener('change', event => {
+      setFile(event.target, event.target.files[0] || null, 'verify');
+    });
+
+    $('dsRemoveSignFile').addEventListener('click', () => {
+      signFile = null;
+      $('dsSignFileCard').classList.add('ds-hidden');
+      $('dsInfoName').textContent = 'Chưa chọn file';
+      $('dsInfoSize').textContent = '—';
+      $('dsInfoType').textContent = '—';
+      clearStatus('dsSignStatus');
+    });
+
+    $('dsRemoveVerifyFile').addEventListener('click', () => {
+      verifyFile = null;
+      $('dsVerifyFileCard').classList.add('ds-hidden');
+      clearStatus('dsVerifyStatus');
+      clearVerificationResult();
+    });
+
+    $('dsCertificateFile').addEventListener('change', async event => {
+      const file = event.target.files[0];
+      event.target.value = '';
+
+      if (!file) return;
+
+      if (file.size > 1024 * 1024) {
+        showStatus('dsSigningStatus', 'Tệp chứng thư vượt quá 1 MB.', 'error');
         return;
       }
-      users.push({ username, password });
-      DB.saveUsers(users);
-      setStatus('scAuthStatus', 'Đăng ký thành công! Hãy chuyển sang đăng nhập.', 'success');
-      setAuthMode('login');
-      $('scPassword').value = '';
-    } else {
-      const found = users.find(u => u.username === username && u.password === password);
-      if (!found) {
-        setStatus('scAuthStatus', 'Sai tên tài khoản hoặc mật khẩu.', 'error');
+
+      try {
+        $('dsCertificate').value = await file.text();
+        showStatus(
+          'dsSigningStatus',
+          'Đã nạp nội dung chứng thư vào trường nhập. Chưa xác minh chứng thư.',
+          'info'
+        );
+      } catch {
+        showStatus('dsSigningStatus', 'Không thể đọc tệp chứng thư.', 'error');
+      }
+    });
+
+    $('dsClearKeys').addEventListener('click', () => {
+      $('dsPrivateKey').value = '';
+      $('dsCertificate').value = '';
+      clearStatus('dsSigningStatus');
+    });
+
+    // API backend sẽ được bổ sung ở bước triển khai chữ ký số.
+    $('dsSignButton').addEventListener('click', async () => {
+      if (!signFile) {
+        showStatus('dsSignStatus', 'Vui lòng chọn PDF cần ký.', 'error');
         return;
       }
-      showChatView(username);
-      setStatus('scGlobalStatus', 'Đăng nhập thành công.', 'success');
-    }
-  }
 
-  function loadUsers() {
-    const allUsers = DB.getUsers().filter(u => u.username !== state.username);
-    const container = $('scRooms');
-    container.replaceChildren();
+      const privateKey = $('dsPrivateKey').value.trim();
+      const certificate = $('dsCertificate').value.trim();
 
-    if (!allUsers.length) {
-      showEmptyMessage('Chưa có người dùng khác. Hãy mở tab khác đăng ký tài khoản mới.', container);
-      $('scRoomTitle').textContent = 'Chưa có người dùng';
-      return;
-    }
+      if (!privateKey || !certificate) {
+        showStatus(
+          'dsSigningStatus',
+          'Cần có khóa riêng và chứng thư số tương ứng trước khi ký.',
+          'error'
+        );
+        return;
+      }
 
-    allUsers.forEach(u => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'sc-room' + (u.username === state.partner ? ' active' : '');
-      btn.textContent = '@ ' + u.username;
-      btn.addEventListener('click', () => openConversation(u.username));
-      container.appendChild(btn);
-    });
-  }
+      const button = $('dsSignButton');
+      button.disabled = true;
 
-  function openConversation(username) {
-    state.partner = username;
-    $('scRoomTitle').textContent = username;
-    $('scRoomSubtitle').textContent = 'Cuộc trò chuyện mã hóa E2EE';
-    $('scMessageInput').disabled = false;
-    $('scSendBtn').disabled = false;
-    $('scMessageInput').focus();
-    loadUsers();
-    loadMessages();
-  }
+      try {
+        showStatus(
+          'dsSigningStatus',
+          'Đang gửi tài liệu đến API ký số...',
+          'info'
+        );
 
-  async function loadMessages() {
-    if (!state.username || !state.partner) return;
-    const allMsgs = DB.getMessages();
-    const conversation = allMsgs.filter(m => 
-      (m.sender === state.username && m.recipient === state.partner) ||
-      (m.sender === state.partner && m.recipient === state.username)
-    );
+        const result = await postFile('/signature/pdf/sign', signFile, {
+          private_key: privateKey,
+          certificate: certificate
+        });
 
-    const decryptedList = [];
-    for (const msg of conversation) {
-      const plain = await decryptMessage(msg.ciphertext, state.partner);
-      decryptedList.push({ ...msg, displayContent: plain });
-    }
+        if (result.type === 'json') {
+          if (result.data.success !== true) {
+            throw new Error(result.data.message || 'Backend chưa ký được tài liệu.');
+          }
 
-    state.messages = decryptedList;
-    renderMessages();
-  }
+          showStatus(
+            'dsSigningStatus',
+            result.data.message || 'Backend trả về kết quả JSON. Cần xử lý đường dẫn tải file.',
+            'success'
+          );
+          return;
+        }
 
-  function renderMessages() {
-    const container = $('scMessages');
-    const nearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 90;
-    container.replaceChildren();
+        $('dsDownloadButton').disabled = false;
+        $('dsDownloadButton').onclick = () => {
+          downloadBlob(result.blob, result.filename);
+        };
 
-    if (!state.messages.length) {
-      showEmptyMessage('Chưa có tin nhắn. Hãy gửi lời chào!');
-      return;
-    }
-
-    state.messages.forEach(msg => {
-      const mine = msg.sender === state.username;
-      const bubble = document.createElement('div');
-      bubble.className = 'sc-message ' + (mine ? 'mine' : 'other');
-
-      const content = document.createElement('div');
-      const sender = document.createElement('strong');
-      sender.textContent = mine ? 'Bạn' : msg.sender;
-
-      content.appendChild(sender);
-      content.appendChild(document.createTextNode(': ' + String(msg.displayContent ?? '')));
-
-      const meta = document.createElement('div');
-      meta.className = 'sc-message-meta';
-      meta.textContent = new Date(msg.timestamp).toLocaleTimeString();
-
-      bubble.appendChild(content);
-      bubble.appendChild(meta);
-      container.appendChild(bubble);
+        showStatus(
+          'dsSigningStatus',
+          'Backend đã trả về tệp kết quả ký. Hãy xác minh chữ ký trước khi sử dụng.',
+          'success'
+        );
+      } catch (error) {
+        showStatus(
+          'dsSigningStatus',
+          error.message || 'Không thể kết nối API ký số. Backend có thể chưa được triển khai.',
+          'error'
+        );
+      } finally {
+        button.disabled = false;
+      }
     });
 
-    if (nearBottom) container.scrollTop = container.scrollHeight;
-  }
+    $('dsVerifyButton').addEventListener('click', async () => {
+      if (!verifyFile) {
+        showStatus('dsVerifyStatus', 'Vui lòng chọn PDF cần xác minh.', 'error');
+        return;
+      }
 
-  async function sendMessage(event) {
-    event.preventDefault();
-    const input = $('scMessageInput');
-    const text = input.value.trim();
-    if (!text || !state.partner) return;
+      const button = $('dsVerifyButton');
+      button.disabled = true;
 
-    const encrypted = await encryptMessage(text, state.partner);
-    const allMsgs = DB.getMessages();
+      try {
+        showStatus('dsVerifyStatus', 'Đang gửi PDF đến API xác minh...', 'info');
 
-    allMsgs.push({
-      sender: state.username,
-      recipient: state.partner,
-      ciphertext: encrypted,
-      timestamp: new Date().toISOString()
+        const result = await postFile('/signature/pdf/verify', verifyFile);
+
+        if (result.type !== 'json') {
+          throw new Error('API xác minh phải trả về dữ liệu JSON.');
+        }
+
+        setVerificationResult(result.data);
+      } catch (error) {
+        clearVerificationResult();
+        showStatus(
+          'dsVerifyStatus',
+          error.message || 'Không thể xác minh. Backend có thể chưa được triển khai.',
+          'error'
+        );
+      } finally {
+        button.disabled = false;
+      }
     });
 
-    DB.saveMessages(allMsgs);
-    input.value = '';
-    loadMessages();
-  }
+    // Hỗ trợ kéo thả PDF.
+    const dropzone = $('dsSignDropzone');
 
-  function logout() {
-    showAuthView();
-    setStatus('scAuthStatus', 'Đã đăng xuất thành công.', 'success');
-  }
+    ['dragenter', 'dragover'].forEach(name => {
+      dropzone.addEventListener(name, event => {
+        event.preventDefault();
+        dropzone.style.borderColor = '#818cf8';
+      });
+    });
 
-  function startPolling() {
-    stopPolling();
-    state.pollTimer = setInterval(() => {
-      if (state.username && state.partner) loadMessages();
-    }, 1500);
-  }
+    ['dragleave', 'drop'].forEach(name => {
+      dropzone.addEventListener(name, event => {
+        event.preventDefault();
+        dropzone.style.borderColor = '#5274ad';
+      });
+    });
 
-  function stopPolling() {
-    if (state.pollTimer) {
-      clearInterval(state.pollTimer);
-      state.pollTimer = null;
-    }
-  }
+    dropzone.addEventListener('drop', event => {
+      const file = event.dataTransfer.files[0];
+      if (file) setFile($('dsSignFile'), file, 'sign');
+    });
 
-  $('scLoginTab').addEventListener('click', () => setAuthMode('login'));
-  $('scRegisterTab').addEventListener('click', () => setAuthMode('register'));
-  $('scAuthForm').addEventListener('submit', handleAuth);
-  $('scComposeForm').addEventListener('submit', sendMessage);
-  $('scRefreshUsers').addEventListener('click', loadUsers);
-  $('scLogoutBtn').addEventListener('click', logout);
-
-  // Khởi tạo kiểm tra phiên đăng nhập cũ
-  const savedUser = DB.getCurrentUser();
-  if (savedUser && DB.getUsers().some(u => u.username === savedUser)) {
-    showChatView(savedUser);
-  } else {
-    showAuthView();
-  }
-})();
-</script>
+    clearVerificationResult();
+  })();
+  </script>
+</div>
