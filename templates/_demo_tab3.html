@@ -596,13 +596,11 @@
     if (!root || root.dataset.initialized === 'true') return;
     root.dataset.initialized = 'true';
 
-    const $ = id => document.getElementById(id);
+    const $ = id => root.querySelector('#' + id);
     const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
     let signFile = null;
     let verifyFile = null;
-    let signedBlob = null;
-    let signedFilename = 'signed_document.pdf';
 
     function formatSize(bytes) {
       if (bytes < 1024) return bytes + ' B';
@@ -623,7 +621,9 @@
 
     function clearResult() {
       $('dsResultBanner').className = 'ds-result-status';
-      $('dsResultBanner').querySelector('i').className = 'fa-solid fa-circle-info';
+      $('dsResultBanner').querySelector('i').className =
+        'fa-solid fa-circle-info';
+
       $('dsResultTitle').textContent = 'Chưa xác minh';
       $('dsResultDescription').textContent =
         'Chọn PDF và nhấn xác minh để kiểm tra chữ ký.';
@@ -634,7 +634,8 @@
     }
 
     function setFile(kind, file) {
-      const statusId = kind === 'sign' ? 'dsSignStatus' : 'dsVerifyStatus';
+      const statusId =
+        kind === 'sign' ? 'dsSignStatus' : 'dsVerifyStatus';
 
       if (file && !file.name.toLowerCase().endsWith('.pdf')) {
         showStatus(statusId, 'Vui lòng chọn tệp có đuôi .pdf.', 'error');
@@ -648,51 +649,93 @@
 
       if (kind === 'sign') {
         signFile = file;
+
         $('dsSignFileCard').classList.toggle('ds-hidden', !file);
         $('dsSignFileName').textContent = file ? file.name : '';
-        $('dsSignFileSize').textContent = file ? formatSize(file.size) : '';
-        $('dsInfoName').textContent = file ? file.name : 'Chưa chọn file';
-        $('dsInfoSize').textContent = file ? formatSize(file.size) : '—';
+        $('dsSignFileSize').textContent =
+          file ? formatSize(file.size) : '';
+
+        $('dsInfoName').textContent =
+          file ? file.name : 'Chưa chọn file';
+        $('dsInfoSize').textContent =
+          file ? formatSize(file.size) : '—';
         $('dsInfoType').textContent = file ? 'PDF' : '—';
+
         clearStatus('dsSignStatus');
         clearStatus('dsSigningStatus');
       } else {
         verifyFile = file;
+
         $('dsVerifyFileCard').classList.toggle('ds-hidden', !file);
         $('dsVerifyFileName').textContent = file ? file.name : '';
-        $('dsVerifyFileSize').textContent = file ? formatSize(file.size) : '';
+        $('dsVerifyFileSize').textContent =
+          file ? formatSize(file.size) : '';
+
         clearStatus('dsVerifyStatus');
         clearResult();
       }
     }
 
+    // Gửi file đến API và hiển thị đầy đủ thông tin lỗi HTTP.
     async function postFile(url, file) {
       const formData = new FormData();
       formData.append('file', file, file.name);
 
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
-        credentials: 'same-origin'
-      });
+      let response;
 
-      const contentType = response.headers.get('content-type') || '';
+      try {
+        response = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        });
+      } catch (error) {
+        throw new Error(
+          'Không thể kết nối đến máy chủ.' +
+          '\nURL: ' + new URL(url, window.location.href).href +
+          '\nChi tiết: ' + (error.message || 'Lỗi kết nối mạng.')
+        );
+      }
+
+      const contentType =
+        response.headers.get('content-type') || '';
 
       if (!response.ok) {
-        let message = 'Yêu cầu thất bại (' + response.status + ').';
+        let body = '';
 
-        if (contentType.includes('application/json')) {
-          const data = await response.json();
-          message = data.message || message;
-        } else {
-          message = 'Máy chủ trả về lỗi HTTP ' + response.status + '. Kiểm tra Render Logs.';
+        try {
+          body = await response.text();
+        } catch (_) {
+          body = 'Không đọc được nội dung phản hồi.';
         }
 
-        throw new Error(message);
+        let serverMessage = body;
+
+        if (contentType.includes('application/json') && body) {
+          try {
+            const data = JSON.parse(body);
+            serverMessage = data.message || body;
+          } catch (_) {
+            // Giữ nguyên nội dung nếu phản hồi không phải JSON hợp lệ.
+          }
+        }
+
+        throw new Error(
+          'Yêu cầu thất bại: HTTP ' + response.status +
+          ' ' + response.statusText +
+          '\nURL yêu cầu: ' + response.url +
+          '\nContent-Type: ' + (contentType || 'không xác định') +
+          '\nPhản hồi máy chủ:\n' +
+          (serverMessage || '(Máy chủ không trả về nội dung)').
+            slice(0, 1200)
+        );
       }
 
       if (contentType.includes('application/json')) {
-        return { type: 'json', data: await response.json() };
+        return {
+          type: 'json',
+          data: await response.json()
+        };
       }
 
       return {
@@ -703,10 +746,15 @@
     }
 
     function getFilename(response, fallback) {
-      const disposition = response.headers.get('content-disposition') || '';
+      const disposition =
+        response.headers.get('content-disposition') || '';
+
       const utf8 = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+
       if (utf8) {
-        try { return decodeURIComponent(utf8[1]); } catch (_) {}
+        try {
+          return decodeURIComponent(utf8[1]);
+        } catch (_) {}
       }
 
       const match = disposition.match(/filename="?([^";]+)"?/i);
@@ -716,11 +764,14 @@
     function downloadBlob(blob, filename) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
+
       link.href = url;
       link.download = filename;
+
       document.body.appendChild(link);
       link.click();
       link.remove();
+
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
@@ -778,9 +829,16 @@
       button.disabled = true;
 
       try {
-        showStatus('dsSigningStatus', 'Đang gửi PDF đến máy chủ để ký...', 'info');
+        showStatus(
+          'dsSigningStatus',
+          'Đang gửi PDF đến máy chủ để ký...',
+          'info'
+        );
 
-        const result = await postFile('/signature/pdf/sign', signFile);
+        const result = await postFile(
+          '/signature/pdf/sign',
+          signFile
+        );
 
         if (result.type !== 'file') {
           throw new Error(
@@ -788,18 +846,23 @@
           );
         }
 
-        if (result.blob.type && !result.blob.type.includes('pdf')) {
-          throw new Error('Dữ liệu máy chủ trả về không phải PDF.');
+        if (
+          result.blob.type &&
+          !result.blob.type.includes('pdf') &&
+          result.blob.type !== 'application/octet-stream'
+        ) {
+          throw new Error(
+            'Máy chủ không trả về tệp PDF. Kiểu dữ liệu: ' +
+            result.blob.type
+          );
         }
 
-        signedBlob = result.blob;
-        signedFilename = result.filename;
-
-        downloadBlob(signedBlob, signedFilename);
+        downloadBlob(result.blob, result.filename);
 
         showStatus(
           'dsSigningStatus',
-          'Máy chủ đã trả về tệp PDF. Tệp đã được tải xuống; hãy chọn tệp đó ở mục xác minh.',
+          'Máy chủ đã trả về tệp PDF và trình duyệt đã yêu cầu tải xuống. ' +
+          'Hãy chọn tệp vừa tải ở mục xác minh.',
           'success'
         );
       } catch (error) {
@@ -815,7 +878,11 @@
 
     $('dsVerifyButton').addEventListener('click', async () => {
       if (!verifyFile) {
-        showStatus('dsVerifyStatus', 'Vui lòng chọn PDF cần xác minh.', 'error');
+        showStatus(
+          'dsVerifyStatus',
+          'Vui lòng chọn PDF cần xác minh.',
+          'error'
+        );
         return;
       }
 
@@ -823,25 +890,38 @@
       button.disabled = true;
 
       try {
-        showStatus('dsVerifyStatus', 'Đang xác minh chữ ký...', 'info');
+        showStatus(
+          'dsVerifyStatus',
+          'Đang xác minh chữ ký...',
+          'info'
+        );
 
-        const result = await postFile('/signature/pdf/verify', verifyFile);
+        const result = await postFile(
+          '/signature/pdf/verify',
+          verifyFile
+        );
 
         if (result.type !== 'json') {
-          throw new Error('API xác minh cần trả về dữ liệu JSON.');
+          throw new Error(
+            'API xác minh cần trả về JSON nhưng máy chủ đã trả về ' +
+            'một tệp hoặc nội dung không phải JSON.'
+          );
         }
 
         const data = result.data;
 
-        // Chỉ chấp nhận các trường kết quả xác minh được backend cung cấp.
-        // Không suy luận chữ ký hợp lệ chỉ từ HTTP 200.
-        if (data.success !== true || typeof data.valid !== 'boolean') {
+        if (
+          data.success !== true ||
+          typeof data.valid !== 'boolean'
+        ) {
           throw new Error(
-            data.message || 'Backend chưa trả về kết quả xác minh đầy đủ.'
+            data.message ||
+            'Backend chưa trả về kết quả xác minh đầy đủ.'
           );
         }
 
         const valid = data.valid === true;
+
         $('dsResultBanner').className =
           'ds-result-status ' + (valid ? 'success' : 'error');
 
@@ -863,12 +943,15 @@
           data.algorithm || 'Chưa có dữ liệu';
 
         $('dsResultIntegrity').textContent =
-          data.integrity === true ? 'Được backend xác nhận'
-          : data.integrity === false ? 'Backend báo kiểm tra thất bại'
-          : 'Chưa có kết quả riêng biệt';
+          data.integrity === true
+            ? 'Được backend xác nhận'
+            : data.integrity === false
+              ? 'Backend báo kiểm tra thất bại'
+              : 'Chưa có kết quả riêng biệt';
 
         $('dsResultCertificate').textContent =
-          data.trusted === true || data.certificate_trusted === true
+          data.trusted === true ||
+          data.certificate_trusted === true
             ? 'Backend xác nhận đáng tin cậy'
             : 'Chưa được xác nhận đáng tin cậy';
 
@@ -879,6 +962,7 @@
         );
       } catch (error) {
         clearResult();
+
         showStatus(
           'dsVerifyStatus',
           error.message || 'Không thể xác minh chữ ký.',
