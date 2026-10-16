@@ -1,131 +1,129 @@
-<div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 24px; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+<div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 28px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
     
-    <!-- HEADER -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 14px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="background: #10b981; color: #000; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 20px; font-weight: 800;">
-                <i class="fa-solid fa-user-shield"></i>
-            </div>
-            <div>
-                <h2 style="margin: 0; font-size: 18px; color: #fff; font-weight: 800;">Trạm Kiểm Tra Mật Khẩu An Toàn & Rò Rỉ (SHA-256 Live Verifier)</h2>
-                <p style="color: #94a3b8; font-size: 12px; margin: 3px 0 0 0;">Ứng dụng thực tế của Hàm băm: Kiểm tra độ mạnh và rủi ro lộ mật khẩu cục bộ mà không cần truyền dữ liệu rõ lên mạng.</p>
-            </div>
-        </div>
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 24px auto;">
+        <h2 style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px;">Share Files Securely & Privately</h2>
+        <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">
+            Tải lên, mã hóa đầu cuối bằng AES-256 ngay trên trình duyệt trước khi rời khỏi thiết bị của bạn. Bảo mật tuyệt đối, chống đọc lén.
+        </p>
     </div>
 
-    <!-- GIAO DIỆN CHÍNH (SINGLE INPUT - REALTIME ENGINE) -->
-    <div style="background: #111827; padding: 22px; border-radius: 10px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 16px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
         
-        <div>
-            <label style="font-size: 12px; color: #38bdf8; font-weight: 700; display: block; margin-bottom: 6px;">
-                <i class="fa-solid fa-key me-1"></i> Nhập mật khẩu cần kiểm tra (Gõ trực tiếp để hệ thống phân tích thời gian thực):
-            </label>
-            <input type="text" id="livePwdInput" oninput="runRealtimePasswordCheck()" placeholder="Nhập thử mật khẩu (ví dụ: 123456, Password@2026...)" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 12px 14px; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s;">
+        <!-- Khu vực Tải lên & Mã hóa (Uploader) -->
+        <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px;">
+            <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px;">
+                <i class="fa-solid fa-cloud-arrow-up me-1"></i> 1. Đóng Gói & Mã Hóa Tài Liệu
+            </div>
+
+            <div>
+                <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tiêu đề tài liệu mật:</label>
+                <input type="text" id="secShareTitle" value="Báo cáo tài chính Q4.pdf" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 9px 12px; border-radius: 8px; font-size: 12.5px;">
+            </div>
+
+            <div>
+                <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Nội dung văn bản / Dữ liệu cần mã hóa:</label>
+                <textarea id="secShareContent" rows="4" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; line-height: 1.5;">Tài liệu nội bộ dự án bảo mật thông tin doanh nghiệp - Cam kết không chia sẻ ra ngoài.</textarea>
+            </div>
+
+            <button type="button" onclick="executeSecureSharePack()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+                <i class="fa-solid fa-lock me-1"></i> Mã Hóa AES-256 & Tạo Tệp .secure
+            </button>
         </div>
 
-        <!-- THANH ĐO ĐỘ MẠNH (STRENGTH METER) -->
-        <div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
-                <span style="color: #9ca3af;">Đánh giá độ phức tạp:</span>
-                <span id="pwdStrengthLabel" style="font-weight: 700; color: #f87171;">Chưa nhập mật khẩu</span>
-            </div>
-            <div style="width: 100%; background: #1f2937; height: 8px; border-radius: 4px; overflow: hidden;">
-                <div id="pwdStrengthBar" style="width: 0%; height: 100%; background: #f87171; transition: width 0.3s, background 0.3s;"></div>
-            </div>
-        </div>
-
-        <!-- BẢNG HIỂN THỊ KẾT QUẢ PHÂN TÍCH (SHA-256 & LEAK CHECK) -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 4px;">
-            
-            <div style="background: #0b0f19; padding: 14px; border-radius: 8px; border: 1px solid #374151;">
-                <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 6px;">
-                    <i class="fa-solid fa-fingerprint text-emerald"></i> Mã băm định danh (SHA-256 Hash):
+        <!-- Khu vực Nhận & Giải mã (Vault / Receiver) -->
+        <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px; justify-content: space-between;">
+            <div>
+                <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px; margin-bottom: 14px;">
+                    <i class="fa-solid fa-box-open me-1"></i> 2. Giải Mã & Kiểm Định Toàn Vẹn
                 </div>
-                <div id="pwdShaResult" style="font-family: monospace; color: #34d399; font-size: 11px; word-break: break-all; line-height: 1.4;">
-                    e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+                <div>
+                    <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tải lên tệp định dạng .secure để mở khóa:</label>
+                    <input type="file" id="secShareImportFile" accept=".secure,.json" onchange="executeSecureShareUnpack(event)" style="background: #1f2937; color: #fff; border: 1px solid #374151; padding: 8px; border-radius: 8px; width: 100%; font-size: 12px;">
+                </div>
+
+                <div style="background: #0b0f19; padding: 14px; border-radius: 8px; border: 1px solid #374151; margin-top: 14px;">
+                    <div style="font-size: 11.5px; color: #9ca3af; margin-bottom: 6px;">Nội dung khôi phục sau khi giải mã chuẩn GCM:</div>
+                    <div id="secShareResultBox" style="color: #34d399; font-size: 13px; font-weight: 600; min-height: 45px; line-height: 1.5;">Chưa có dữ liệu nạp vào...</div>
                 </div>
             </div>
 
-            <div style="background: #0b0f19; padding: 14px; border-radius: 8px; border: 1px solid #374151; display: flex; flex-direction: column; justify-content: space-between;">
-                <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 6px;">
-                    <i class="fa-solid fa-triangle-exclamation text-amber"></i> Trạng thái rò rỉ cơ sở dữ liệu (Leak Status):
-                </div>
-                <div id="pwdLeakResult" style="font-size: 12.5px; font-weight: 700; color: #64748b;">
-                    Đang chờ nhập liệu...
-                </div>
+            <div style="font-size: 11px; color: #64748b; border-top: 1px solid #1f2937; padding-top: 10px;">
+                <i class="fa-solid fa-shield-halved text-emerald"></i> Client-side Encryption: Máy chủ hoàn toàn không thể đọc hoặc truy cập dữ liệu của bạn.
             </div>
-
-        </div>
-
-        <div style="font-size: 11px; color: #64748b; border-top: 1px solid #1f2937; pt: 10px; margin-top: 4px;">
-            <i class="fa-solid fa-circle-info text-indigo"></i> <b>Nguyên lý thực tế:</b> Hệ thống sử dụng hàm băm một chiều SHA-256 để biến đổi mật khẩu thành chuỗi cố định, cho phép đối chiếu mã băm an toàn mà không bao giờ lưu trữ hay truyền tải mật khẩu nguyên bản.
         </div>
 
     </div>
-
 </div>
 
 <script>
-// Danh sách các mật khẩu cực kỳ yếu / đã bị lộ phổ biến trong các vụ leak thực tế
-const commonLeakedPasswords = [
-    "123456", "password", "123456789", "123456123", "12345678", "12345", 
-    "111111", "123123", "admin", "abc123", "password1", "iloveyou", "welcome"
-];
+let lastSecPackage = null;
+let lastSecKeyPair = null;
 
-async function runRealtimePasswordCheck() {
-    let pwd = document.getElementById('livePwdInput').value;
-    let label = document.getElementById('pwdStrengthLabel');
-    let bar = document.getElementById('pwdStrengthBar');
-    let leakBox = document.getElementById('pwdLeakResult');
-    let shaBox = document.getElementById('pwdShaResult');
+async function executeSecureSharePack() {
+    let title = document.getElementById('secShareTitle').value.trim();
+    let text = document.getElementById('secShareContent').value.trim();
+    if(!text) { alert('Vui lòng nhập nội dung!'); return; }
 
-    if(!pwd) {
-        label.innerText = "Chưa nhập mật khẩu";
-        label.style.color = "#f87171";
-        bar.style.width = "0%";
-        bar.style.background = "#f87171";
-        shaBox.innerText = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
-        leakBox.innerHTML = '<span style="color: #64748b;">Đang chờ nhập liệu...</span>';
-        return;
-    }
-
-    // 1. Tính mã băm SHA-256 thời gian thực bằng Web Crypto API
     let enc = new TextEncoder();
-    let dataBuf = enc.encode(pwd);
+    let dataBuf = enc.encode(text);
+
     let hashBuf = await window.crypto.subtle.digest("SHA-256", dataBuf);
-    let shaHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    shaBox.innerText = shaHex;
+    let sha256Hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // 2. Đánh giá độ mạnh mật khẩu (Entropy / Độ dài / Ký tự đặc biệt)
-    let score = 0;
-    if(pwd.length >= 8) score += 30;
-    if(pwd.length >= 12) score += 20;
-    if(/[A-Z]/.test(pwd)) score += 20;
-    if(/[0-9]/.test(pwd)) score += 15;
-    if(/[^A-Za-z0-9]/.test(pwd)) score += 15;
+    let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+    let iv = window.crypto.getRandomValues(new Uint8Array(12));
+    let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuf);
 
-    bar.style.width = score + "%";
+    let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
+    lastSecKeyPair = kp;
+    let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
 
-    if(score < 40) {
-        label.innerText = "Yếu (Dễ bị tấn công vét cạn)";
-        label.style.color = "#f87171";
-        bar.style.background = "#f87171";
-    } else if(score < 75) {
-        label.innerText = "Trung bình (Khá an toàn)";
-        label.style.color = "#fbbf24";
-        bar.style.background = "#fbbf24";
-    } else {
-        label.innerText = "Rất mạnh (Kháng Brute-force cao)";
-        label.style.color = "#34d399";
-        bar.style.background = "#34d399";
-    }
+    lastSecPackage = {
+        title: title,
+        ciphertext: Array.from(new Uint8Array(ciphertext)),
+        iv: Array.from(iv),
+        wrappedKey: Array.from(new Uint8Array(wrappedKey)),
+        sha256: sha256Hex,
+        timestamp: new Date().toLocaleString()
+    };
 
-    // 3. Kiểm tra rò rỉ (So khớp với danh sách mẫu hoặc quy tắc yếu)
-    let isLeaked = commonLeakedPasswords.includes(pwd) || pwd.length < 6;
-    if(isLeaked) {
-        leakBox.innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> CẢNH BÁO: Đã bị lộ trong các cơ sở dữ liệu leak phổ biến!</span>`;
-    } else {
-        leakBox.innerHTML = `<span style="color: #34d399;"><i class="fa-solid fa-shield-check"></i> An toàn: Không tìm thấy trong dữ liệu rò rỉ.</span>`;
-    }
+    let blob = new Blob([JSON.stringify(lastSecPackage, null, 2)], {type: "application/json"});
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = "SecureShare_" + Date.now() + ".secure";
+    a.click();
+
+    alert('Đã mã hóa thành công! Tệp tin .secure đã được tải xuống máy.');
+}
+
+async function executeSecureShareUnpack(e) {
+    let file = e.target.files[0];
+    if(!file) return;
+    let reader = new FileReader();
+    reader.onload = async function(evt) {
+        try {
+            let pkg = JSON.parse(evt.target.result);
+            if(!lastSecKeyPair) throw new Error("Chưa có khóa giải mã trên trình duyệt!");
+            
+            let unwrappedKey = await window.crypto.subtle.unwrapKey(
+                "raw", new Uint8Array(pkg.wrappedKey), lastSecKeyPair.privateKey,
+                { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
+            );
+            let decryptedBuf = await window.crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, unwrappedKey, new Uint8Array(pkg.ciphertext)
+            );
+            let plaintext = new TextDecoder().decode(decryptedBuf);
+
+            document.getElementById('secShareResultBox').innerHTML = `
+                <div style="color: #34d399; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Khôi phục tài liệu "${pkg.title}" thành công!</div>
+                <div style="color: #fff; background: #0b0f19; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px;">${plaintext}</div>
+            `;
+        } catch(err) {
+            document.getElementById('secShareResultBox').innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại: Khóa không khớp hoặc tệp bị hỏng!</span>`;
+        }
+    };
+    reader.readAsText(file);
 }
 </script>
