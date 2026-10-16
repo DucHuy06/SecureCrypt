@@ -218,7 +218,7 @@ function genElGamalKey() {
         <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[BƯỚC 1: THIẾT LẬP THAM SỐ & TÍNH KHÓA]</div>
         <div>• <strong>Số nguyên tố p:</strong> ${lastP} | <strong>Phần tử sinh g:</strong> ${lastG}</div>
         <div>• <strong>Khóa bí mật x:</strong> ${lastX}</div>
-        <div>• <strong>Tính Khóa Công Khai (y):</strong> y = gˣ mod p ➔ ${lastG}^${lastX} mod ${lastP} = <span style="color:#06b6d4">${lastY}</span></div>
+        <div>• <strong>Tính Khóa Công Khai (y):</strong> y = gˣ mod p ➔ ${lastG}<sup>${lastX}</sup> mod ${lastP} = <span style="color:#06b6d4">${lastY}</span></div>
         <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT.</div>
     `;
 }
@@ -269,21 +269,24 @@ function runElGamalEncrypt() {
     let mathSteps = [];
     let parts = text.split(/[\s,]+/);
 
-    parts.forEach(numStr => {
-        if(!numStr) return;
+    for (let numStr of parts) {
+        if(!numStr) continue;
         let m = BigInt(numStr);
+        if (m >= lastP) {
+            alert(`Lỗi: Thông điệp M = ${m} phải nhỏ hơn số nguyên tố p = ${lastP}!`);
+            return;
+        }
         let k = kStr ? BigInt(kStr) : (BigInt(Math.floor(Math.random() * Number(lastP - 3n))) + 2n);
         let c1 = modPow(lastG, k, lastP);
         let yk = modPow(lastY, k, lastP);
         let c2 = (m * yk) % lastP;
 
         cipherPairs.push(`(${c1}, ${c2})`);
-        mathSteps.push(`M = ${m}, k = ${k} ➔ c₁ = gᵏ mod p = ${lastG}^${k} mod ${lastP} = <strong>${c1}</strong>, c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
-    });
+        mathSteps.push(`M = ${m}, k = ${k} ➔ c₁ = gᵏ mod p = ${lastG}<sup>${k}</sup> mod ${lastP} = <strong>${c1}</strong>, c₂ = (M × yᵏ) mod p = (${m} × ${yk}) mod ${lastP} = <strong style="color:#f43f5e">${c2}</strong>`);
+    }
 
     let ciphertextStr = cipherPairs.join(' ');
     document.getElementById('elgOutput').value = ciphertextStr;
-    document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgVisualStep').style.display = 'block';
     document.getElementById('elgTraceText').innerHTML = `
         <div style="color: var(--accent-indigo); font-weight: bold; margin-bottom: 6px;">[BƯỚC 2: QUÁ TRÌNH MÃ HÓA SỐ NGUYÊN]</div>
@@ -323,7 +326,7 @@ function runElGamalDecrypt() {
         let m = (c2 * c1xInv) % p;
 
         plainResults.push(m.toString());
-        mathSteps.push(`(${c1}, ${c2}) ➔ M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}^${x})⁻¹ mod ${p} = <strong>${m}</strong>`);
+        mathSteps.push(`(${c1}, ${c2}) ➔ M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}<sup>${x}</sup>)⁻¹ mod ${p} = <strong>${m}</strong>`);
     });
 
     let decryptedText = plainResults.join(' ');
