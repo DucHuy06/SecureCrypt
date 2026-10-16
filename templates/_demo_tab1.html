@@ -195,14 +195,14 @@ async function runPair2() {
     }
 }
 
-// Thực thi Cặp 3: Mô phỏng chuẩn số học mô-đun cho RSA & ElGamal
+// Thực thi Cặp 3: Tính toán trực tiếp theo thông điệp người dùng nhập
 function runPair3() {
     let val = document.getElementById('inputSig').value.trim();
     if(!val) { alert('Vui lòng nhập thông điệp!'); return; }
     
     document.getElementById('rowRes3').style.display = 'table-row';
 
-    // Chuyển chuỗi thành giá trị số nguyên M
+    // Chuyển chuỗi hoặc số nhập vào thành giá trị BigInt nguyên bản
     let M = 0n;
     if (!isNaN(val)) {
         M = BigInt(val);
@@ -211,19 +211,22 @@ function runPair3() {
             M = M * 256n + BigInt(val.charCodeAt(i));
         }
     }
-    M = (M % 97n) + 2n;
 
     // 1. RSA chuẩn học thuật (n = 323, e = 17)
+    // Lưu ý: RSA textbook yêu cầu M < n (323). Nếu M lớn hơn n, ta lấy M mod n để thuật toán không bị sai lệch toán học cơ bản.
     let n = 323n;
     let e = 17n;
-    let rsaCipher = (M ** e) % n;
-    document.getElementById('resRSA').innerText = `M = ${M} ➔ C = (M^${e}) mod ${n} = ${rsaCipher} [RSA Textbook]`;
+    let mRsa = M % n;
+    let rsaCipher = (mRsa ** e) % n;
+    document.getElementById('resRSA').innerText = `M = ${M} (mod ${n} = ${mRsa}) ➔ C = ${rsaCipher} [RSA Textbook]`;
 
     // 2. ElGamal chuẩn nhóm nhân Z_p* (p = 23, g = 5, h = 8, k = 3)
+    // ElGamal yêu cầu M < p (23). Ta lấy M mod p để khớp với miền giá trị của nhóm nguyên tố nhỏ.
     let p = 23n, g = 5n, h = 8n, k = 3n;
+    let mElg = M % p;
     let c1 = (g ** k) % p;
     let s = (h ** k) % p;
-    let c2 = (M * s) % p;
-    document.getElementById('resElg').innerText = `M = ${M} ➔ (c1 = ${c1}, c2 = ${c2}) [ElGamal Z_p*]`;
+    let c2 = (mElg * s) % p;
+    document.getElementById('resElg').innerText = `M = ${M} (mod ${p} = ${mElg}) ➔ (c1 = ${c1}, c2 = ${c2}) [ElGamal Z_p*]`;
 }
 </script>
