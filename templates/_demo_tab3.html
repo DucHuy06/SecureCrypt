@@ -431,7 +431,6 @@
   </header>
 
   <div class="ds-grid">
-    <!-- CHỌN PDF -->
     <section class="ds-panel">
       <div class="ds-step">
         <span class="ds-step-number">1</span>
@@ -480,7 +479,6 @@
            role="status" aria-live="polite"></div>
     </section>
 
-    <!-- KÝ PDF -->
     <section class="ds-panel">
       <div class="ds-step">
         <span class="ds-step-number">2</span>
@@ -512,7 +510,6 @@
       </div>
     </section>
 
-    <!-- XÁC MINH PDF -->
     <section class="ds-panel ds-verify-column">
       <div class="ds-step">
         <span class="ds-step-number">3</span>
@@ -676,7 +673,6 @@
       }
     }
 
-    // Gửi file đến API và hiển thị đầy đủ thông tin lỗi HTTP.
     async function postFile(url, file) {
       const formData = new FormData();
       formData.append('file', file, file.name);
@@ -684,10 +680,11 @@
       let response;
 
       try {
+        // Không gửi cookie phiên đăng nhập cho API ký/xác minh.
         response = await fetch(url, {
           method: 'POST',
           body: formData,
-          credentials: 'same-origin'
+          credentials: 'omit'
         });
       } catch (error) {
         throw new Error(
@@ -715,9 +712,7 @@
           try {
             const data = JSON.parse(body);
             serverMessage = data.message || body;
-          } catch (_) {
-            // Giữ nguyên nội dung nếu phản hồi không phải JSON hợp lệ.
-          }
+          } catch (_) {}
         }
 
         throw new Error(
@@ -726,8 +721,7 @@
           '\nURL yêu cầu: ' + response.url +
           '\nContent-Type: ' + (contentType || 'không xác định') +
           '\nPhản hồi máy chủ:\n' +
-          (serverMessage || '(Máy chủ không trả về nội dung)').
-            slice(0, 1200)
+          (serverMessage || '(Máy chủ không trả về nội dung)').slice(0, 1200)
         );
       }
 
@@ -835,10 +829,7 @@
           'info'
         );
 
-        const result = await postFile(
-          '/signature/pdf/sign',
-          signFile
-        );
+        const result = await postFile('/signature/pdf/sign', signFile);
 
         if (result.type !== 'file') {
           throw new Error(
@@ -896,10 +887,7 @@
           'info'
         );
 
-        const result = await postFile(
-          '/signature/pdf/verify',
-          verifyFile
-        );
+        const result = await postFile('/signature/pdf/verify', verifyFile);
 
         if (result.type !== 'json') {
           throw new Error(
@@ -950,8 +938,7 @@
               : 'Chưa có kết quả riêng biệt';
 
         $('dsResultCertificate').textContent =
-          data.trusted === true ||
-          data.certificate_trusted === true
+          data.trusted === true || data.certificate_trusted === true
             ? 'Backend xác nhận đáng tin cậy'
             : 'Chưa được xác nhận đáng tin cậy';
 
