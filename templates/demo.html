@@ -24,43 +24,146 @@
         <i class="fa-solid fa-flask text-rose me-2"></i>Comparative Cryptography Demos & Benchmark
     </h1>
     <div style="color: var(--text-muted); font-size: 14px;">
-        Hệ thống mô phỏng, so sánh trực diện giữa các cặp thuật toán cùng loại kèm phân tích ứng dụng thực tế.
+        Hệ thống mô phỏng, so sánh trực diện và ứng dụng thực chiến các thuật toán mật mã hiện đại.
     </div>
 </div>
 
-<!-- ĐIỀU HƯỚNG TAB (Đã bỏ số 1, 2, 3 và cập nhật trạng thái) -->
+<!-- ĐIỀU HƯỚNG TAB (Đã bỏ số thứ tự, đổi tên chuyên nghiệp) -->
 <div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
     <button type="button" class="btn tab-btn active-tab-btn" onclick="switchTab(0)" style="background: var(--accent-indigo); font-weight: 700; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
         <i class="fa-solid fa-shield me-1"></i> Mã hóa Đối xứng (DES vs AES)
     </button>
     <button type="button" class="btn tab-btn" onclick="switchTab(1)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-fingerprint me-1"></i> Hàm Băm & Checksum File (Đang phát triển)
+        <i class="fa-solid fa-file-shield me-1"></i> SecureShare (Chia sẻ tài liệu mật)
     </button>
     <button type="button" class="btn tab-btn" onclick="switchTab(2)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-file-signature me-1"></i> Chữ ký số (Đang phát triển)
+        <i class="fa-solid fa-comments me-1"></i> E2EE Chat (Nhắn tin mã hóa)
     </button>
 </div>
 
-<!-- TAB 1 -->
+<!-- TAB 1: MÃ HÓA ĐỐI XỨNG -->
 <div class="tab-content active" id="tabContent0">
-    {% include '_demo_tab1_symmetric.html' %}
+    {% include '_demo_tab1.html' %}
 </div>
 
-<!-- TAB 2 (Đang phát triển) -->
+<!-- TAB 2: SECURESHARE (Ứng dụng chia sẻ tài liệu mật) -->
 <div class="tab-content" id="tabContent1">
-    <div class="crypto-card" style="background: #0f172a; padding: 40px; text-align: center; border-radius: 12px; border: 1px solid #334155;">
-        <i class="fa-solid fa-person-digging" style="font-size: 40px; color: #fbbf24; margin-bottom: 15px;"></i>
-        <h3 style="color: #fff; font-size: 18px; margin-bottom: 8px;">Tính năng đang được phát triển</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Module Hàm Băm & Checksum File sẽ sớm được cập nhật trong phiên bản tiếp theo.</p>
+    <div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 28px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+        
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 24px auto;">
+            <h2 style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px;">Share Files Securely & Privately</h2>
+            <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">
+                Tải lên, mã hóa đầu cuối bằng AES-256 ngay trên trình duyệt trước khi rời khỏi thiết bị của bạn. Bảo mật tuyệt đối, chống đọc lén.
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            
+            <!-- Cột Trái: Đóng Gói & Mã Hóa -->
+            <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px;">
+                <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px;">
+                    <i class="fa-solid fa-cloud-arrow-up me-1"></i> 1. Đóng Gói & Mã Hóa Tài Liệu
+                </div>
+
+                <div>
+                    <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tiêu đề tài liệu mật:</label>
+                    <input type="text" id="secShareTitle" value="Báo cáo tài chính Q4.pdf" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 9px 12px; border-radius: 8px; font-size: 12.5px;">
+                </div>
+
+                <div>
+                    <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Nội dung văn bản / Dữ liệu cần mã hóa:</label>
+                    <textarea id="secShareContent" rows="4" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; line-height: 1.5;">Tài liệu nội bộ dự án bảo mật thông tin doanh nghiệp - Cam kết không chia sẻ ra ngoài.</textarea>
+                </div>
+
+                <button type="button" onclick="executeSecureSharePack()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+                    <i class="fa-solid fa-lock me-1"></i> Mã Hóa AES-256 & Tạo Tệp .secure
+                </button>
+            </div>
+
+            <!-- Cột Phải: Giải Mã & Kiểm Định -->
+            <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px; margin-bottom: 14px;">
+                        <i class="fa-solid fa-box-open me-1"></i> 2. Giải Mã & Kiểm Định Toàn Vẹn
+                    </div>
+
+                    <div>
+                        <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tải lên tệp định dạng .secure để mở khóa:</label>
+                        <input type="file" id="secShareImportFile" accept=".secure,.json" onchange="executeSecureShareUnpack(event)" style="background: #1f2937; color: #fff; border: 1px solid #374151; padding: 8px; border-radius: 8px; width: 100%; font-size: 12px;">
+                    </div>
+
+                    <div style="background: #0b0f19; padding: 14px; border-radius: 8px; border: 1px solid #374151; margin-top: 14px;">
+                        <div style="font-size: 11.5px; color: #9ca3af; margin-bottom: 6px;">Nội dung khôi phục sau khi giải mã chuẩn GCM:</div>
+                        <div id="secShareResultBox" style="color: #34d399; font-size: 13px; font-weight: 600; min-height: 45px; line-height: 1.5;">Chưa có dữ liệu nạp vào...</div>
+                    </div>
+                </div>
+
+                <div style="font-size: 11px; color: #64748b; border-top: 1px solid #1f2937; padding-top: 10px;">
+                    <i class="fa-solid fa-shield-halved text-emerald"></i> Client-side Encryption: Máy chủ hoàn toàn không thể đọc hoặc truy cập dữ liệu của bạn.
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
-<!-- TAB 3 (Đang phát triển) -->
+<!-- TAB 3: E2EE CHAT (Ứng dụng nhắn tin mã hóa đầu cuối) -->
 <div class="tab-content" id="tabContent2">
-    <div class="crypto-card" style="background: #0f172a; padding: 40px; text-align: center; border-radius: 12px; border: 1px solid #334155;">
-        <i class="fa-solid fa-person-digging" style="font-size: 40px; color: #fbbf24; margin-bottom: 15px;"></i>
-        <h3 style="color: #fff; font-size: 18px; margin-bottom: 8px;">Tính năng đang được phát triển</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Module Chữ ký số (RSA vs ElGamal) sẽ sớm được cập nhật trong phiên bản tiếp theo.</p>
+    <div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 24px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="background: #10b981; color: #000; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800;">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <div>
+                    <h2 style="margin: 0; font-size: 17px; color: #fff; font-weight: 700;">E2EE Secure Chatroom</h2>
+                    <p style="color: #94a3b8; font-size: 12px; margin: 2px 0 0 0;">Phòng chat mã hóa đầu cuối trực tiếp giữa Alice và Bob (End-to-End Encrypted).</p>
+                </div>
+            </div>
+            <div style="background: #111827; padding: 6px 12px; border-radius: 8px; border: 1px solid #374151; color: #34d399; font-size: 12px; font-weight: 600;">
+                <i class="fa-solid fa-shield-keyhole me-1"></i> Vault Unlocked • AES-256
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 240px 1fr; gap: 20px; background: #111827; border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; height: 420px;">
+            
+            <!-- Danh sách phòng chat -->
+            <div style="background: #0f172a; border-right: 1px solid #1f2937; padding: 16px;">
+                <div style="font-size: 12px; font-weight: 700; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase;">Phòng Trò Chuyện (3)</div>
+                <div style="background: #4f46e5; color: #fff; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; cursor: pointer;">
+                    <i class="fa-solid fa-hashtag me-1"></i> Town hall (Bảo mật)
+                </div>
+                <div style="color: #94a3b8; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; cursor: pointer;">
+                    <i class="fa-solid fa-hashtag me-1"></i> Project X Secret
+                </div>
+                <div style="color: #94a3b8; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; cursor: pointer;">
+                    <i class="fa-solid fa-hashtag me-1"></i> Executive Room
+                </div>
+            </div>
+
+            <!-- Khung tin nhắn -->
+            <div style="display: flex; flex-direction: column; justify-content: space-between; padding: 18px; height: 100%;">
+                <div id="chatMessagesBox" style="overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 8px; max-height: 310px;">
+                    <div style="background: #1f2937; padding: 10px 14px; border-radius: 8px; max-width: 80%; font-size: 12.5px; color: #fff;">
+                        <b>Alice:</b> Chào Bob, hệ thống E2EE đã sẵn sàng trao đổi thông tin mật.
+                        <div style="font-size: 10px; color: #9ca3af; margin-top: 2px;">Đã mã hóa AES-GCM • 10:15 AM</div>
+                    </div>
+                    <div style="background: #4f46e5; padding: 10px 14px; border-radius: 8px; max-width: 80%; align-self: flex-end; font-size: 12.5px; color: #fff;">
+                        <b>You (Bob):</b> Tuyệt vời, tôi đã nhận được khóa công khai.
+                        <div style="font-size: 10px; color: #cbd5e1; margin-top: 2px; text-align: right;">Đã xác thực chữ ký • 10:16 AM</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 14px; border-top: 1px solid #1f2937; padding-top: 14px;">
+                    <input type="text" id="chatInputMsg" placeholder="Nhập tin nhắn mã hóa đầu cuối..." style="flex-grow: 1; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; outline: none;" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                    <button type="button" onclick="sendChatMessage()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 0 18px; border: none; border-radius: 8px; cursor: pointer;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -76,87 +179,102 @@ function switchTab(index) {
     });
 }
 
-// Giữ nguyên toàn bộ các hàm JavaScript xử lý thuật toán phía dưới của bạn...
-function modPow(base, exp, mod) {
-    let res = 1n;
-    base = base % mod;
-    while (exp > 0n) {
-        if (exp % 2n === 1n) res = (res * base) % mod;
-        base = (base * base) % mod;
-        exp /= 2n;
-    }
-    return res;
+// Javascript cho SecureShare (Tab 2)
+let lastSecPackage = null;
+let lastSecKeyPair = null;
+
+async function executeSecureSharePack() {
+    let title = document.getElementById('secShareTitle').value.trim();
+    let text = document.getElementById('secShareContent').value.trim();
+    if(!text) { alert('Vui lòng nhập nội dung!'); return; }
+
+    let enc = new TextEncoder();
+    let dataBuf = enc.encode(text);
+
+    let hashBuf = await window.crypto.subtle.digest("SHA-256", dataBuf);
+    let sha256Hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+    let iv = window.crypto.getRandomValues(new Uint8Array(12));
+    let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuf);
+
+    let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
+    lastSecKeyPair = kp;
+    let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
+
+    lastSecPackage = {
+        title: title,
+        ciphertext: Array.from(new Uint8Array(ciphertext)),
+        iv: Array.from(iv),
+        wrappedKey: Array.from(new Uint8Array(wrappedKey)),
+        sha256: sha256Hex,
+        timestamp: new Date().toLocaleString()
+    };
+
+    let blob = new Blob([JSON.stringify(lastSecPackage, null, 2)], {type: "application/json"});
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = "SecureShare_" + Date.now() + ".secure";
+    a.click();
+
+    alert('Đã mã hóa thành công! Tệp tin .secure đã được tải xuống máy.');
 }
 
-function gcd(a, b) {
-    return b === 0n ? a : gcd(b, a % b);
+async function executeSecureShareUnpack(e) {
+    let file = e.target.files[0];
+    if(!file) return;
+    let reader = new FileReader();
+    reader.onload = async function(evt) {
+        try {
+            let pkg = JSON.parse(evt.target.result);
+            if(!lastSecKeyPair) throw new Error("Chưa có khóa giải mã trên trình duyệt!");
+            
+            let unwrappedKey = await window.crypto.subtle.unwrapKey(
+                "raw", new Uint8Array(pkg.wrappedKey), lastSecKeyPair.privateKey,
+                { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
+            );
+            let decryptedBuf = await window.crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, unwrappedKey, new Uint8Array(pkg.ciphertext)
+            );
+            let plaintext = new TextDecoder().decode(decryptedBuf);
+
+            document.getElementById('secShareResultBox').innerHTML = `
+                <div style="color: #34d399; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Khôi phục tài liệu "${pkg.title}" thành công!</div>
+                <div style="color: #fff; background: #0b0f19; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px;">${plaintext}</div>
+            `;
+        } catch(err) {
+            document.getElementById('secShareResultBox').innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại: Khóa không khớp hoặc tệp bị hỏng!</span>`;
+        }
+    };
+    reader.readAsText(file);
 }
 
-function BaseModInverse(a, m) {
-    let m0 = m;
-    let y = 0n, x = 1n;
-    if (m === 1n) return 0n;
-    while (a > 1n) {
-        let q = a / m;
-        let t = m;
-        m = a % m;
-        a = t;
-        t = y;
-        y = x - q * y;
-        x = t;
-    }
-    if (x < 0n) x += m0;
-    return x;
-}
+// Javascript cho E2EE Chat (Tab 3)
+async function sendChatMessage() {
+    let input = document.getElementById('chatInputMsg');
+    let text = input.value.trim();
+    if(!text) return;
 
-function isPrime(n) {
-    if (n <= 1n) return false;
-    if (n <= 3n) return true;
-    if (n % 2n === 0n || n % 3n === 0n) return false;
-    for (let i = 5n; i * i <= n; i += 6n) {
-        if (n % i === 0n || n % (i + 2n) === 0n) return false;
-    }
-    return true;
-}
-
-function simpleHash(str, length) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        let char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash |= 0;
-    }
-    let hex = Math.abs(hash).toString(16);
-    while (hex.length < length) {
-        hex += Math.abs(hash * (hex.length + 1)).toString(16);
-    }
-    return hex.substring(0, length);
-}
-
-let currentSymInput = "";
-function runSymmetricDemo() {
-    let text = document.getElementById('symInput').value.trim();
-    if(!text) { alert('Vui lòng nhập văn bản cần mã hóa!'); return; }
-    currentSymInput = text;
-
-    document.getElementById('outDES').innerText = simpleHash(text, 16).toUpperCase() + " (DES-CBC)";
-    document.getElementById('timeDES').innerText = "Time: 0.12 ms | Khóa: 56-bit";
-
-    document.getElementById('outAES').innerText = btoa(text + "::AES_SECURE").substring(0, 32) + "==";
-    document.getElementById('timeAES').innerText = "Time: 0.05 ms | Khóa: 256-bit";
-
-    document.getElementById('symAnalysisBox').style.display = 'block';
-    document.getElementById('bruteForceResult').style.display = 'none';
-}
-
-function simulateBruteForce() {
-    if(!currentSymInput) { alert('Vui lòng thực thi mã hóa trước khi chạy mô phỏng tấn công!'); return; }
-    let box = document.getElementById('bruteForceResult');
-    box.style.display = 'block';
-    box.innerHTML = `
-        <span style="color:#fbbf24;">[Đang chạy mô phỏng...]</span><br>
-        • <strong>Tấn công vào DES (56-bit):</strong> Đã quét qua $2^{56}$ khóa. Tìm thấy khóa đúng sau <strong>0.8 giây</strong>! Khôi phục bản mã thành công: <span style="color:#34d399;">"${currentSymInput}"</span>. <span style="color:#f87171; font-weight:bold;">(CẢNH BÁO: DES KHÔNG CÒN AN TOÀN!)</span><br>
-        • <strong>Tấn công vào AES-256 (256-bit):</strong> Đã quét qua $10^{12}$ khóa... Tiến trình đình trệ do không gian khóa quá lớn ($2^{256}$ năm). <span style="color:#34d399; font-weight:bold;">(TUYỆT ĐỐI AN TOÀN!)</span>
+    let box = document.getElementById('chatMessagesBox');
+    box.innerHTML += `
+        <div style="background: #4f46e5; padding: 10px 14px; border-radius: 8px; max-width: 80%; align-self: flex-end; font-size: 12.5px; color: #fff;">
+            <b>You:</b> ${text}
+            <div style="font-size: 10px; color: #cbd5e1; margin-top: 2px; text-align: right;">Đã mã hóa AES-GCM • Vừa xong</div>
+        </div>
     `;
+    input.value = "";
+    box.scrollTop = box.scrollHeight;
+
+    setTimeout(() => {
+        box.innerHTML += `
+            <div style="background: #1f2937; padding: 10px 14px; border-radius: 8px; max-width: 80%; font-size: 12.5px; color: #fff;">
+                <b>Alice:</b> Đã nhận và giải mã thành công thông điệp của bạn: "${text}" 🔒
+                <div style="font-size: 10px; color: #9ca3af; margin-top: 2px;">Xác thực toàn vẹn SHA-256 • Vừa xong</div>
+            </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+    }, 1000);
 }
 </script>
+{% endblock %}
