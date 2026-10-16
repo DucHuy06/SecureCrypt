@@ -1,64 +1,116 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-shield-virus text-emerald"></i> Ứng dụng Thực tế: Kiểm tra Tính toàn vẹn File & Chống Mã độc (MD5 vs. SHA-256)
+        <i class="fa-solid fa-file-signature text-amber"></i> Ứng dụng Thực tế: Hệ thống Chữ ký số & Chống Giả mạo (Hàm băm + Bất đối xứng)
     </div>
     <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
-        Mô phỏng kịch bản tải phần mềm. Kiểm chứng khả năng chống tấn công đụng độ (Collision Attack) khi file bị kẻ tấn công thay đổi mã độc nhưng cố tình giữ nguyên mã băm MD5.
+        Ứng dụng thực tế kết hợp Trụ cột 2 (Hàm băm SHA-256 để định danh toàn vẹn nội dung) và Trụ cột 3 (Mã hóa bất đối xứng RSA để phát hành và xác thực chữ ký pháp lý).
     </p>
 
-    <!-- KHU VỰC THAO TÁC THỰC TẾ -->
-    <div style="background: #1e293b; padding: 18px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 20px;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 10px; font-size: 14px;">
-            <i class="fa-solid fa-file-shield"></i> Chọn Gói tin / Phần mềm Cài đặt Mẫu
+    <!-- BƯỚC 1: SINH CẶP KHÓA -->
+    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 16px;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 13.5px;">
+            <i class="fa-solid fa-key"></i> Bước 1: Khởi tạo Cặp Khóa RSA (Public / Private Key)
         </div>
-        <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;">
-            <input type="text" id="softwareName" value="SecureCrypt_V1.0_Setup.exe (Size: 15.4 MB)" readonly style="background: #0f172a; color: #cbd5e1; border: 1px solid #475569; padding: 9px; border-radius: 6px; font-size: 12.5px;">
-            <button type="button" onclick="runIntegritySimulation()" style="background: var(--accent-emerald); color: #000; font-weight: 700; padding: 9px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
-                <i class="fa-solid fa-play"></i> Kiểm định Toàn vẹn
-            </button>
-        </div>
+        <button type="button" onclick="generateKeys()" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+            <i class="fa-solid fa-sync"></i> Tạo Cặp Khóa Mới (Web Crypto API)
+        </button>
+        <div id="keyStatus" style="font-size: 12px; color: #34d399; margin-top: 8px; font-family: monospace;">Trạng thái: Chưa khởi tạo khóa...</div>
     </div>
 
-    <!-- BẢNG LÝ THUYẾT & KẾT QUẢ ĐỐI CHIẾU -->
-    <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 14.5px;">
-            <i class="fa-solid fa-table-cells"></i> Bảng Đối chiếu & Nhật ký Kiểm định An toàn
+    <!-- BƯỚC 2: NHẬP VĂN BẢN VÀ KÝ SỐ -->
+    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 16px;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 13.5px;">
+            <i class="fa-solid fa-file-contract"></i> Bước 2: Soạn thảo Văn bản Hợp đồng & Ký số
         </div>
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; color: #cbd5e1; font-size: 13px;">
-                <thead>
-                    <tr style="border-bottom: 1px solid #334155; text-align: left; color: #60a5fa;">
-                        <th style="padding: 10px; width: 26%;">Tiêu chí phân tích</th>
-                        <th style="padding: 10px; width: 37%; color: #f87171;">MD5 (128-bit)</th>
-                        <th style="padding: 10px; width: 37%; color: #34d399;">SHA-256 (256-bit)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #1e293b;">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Độ dài chuỗi Digest</td>
-                        <td style="padding: 10px;">128-bit (32 ký tự Hex)</td>
-                        <td style="padding: 10px;">256-bit (64 ký tự Hex)</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #1e293b; display: none;" id="rowHashRes">
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Trạng thái kiểm tra File</td>
-                        <td style="padding: 10px; font-family: monospace; color: #f87171;" id="logMD5"></td>
-                        <td style="padding: 10px; font-family: monospace; color: #34d399;" id="logSHA"></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; font-weight: 600; color:#fff;">Đánh giá an toàn thực tế</td>
-                        <td style="padding: 10px; color: #f87171;">Dính lỗi đụng độ (collision), dễ bị hacker đánh lừa file giả mạo.</td>
-                        <td style="padding: 10px; color: #34d399;">An toàn tuyệt đối, chuẩn mực kiểm tra checksum toàn cầu.</td>
-                    </tr>
-                </tbody>
-            </table>
+        <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nội dung hợp đồng gốc:</label>
+        <textarea id="contractText" rows="2" style="width: 100%; background: #0f172a; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">Cam kết chuyển nhượng cổ phần và tài sản trị giá 5.000.000.000 VNĐ.</textarea>
+        
+        <button type="button" onclick="signDocument()" style="margin-top: 8px; background: #d97706; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+            <i class="fa-solid fa-pen-nib"></i> Ký số Văn bản (Private Key)
+        </button>
+        <div id="signOutput" style="font-size: 11.5px; color: #fbbf24; margin-top: 8px; font-family: monospace; word-break: break-all;"></div>
+    </div>
+
+    <!-- BƯỚC 3: XÁC THỰC & CHỐNG GIẢ MẠO -->
+    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
+        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 13.5px;">
+            <i class="fa-solid fa-shield-check"></i> Bước 3: Kiểm tra & Xác thực Chữ ký (Public Key)
         </div>
+        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
+            Hệ thống dùng Khóa công khai để kiểm tra xem nội dung văn bản có bị ai đó sửa đổi trái phép hay không.
+        </p>
+        <button type="button" onclick="verifyDocument()" style="background: #059669; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+            <i class="fa-solid fa-check-double"></i> Xác thực Tính nguyên vẹn
+        </button>
+        <div id="verifyResult" style="font-size: 12.5px; margin-top: 10px; font-weight: 700;"></div>
     </div>
 </div>
 
 <script>
-function runIntegritySimulation() {
-    document.getElementById('rowHashRes').style.display = 'table-row';
-    document.getElementById('logMD5').innerHTML = `• File Gốc: <code>5a8f...2e10</code><br>• File độc hại: <code>5a8f...2e10</code><br><span style="color:#f87171; font-weight:bold;">=> MD5 bị đánh lừa!</span>`;
-    document.getElementById('logSHA').innerHTML = `• File Gốc: <code>c9b2...7f41</code><br>• File độc hại: <code>3d1e...9a04</code><br><span style="color:#34d399; font-weight:bold;">=> SHA-256 chặn đứng mã độc!</span>`;
+let globalKeyPair = null;
+let globalSignature = null;
+
+async function generateKeys() {
+    try {
+        globalKeyPair = await window.crypto.subtle.generateKey(
+            {
+                name: "RSASSA-PKCS1-v1_5",
+                modulusLength: 2048,
+                publicExponent: new Uint8Array([1, 0, 1]),
+                hash: "SHA-256",
+            },
+            true,
+            ["sign", "verify"]
+        );
+        document.getElementById('keyStatus').innerHTML = `Trạng thái: Đã tạo thành công cặp khóa RSA-256 thực tế trên trình duyệt!`;
+    } catch(e) {
+        alert('Lỗi tạo khóa: ' + e);
+    }
+}
+
+async function signDocument() {
+    if(!globalKeyPair) {
+        alert('Vui lòng tạo cặp khóa ở Bước 1 trước!');
+        return;
+    }
+    let text = document.getElementById('contractText').value;
+    let enc = new TextEncoder();
+    try {
+        let signature = await window.crypto.subtle.sign(
+            "RSASSA-PKCS1-v1_5",
+            globalKeyPair.privateKey,
+            enc.encode(text)
+        );
+        globalSignature = signature;
+        let hexSig = Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
+        document.getElementById('signOutput').innerHTML = `[CHỮ KÝ SỐ THÀNH CÔNG]: ${hexSig.substring(0, 64)}... (Đã băm SHA-256 và ký bằng Private Key)`;
+    } catch(e) {
+        alert('Lỗi ký số: ' + e);
+    }
+}
+
+async function verifyDocument() {
+    if(!globalKeyPair || !globalSignature) {
+        alert('Vui lòng thực hiện ký số ở Bước 2 trước!');
+        return;
+    }
+    let text = document.getElementById('contractText').value;
+    let enc = new TextEncoder();
+    try {
+        let isValid = await window.crypto.subtle.verify(
+            "RSASSA-PKCS1-v1_5",
+            globalKeyPair.publicKey,
+            globalSignature,
+            enc.encode(text)
+        );
+        let resBox = document.getElementById('verifyResult');
+        if(isValid) {
+            resBox.innerHTML = `<span style="color: #34d399;"><i class="fa-solid fa-circle-check"></i> XÁC THỰC THÀNH CÔNG: Văn bản hoàn toàn nguyên vẹn, chữ ký hợp lệ từ chính chủ!</span>`;
+        } else {
+            resBox.innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> CẢNH BÁO GIẢ MẠO: Nội dung văn bản đã bị thay đổi trái phép so với lúc ký! Chữ ký không hợp lệ!</span>`;
+        }
+    } catch(e) {
+        alert('Lỗi xác thực: ' + e);
+    }
 }
 </script>
