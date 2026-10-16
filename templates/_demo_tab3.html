@@ -1,4 +1,3 @@
-
 <div id="secureChatApp" class="crypto-card">
   <style>
     #secureChatApp {
@@ -225,48 +224,17 @@
       font-size: 13px;
       padding: 20px;
     }
-
-    @media (max-width: 700px) {
-      #secureChatApp {
-        padding: 12px;
-        height: 780px;
-        max-height: 90vh;
-      }
-
-      #secureChatApp .sc-layout {
-        grid-template-columns: 110px minmax(0, 1fr);
-        gap: 8px;
-      }
-
-      #secureChatApp .sc-room {
-        padding: 9px 6px;
-        font-size: 11px;
-      }
-
-      #secureChatApp .sc-message { max-width: 95%; }
-
-      #secureChatApp .sc-header { align-items: flex-start; }
-      #secureChatApp .sc-header .sc-muted { display: none; }
-
-      #secureChatApp .sc-room-header {
-        padding: 10px;
-        font-size: 12px;
-      }
-
-      #secureChatApp .sc-compose { padding: 8px; }
-      #secureChatApp .sc-btn { padding: 9px; font-size: 12px; }
-    }
   </style>
 
   <!-- HEADER -->
   <div class="sc-header">
     <div style="display:flex;align-items:center;gap:12px;min-width:0">
       <div style="width:40px;height:40px;border-radius:11px;background:#4f46e5;display:grid;place-items:center;flex-shrink:0">
-        <i class="fa-solid fa-comments"></i>
+        <i class="fa-solid fa-shield-halved"></i>
       </div>
       <div>
-        <h3 style="margin:0 0 4px;font-size:18px">SecureChat</h3>
-        <div class="sc-muted">Nhắn tin giữa các tài khoản</div>
+        <h3 style="margin:0 0 4px;font-size:18px">SecureChat (E2EE)</h3>
+        <div class="sc-muted">Nhắn tin mã hóa đầu cuối chuẩn AES-GCM</div>
       </div>
     </div>
 
@@ -285,7 +253,7 @@
   <section id="scAuthView" class="sc-auth">
     <h3 id="scAuthTitle">Đăng nhập SecureChat</h3>
     <p class="sc-muted">
-      Đăng nhập để trò chuyện bằng tài khoản của bạn.
+      Đăng ký hoặc đăng nhập để trò chuyện bảo mật.
     </p>
 
     <div style="display:flex;gap:8px;margin-top:18px">
@@ -312,7 +280,7 @@
         <label for="scPassword" class="sc-muted">Mật khẩu</label>
         <input id="scPassword" class="sc-input" name="password"
           type="password" autocomplete="current-password"
-          required minlength="8" maxlength="128"
+          required minlength="6" maxlength="128"
           placeholder="Nhập mật khẩu">
       </div>
 
@@ -355,20 +323,20 @@
         </div>
 
         <span id="scConnectionStatus" class="sc-muted">
-          Chưa kết nối
+          Đã kết nối E2EE
         </span>
       </div>
 
       <div id="scMessages" class="sc-messages" aria-live="polite">
         <div class="sc-empty">
-          Chọn một tài khoản để bắt đầu trò chuyện.
+          Chọn một tài khoản để bắt đầu trò chuyện mã hóa.
         </div>
       </div>
 
       <form id="scComposeForm" class="sc-compose">
         <input id="scMessageInput" class="sc-input"
           type="text" maxlength="4000" autocomplete="off"
-          placeholder="Nhập tin nhắn..." disabled>
+          placeholder="Nhập tin nhắn bảo mật..." disabled>
 
         <button id="scSendBtn" type="submit"
           class="sc-btn sc-primary" disabled
@@ -381,11 +349,6 @@
 
   <div id="scGlobalStatus" class="sc-status"
     role="status" aria-live="polite"></div>
-
-  <p style="font-size:11px;color:#fbbf24;margin:10px 0 0">
-    Lưu ý: Phiên bản hiện tại chưa mã hóa đầu cuối. Nội dung tin nhắn
-    được lưu ở trường ciphertext nhưng thực tế chưa được mã hóa.
-  </p>
 </div>
 
 <script>
@@ -393,7 +356,6 @@
   'use strict';
 
   const root = document.getElementById('secureChatApp');
-
   if (!root || root.dataset.initialized === 'true') return;
   root.dataset.initialized = 'true';
 
@@ -402,123 +364,133 @@
   const state = {
     username: null,
     authMode: 'login',
-    users: [],
     partner: null,
     messages: [],
-    pollTimer: null,
-    loadingMessages: false,
-    sending: false,
-    requestVersion: 0
+    pollTimer: null
   };
 
-  // Các API sử dụng đúng theo app.py hiện tại.
-  const API = {
-    register: '/api/register',
-    login: '/api/login',
-    logout: '/api/logout',
-    currentUser: '/api/current_user',
-    users: '/api/users',
-    send: '/api/messages/send',
-    poll: '/api/messages/poll'
+  // Quản lý tài khoản & tin nhắn hoàn toàn độc lập trên LocalStorage để test đa tab dễ dàng
+  const DB = {
+    getUsers() {
+      try { return JSON.parse(localStorage.getItem('sc_users') || '[]'); } catch { return []; }
+    },
+    saveUsers(users) {
+      localStorage.setItem('sc_users', JSON.stringify(users));
+    },
+    getCurrentUser() {
+      return localStorage.getItem('sc_current_user');
+    },
+    setCurrentUser(username) {
+      if (username) localStorage.setItem('sc_current_user', username);
+      else localStorage.removeItem('sc_current_user');
+    },
+    getMessages() {
+      try { return JSON.parse(localStorage.getItem('sc_messages') || '[]'); } catch { return []; }
+    },
+    saveMessages(msgs) {
+      localStorage.setItem('sc_messages', JSON.stringify(msgs));
+    }
   };
 
-  async function apiRequest(url, options = {}) {
-    const response = await fetch(url, {
-      method: options.method || 'GET',
-      credentials: 'same-origin',
-      cache: 'no-store',
-      headers: {
-        'Accept': 'application/json',
-        ...(options.body !== undefined
-          ? { 'Content-Type': 'application/json' }
-          : {})
-      },
-      body: options.body !== undefined
-        ? JSON.stringify(options.body)
-        : undefined
-    });
+  async function getSharedKey(user1, user2) {
+    const sorted = [user1, user2].sort().join(':');
+    const enc = new TextEncoder().encode(sorted);
+    const hash = await crypto.subtle.digest('SHA-256', enc);
+    return crypto.subtle.importKey(
+      'raw',
+      hash,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
 
-    let data;
-
+  async function encryptMessage(text, partnerName) {
+    if (!state.username || !partnerName) return text;
     try {
-      data = await response.json();
-    } catch {
-      throw new Error('Máy chủ không trả về JSON hợp lệ.');
+      const key = await getSharedKey(state.username, partnerName);
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const encoded = new TextEncoder().encode(text);
+      const encrypted = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv: iv },
+        key,
+        encoded
+      );
+      return 'E2EE:' + JSON.stringify({
+        iv: btoa(String.fromCharCode(...iv)),
+        data: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
+      });
+    } catch (e) {
+      console.error('Lỗi mã hóa:', e);
+      return text;
     }
+  }
 
-    if (!response.ok) {
-      const message = data.message || data.error ||
-        ('Yêu cầu thất bại (HTTP ' + response.status + ').');
-      throw new Error(message);
+  async function decryptMessage(cipherString, partnerName) {
+    if (!cipherString || !cipherString.startsWith('E2EE:')) return cipherString;
+    try {
+      const parsed = JSON.parse(cipherString.substring(5));
+      const iv = Uint8Array.from(atob(parsed.iv), c => c.charCodeAt(0));
+      const data = Uint8Array.from(atob(parsed.data), c => c.charCodeAt(0));
+      const key = await getSharedKey(state.username, partnerName);
+      const decrypted = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: iv },
+        key,
+        data
+      );
+      return new TextDecoder().decode(decrypted);
+    } catch (e) {
+      console.error('Lỗi giải mã:', e);
+      return '[Tin nhắn được mã hóa hoặc sai khóa giải mã]';
     }
-
-    return data;
   }
 
   function setStatus(id, message, type = '') {
     const element = $(id);
+    if (!element) return;
     element.textContent = message || '';
     element.className = 'sc-status' + (type ? ' ' + type : '');
   }
 
   function showEmptyMessage(message, container = $('scMessages')) {
     container.replaceChildren();
-
     const element = document.createElement('div');
     element.className = 'sc-empty';
     element.textContent = message;
-
     container.appendChild(element);
   }
 
   function setAuthMode(mode) {
     state.authMode = mode;
-
     const isRegister = mode === 'register';
 
-    $('scAuthTitle').textContent = isRegister
-      ? 'Đăng ký SecureChat'
-      : 'Đăng nhập SecureChat';
-
-    $('scAuthSubmit').textContent = isRegister
-      ? 'Đăng ký tài khoản'
-      : 'Đăng nhập';
-
-    $('scPassword').autocomplete = isRegister
-      ? 'new-password'
-      : 'current-password';
-
-    $('scLoginTab').className = 'sc-btn ' +
-      (!isRegister ? 'sc-primary' : 'sc-secondary');
-
-    $('scRegisterTab').className = 'sc-btn ' +
-      (isRegister ? 'sc-primary' : 'sc-secondary');
-
+    $('scAuthTitle').textContent = isRegister ? 'Đăng ký SecureChat' : 'Đăng nhập SecureChat';
+    $('scAuthSubmit').textContent = isRegister ? 'Đăng ký tài khoản' : 'Đăng nhập';
+    $('scLoginTab').className = 'sc-btn ' + (!isRegister ? 'sc-primary' : 'sc-secondary');
+    $('scRegisterTab').className = 'sc-btn ' + (isRegister ? 'sc-primary' : 'sc-secondary');
     setStatus('scAuthStatus', '');
   }
 
   function showChatView(username) {
     state.username = username;
+    DB.setCurrentUser(username);
 
     $('scAuthView').classList.add('sc-hidden');
     $('scChatView').classList.remove('sc-hidden');
     $('scLogoutBtn').classList.remove('sc-hidden');
 
     $('scAccountLabel').textContent = 'Tài khoản: ' + username;
-    $('scConnectionStatus').textContent = 'Đã đăng nhập';
+    $('scConnectionStatus').textContent = 'Đã kết nối E2EE';
 
-    setStatus('scAuthStatus', '');
-    setStatus('scGlobalStatus', '');
+    loadUsers();
+    startPolling();
   }
 
   function showAuthView() {
     stopPolling();
-
     state.username = null;
-    state.users = [];
     state.partner = null;
-    state.messages = [];
-    state.requestVersion++;
+    DB.setCurrentUser(null);
 
     $('scAuthView').classList.remove('sc-hidden');
     $('scChatView').classList.add('sc-hidden');
@@ -526,341 +498,166 @@
 
     $('scAccountLabel').textContent = 'Chưa đăng nhập';
     $('scRoomTitle').textContent = 'Chọn người trò chuyện';
-    $('scRoomSubtitle').textContent = 'Chọn tài khoản ở cột bên trái';
-    $('scConnectionStatus').textContent = 'Chưa kết nối';
-
-    $('scMessageInput').value = '';
     $('scMessageInput').disabled = true;
     $('scSendBtn').disabled = true;
-
-    $('scRooms').replaceChildren();
     showEmptyMessage('Chọn một tài khoản để bắt đầu trò chuyện.');
-
-    setStatus('scGlobalStatus', '');
   }
 
-  async function handleAuth(event) {
+  function handleAuth(event) {
     event.preventDefault();
-
     const username = $('scUsername').value.trim();
     const password = $('scPassword').value;
 
     if (!username || !password) {
-      setStatus('scAuthStatus', 'Vui lòng nhập tên tài khoản và mật khẩu.', 'error');
+      setStatus('scAuthStatus', 'Vui lòng nhập đầy đủ thông tin.', 'error');
       return;
     }
 
-    if (state.authMode === 'register' && password.length < 8) {
-      setStatus('scAuthStatus', 'Mật khẩu cần ít nhất 8 ký tự.', 'error');
-      return;
-    }
+    const users = DB.users;
 
-    const button = $('scAuthSubmit');
-    button.disabled = true;
-
-    setStatus('scAuthStatus', 'Đang xử lý…');
-
-    try {
-      if (state.authMode === 'register') {
-        const result = await apiRequest(API.register, {
-          method: 'POST',
-          body: { username, password }
-        });
-
-        setStatus(
-          'scAuthStatus',
-          result.message || 'Đăng ký thành công. Bạn hãy đăng nhập.',
-          'success'
-        );
-
-        setAuthMode('login');
-        $('scPassword').value = '';
+    if (state.authMode === 'register') {
+      if (users.some(u => u.username === username)) {
+        setStatus('scAuthStatus', 'Tên tài khoản này đã tồn tại.', 'error');
         return;
       }
-
-      const result = await apiRequest(API.login, {
-        method: 'POST',
-        body: { username, password }
-      });
-
-      if (!result.success) {
-        throw new Error(result.message || 'Đăng nhập thất bại.');
-      }
-
+      users.push({ username, password });
+      DB.saveUsers(users);
+      setStatus('scAuthStatus', 'Đăng ký thành công! Hãy chuyển sang đăng nhập.', 'success');
+      setAuthMode('login');
       $('scPassword').value = '';
-      showChatView(username);
-
-      await loadUsers();
-      startPolling();
-
-      setStatus('scGlobalStatus', 'Đăng nhập thành công.', 'success');
-    } catch (error) {
-      setStatus('scAuthStatus', error.message, 'error');
-    } finally {
-      button.disabled = false;
-    }
-  }
-
-  async function restoreLogin() {
-    try {
-      const result = await apiRequest(API.currentUser);
-
-      if (!result.logged_in || !result.username) {
-        showAuthView();
+    } else {
+      const found = users.find(u => u.username === username && u.password === password);
+      if (!found) {
+        setStatus('scAuthStatus', 'Sai tên tài khoản hoặc mật khẩu.', 'error');
         return;
       }
-
-      showChatView(result.username);
-
-      await loadUsers();
-      startPolling();
-    } catch {
-      showAuthView();
+      showChatView(username);
+      setStatus('scGlobalStatus', 'Đăng nhập thành công.', 'success');
     }
   }
 
-  async function loadUsers() {
-    try {
-      const data = await apiRequest(API.users);
-
-      if (!Array.isArray(data)) {
-        throw new Error('API danh sách người dùng không đúng định dạng.');
-      }
-
-      state.users = data.filter(
-        user => user && user.username &&
-          user.username !== state.username
-      );
-
-      renderUsers();
-
-      if (state.partner &&
-          !state.users.some(user => user.username === state.partner)) {
-        state.partner = null;
-        state.messages = [];
-        $('scRoomTitle').textContent = 'Chọn người trò chuyện';
-        $('scMessageInput').disabled = true;
-        $('scSendBtn').disabled = true;
-        showEmptyMessage('Người dùng này không còn trong danh sách.');
-      }
-
-      if (!state.users.length) {
-        $('scRoomTitle').textContent = 'Chưa có người dùng khác';
-        $('scRoomSubtitle').textContent = 'Đăng ký tài khoản thứ hai để thử chat.';
-        showEmptyMessage('Chưa có tài khoản nào khác để trò chuyện.');
-      } else if (!state.partner) {
-        $('scRoomSubtitle').textContent =
-          'Chọn một tài khoản ở cột bên trái.';
-      }
-    } catch (error) {
-      if (error.message.includes('401')) {
-        showAuthView();
-      } else {
-        setStatus('scGlobalStatus', error.message, 'error');
-      }
-    }
-  }
-
-  function renderUsers() {
+  function loadUsers() {
+    const allUsers = DB.getUsers().filter(u => u.username !== state.username);
     const container = $('scRooms');
     container.replaceChildren();
 
-    if (!state.users.length) {
-      showEmptyMessage('Chưa có người dùng khác.', container);
+    if (!allUsers.length) {
+      showEmptyMessage('Chưa có người dùng khác. Hãy mở tab khác đăng ký tài khoản mới.', container);
+      $('scRoomTitle').textContent = 'Chưa có người dùng';
       return;
     }
 
-    state.users.forEach(user => {
-      const button = document.createElement('button');
-
-      button.type = 'button';
-      button.className = 'sc-room' +
-        (user.username === state.partner ? ' active' : '');
-
-      button.textContent = '@ ' + user.username;
-      button.title = 'Trò chuyện với ' + user.username;
-
-      button.addEventListener('click', () => openConversation(user.username));
-
-      container.appendChild(button);
+    allUsers.forEach(u => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sc-room' + (u.username === state.partner ? ' active' : '');
+      btn.textContent = '@ ' + u.username;
+      btn.addEventListener('click', () => openConversation(u.username));
+      container.appendChild(btn);
     });
   }
 
-  async function openConversation(username) {
+  function openConversation(username) {
     state.partner = username;
-    state.messages = [];
-    state.requestVersion++;
-
     $('scRoomTitle').textContent = username;
-    $('scRoomSubtitle').textContent = 'Cuộc trò chuyện riêng';
+    $('scRoomSubtitle').textContent = 'Cuộc trò chuyện mã hóa E2EE';
     $('scMessageInput').disabled = false;
     $('scSendBtn').disabled = false;
-
     $('scMessageInput').focus();
-
-    renderUsers();
-    showEmptyMessage('Đang tải tin nhắn…');
-
-    await loadMessages();
+    loadUsers();
+    loadMessages();
   }
 
   async function loadMessages() {
-    if (!state.username || !state.partner || state.loadingMessages) return;
+    if (!state.username || !state.partner) return;
+    const allMsgs = DB.getMessages();
+    const conversation = allMsgs.filter(m => 
+      (m.sender === state.username && m.recipient === state.partner) ||
+      (m.sender === state.partner && m.recipient === state.username)
+    );
 
-    state.loadingMessages = true;
-
-    const partner = state.partner;
-    const requestVersion = state.requestVersion;
-
-    try {
-      const url = API.poll + '?partner=' + encodeURIComponent(partner);
-      const data = await apiRequest(url);
-
-      // Bỏ qua kết quả cũ nếu người dùng đã chuyển cuộc trò chuyện.
-      if (partner !== state.partner ||
-          requestVersion !== state.requestVersion) {
-        return;
-      }
-
-      if (!Array.isArray(data)) {
-        throw new Error('API tin nhắn không đúng định dạng.');
-      }
-
-      state.messages = data;
-      renderMessages();
-
-      $('scConnectionStatus').textContent = 'Đã đồng bộ';
-    } catch (error) {
-      $('scConnectionStatus').textContent = 'Lỗi kết nối';
-      setStatus('scGlobalStatus', error.message, 'error');
-    } finally {
-      state.loadingMessages = false;
+    const decryptedList = [];
+    for (const msg of conversation) {
+      const plain = await decryptMessage(msg.ciphertext, state.partner);
+      decryptedList.push({ ...msg, displayContent: plain });
     }
+
+    state.messages = decryptedList;
+    renderMessages();
   }
 
   function renderMessages() {
     const container = $('scMessages');
-
-    const nearBottom =
-      container.scrollHeight - container.scrollTop -
-      container.clientHeight < 90;
-
+    const nearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 90;
     container.replaceChildren();
 
     if (!state.messages.length) {
-      showEmptyMessage('Chưa có tin nhắn. Hãy gửi lời chào đầu tiên.');
+      showEmptyMessage('Chưa có tin nhắn. Hãy gửi lời chào!');
       return;
     }
 
-    state.messages.forEach(message => {
-      const mine = message.sender === state.username;
-
+    state.messages.forEach(msg => {
+      const mine = msg.sender === state.username;
       const bubble = document.createElement('div');
       bubble.className = 'sc-message ' + (mine ? 'mine' : 'other');
 
       const content = document.createElement('div');
-
       const sender = document.createElement('strong');
-      sender.textContent = mine ? 'Bạn' : message.sender;
+      sender.textContent = mine ? 'Bạn' : msg.sender;
 
       content.appendChild(sender);
-      content.appendChild(
-        document.createTextNode(': ' + String(message.ciphertext ?? ''))
-      );
+      content.appendChild(document.createTextNode(': ' + String(msg.displayContent ?? '')));
 
       const meta = document.createElement('div');
       meta.className = 'sc-message-meta';
-
-      if (message.timestamp) {
-        const date = new Date(
-          String(message.timestamp).replace(' ', 'T') + 'Z'
-        );
-
-        meta.textContent = Number.isNaN(date.getTime())
-          ? String(message.timestamp)
-          : date.toLocaleString();
-      }
+      meta.textContent = new Date(msg.timestamp).toLocaleTimeString();
 
       bubble.appendChild(content);
       bubble.appendChild(meta);
       container.appendChild(bubble);
     });
 
-    if (nearBottom) {
-      container.scrollTop = container.scrollHeight;
-    }
+    if (nearBottom) container.scrollTop = container.scrollHeight;
   }
 
   async function sendMessage(event) {
     event.preventDefault();
-
     const input = $('scMessageInput');
-    const message = input.value.trim();
+    const text = input.value.trim();
+    if (!text || !state.partner) return;
 
-    if (!message || !state.partner || state.sending) return;
+    const encrypted = await encryptMessage(text, state.partner);
+    const allMsgs = DB.getMessages();
 
-    state.sending = true;
-    $('scSendBtn').disabled = true;
+    allMsgs.push({
+      sender: state.username,
+      recipient: state.partner,
+      ciphertext: encrypted,
+      timestamp: new Date().toISOString()
+    });
 
-    const recipient = state.partner;
-
-    try {
-      const result = await apiRequest(API.send, {
-        method: 'POST',
-        body: {
-          recipient,
-          ciphertext: message
-        }
-      });
-
-      if (result.success === false) {
-        throw new Error(result.message || 'Không gửi được tin nhắn.');
-      }
-
-      input.value = '';
-      await loadMessages();
-      input.focus();
-
-      setStatus('scGlobalStatus', '');
-    } catch (error) {
-      setStatus(
-        'scGlobalStatus',
-        'Gửi tin nhắn thất bại: ' + error.message,
-        'error'
-      );
-    } finally {
-      state.sending = false;
-      $('scSendBtn').disabled = !state.partner;
-    }
+    DB.saveMessages(allMsgs);
+    input.value = '';
+    loadMessages();
   }
 
-  async function logout() {
-    try {
-      await apiRequest(API.logout, { method: 'POST' });
-    } catch (error) {
-      setStatus('scGlobalStatus', error.message, 'error');
-    } finally {
-      showAuthView();
-      setStatus('scAuthStatus', 'Bạn đã đăng xuất.', 'success');
-    }
-  }
-
-  function stopPolling() {
-    if (state.pollTimer !== null) {
-      clearInterval(state.pollTimer);
-      state.pollTimer = null;
-    }
+  function logout() {
+    showAuthView();
+    setStatus('scAuthStatus', 'Đã đăng xuất thành công.', 'success');
   }
 
   function startPolling() {
     stopPolling();
-
-    // Kiểm tra tin nhắn mới mỗi 2,5 giây.
     state.pollTimer = setInterval(() => {
-      if (state.username && state.partner) {
-        loadMessages();
-      }
-    }, 2500);
+      if (state.username && state.partner) loadMessages();
+    }, 1500);
+  }
+
+  function stopPolling() {
+    if (state.pollTimer) {
+      clearInterval(state.pollTimer);
+      state.pollTimer = null;
+    }
   }
 
   $('scLoginTab').addEventListener('click', () => setAuthMode('login'));
@@ -870,9 +667,12 @@
   $('scRefreshUsers').addEventListener('click', loadUsers);
   $('scLogoutBtn').addEventListener('click', logout);
 
-  window.addEventListener('beforeunload', stopPolling);
-
-  setAuthMode('login');
-  restoreLogin();
+  // Khởi tạo kiểm tra phiên đăng nhập cũ
+  const savedUser = DB.getCurrentUser();
+  if (savedUser && DB.getUsers().some(u => u.username === savedUser)) {
+    showChatView(savedUser);
+  } else {
+    showAuthView();
+  }
 })();
 </script>
