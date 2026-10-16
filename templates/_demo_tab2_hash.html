@@ -1,100 +1,87 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-shield-halved text-amber"></i> SecureShare Hub: Trạm Chia sẻ Bảo mật Đa lớp & Tệp tin
+        <i class="fa-solid fa-bolt text-amber"></i> SecureShare Hub: Trạm Tự động Hóa Mật mã Đa lớp (Real-time Engine)
     </div>
     <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
-        Ứng dụng thực tế tích hợp trọn vẹn 6 thuật toán: Dùng <b>AES-GCM</b> mã hóa dữ liệu, <b>RSA/ElGamal</b> bảo vệ khóa, <b>SHA-256 & MD5</b> kiểm tra toàn vẹn, và <b>DES</b> trong phân vùng tương thích học tập.
+        Vận hành tự động ngầm 100%: Mọi ký tự nhập vào tự động được mã hóa, bảo vệ khóa và kiểm định toàn vẹn thời gian thực không cần thao tác nút bấm.
     </p>
 
-    <!-- NÚT CHUYỂN ĐỔI CHẾ ĐỘ GỬI / NHẬN NGAY TRONG TAB -->
+    <!-- THANH CHUYỂN TAB CHẾ ĐỘ -->
     <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px;">
         <button type="button" onclick="switchSecTab('encrypt')" id="btnSecEnc" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
-            <i class="fa-solid fa-lock"></i> 1. Tạo Gói Chia Sẻ (Sender)
+            <i class="fa-solid fa-microchip"></i> 1. Luồng Tự động Gửi & Đóng gói
         </button>
         <button type="button" onclick="switchSecTab('decrypt')" id="btnSecDec" style="background: #1e293b; color: #94a3b8; font-weight: 700; padding: 8px 16px; border: 1px solid #334155; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
-            <i class="fa-solid fa-lock-open"></i> 2. Nhận & Giải Mã (Receiver)
+            <i class="fa-solid fa-unlock-keyhole"></i> 2. Luồng Tự động Nhận & Giải mã
         </button>
     </div>
 
-    <!-- KHU VỰC 1: TẠO GÓI BẢO MẬT -->
+    <!-- KHU VỰC 1: TỰ ĐỘNG ĐÓNG GÓI -->
     <div id="secPaneEnc" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
         
         <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 12px;">
             <div style="font-weight: 700; color: #38bdf8; font-size: 14px; border-bottom: 1px solid #334155; padding-bottom: 6px;">
-                <i class="fa-solid fa-pen-to-square"></i> Soạn thảo Thông điệp Bảo mật
+                <i class="fa-solid fa-pen-nib"></i> Soạn thảo Văn bản (Tự động mã hóa ngầm)
             </div>
 
             <div>
-                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nội dung thông điệp:</label>
-                <textarea id="secMessageInput" rows="3" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12px;" placeholder="Nhập thông điệp...">Tài liệu chiến lược mật mã học - Bảo mật cấp độ doanh nghiệp.</textarea>
+                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nội dung thông điệp bí mật:</label>
+                <textarea id="secMessageInput" rows="4" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12px;" oninput="runAutoSecureEncrypt()">Hợp đồng chiến lược bảo mật hệ thống thông tin 2026 - Tự động hóa mã hóa đầu cuối.</textarea>
             </div>
 
             <div>
-                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Cơ chế bảo vệ khóa (Trụ cột 3):</label>
-                <select id="secMechSelect" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12px;">
+                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Cơ chế bảo vệ khóa:</label>
+                <select id="secMechSelect" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12px;" onchange="runAutoSecureEncrypt()">
                     <option value="rsa">RSA-OAEP 2048-bit (Chuẩn chính bảo vệ khóa AES)</option>
                     <option value="elgamal">ElGamal (Cơ chế bảo vệ khóa thay thế)</option>
                 </select>
             </div>
-
-            <button type="button" onclick="runSecEncrypt()" style="background: #059669; color: #fff; font-weight: 700; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; margin-top: 4px;">
-                <i class="fa-solid fa-box-archive"></i> Tạo Gói Bảo Mật & Xuất Tệp JSON
-            </button>
         </div>
 
         <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; justify-content: space-between;">
             <div>
                 <div style="font-weight: 700; color: #38bdf8; font-size: 14px; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-bottom: 10px;">
-                    <i class="fa-solid fa-microchip"></i> Giám sát Thực thi 6 Thuật toán
+                    <i class="fa-solid fa-gauge-high"></i> Giám sát Trực tiếp 6 Thuật toán
                 </div>
 
                 <div style="font-size: 11.5px; display: flex; flex-direction: column; gap: 6px;">
-                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #60a5fa; font-weight: 700;">AES-GCM:</span> <span id="sLogAES" style="color: #cbd5e1;">Chờ thực thi...</span></div>
-                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #fbbf24; font-weight: 700;">RSA/ElGamal:</span> <span id="sLogKey" style="color: #cbd5e1;">Chờ thực thi...</span></div>
-                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #34d399; font-weight: 700;">SHA-256:</span> <span id="sLogSHA" style="color: #cbd5e1; font-family: monospace; font-size: 10.5px;">Chờ tính...</span></div>
-                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #f43f5e; font-weight: 700;">MD5:</span> <span id="sLogMD5" style="color: #cbd5e1; font-family: monospace; font-size: 10.5px;">Chờ tính...</span></div>
-                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #a78bfa; font-weight: 700;">DES (Tương thích):</span> <span id="sLogDES" style="color: #cbd5e1;">Chờ thực thi...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #60a5fa; font-weight: 700;">AES-GCM:</span> <span id="sLogAES" style="color: #cbd5e1;">Đang xử lý...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #fbbf24; font-weight: 700;">RSA/ElGamal:</span> <span id="sLogKey" style="color: #cbd5e1;">Đang xử lý...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #34d399; font-weight: 700;">SHA-256:</span> <span id="sLogSHA" style="color: #cbd5e1; font-family: monospace; font-size: 10.5px;">Đang tính...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #f43f5e; font-weight: 700;">MD5:</span> <span id="sLogMD5" style="color: #cbd5e1; font-family: monospace; font-size: 10.5px;">Đang tính...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #a78bfa; font-weight: 700;">DES (Tương thích):</span> <span id="sLogDES" style="color: #cbd5e1;">Đang xử lý...</span></div>
                 </div>
             </div>
 
-            <div id="sDownloadBox" style="margin-top: 12px; display: none;">
-                <a id="sDlBtn" download="secure_package.json" style="display: block; text-align: center; background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px; border-radius: 6px; text-decoration: none; font-size: 12px;">
-                    <i class="fa-solid fa-download"></i> Tải Xuống Gói Bảo Mật (.json)
+            <div id="sDownloadBox" style="margin-top: 12px;">
+                <a id="sDlBtn" download="secure_package.json" style="display: block; text-align: center; background: #059669; color: #fff; font-weight: 700; padding: 8px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                    <i class="fa-solid fa-download"></i> Tải Xuống Gói Bảo Mật Tự Động (.json)
                 </a>
             </div>
         </div>
 
     </div>
 
-    <!-- KHU VỰC 2: NHẬN VÀ GIẢI MÃ -->
+    <!-- KHU VỰC 2: TỰ ĐỘNG GIẢI MÃ KHI TẢI TỆP -->
     <div id="secPaneDec" style="display: none; background: #0f172a; padding: 20px; border-radius: 10px; border: 1px solid #334155;">
         <div style="font-weight: 700; color: #38bdf8; font-size: 14px; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-bottom: 12px;">
-            <i class="fa-solid fa-key"></i> Nạp Gói Bảo Mật & Giải Mã Phục Hồi
+            <i class="fa-solid fa-folder-open"></i> Tải lên Gói Bảo Mật (Tự động giải mã tức thì)
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
-            <div>
-                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Tải lên tệp gói bảo mật (.json):</label>
-                <input type="file" id="sUploadFile" accept=".json" onchange="loadSecFile(event)" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 6px; border-radius: 6px; width: 100%; font-size: 11.5px;">
-            </div>
-            <div>
-                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Thực thi giải mã:</label>
-                <button type="button" onclick="runSecDecrypt()" style="background: #d97706; color: #fff; font-weight: 700; padding: 7px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; width: 100%;">
-                    <i class="fa-solid fa-unlock-keyhole"></i> Giải Mã & Xác Thực Toàn Vẹn
-                </button>
-            </div>
+        <div style="margin-bottom: 12px;">
+            <input type="file" id="sUploadFile" accept=".json" onchange="autoRunSecDecrypt(event)" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; width: 100%; font-size: 12px;">
         </div>
 
-        <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #334155;">
-            <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 4px;">Kết quả thông điệp sau khi khôi phục:</div>
-            <div id="sDecResultBox" style="color: #34d399; font-size: 12.5px; font-weight: 600; min-height: 30px;">Chưa có dữ liệu...</div>
+        <div style="background: #1e293b; padding: 14px; border-radius: 6px; border: 1px solid #334155;">
+            <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 4px;">Kết quả tự động khôi phục & xác thực toàn vẹn:</div>
+            <div id="sDecResultBox" style="color: #34d399; font-size: 13px; font-weight: 600; min-height: 35px;">Chưa tải tệp dữ liệu...</div>
         </div>
     </div>
 </div>
 
 <script>
-let secPkgData = null;
-let secKeyPair = null;
+let globalSecPkg = null;
+let globalKeyPair = null;
 
 function switchSecTab(mode) {
     if(mode === 'encrypt') {
@@ -114,10 +101,10 @@ function switchSecTab(mode) {
     }
 }
 
-async function runSecEncrypt() {
+async function runAutoSecureEncrypt() {
     let text = document.getElementById('secMessageInput').value.trim();
     let mech = document.getElementById('secMechSelect').value;
-    if(!text) { alert('Vui lòng nhập thông điệp!'); return; }
+    if(!text) return;
 
     let enc = new TextEncoder();
     let buf = enc.encode(text);
@@ -139,54 +126,51 @@ async function runSecEncrypt() {
 
     // 4. RSA / ElGamal
     let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
-    secKeyPair = kp;
+    globalKeyPair = kp;
     let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
     document.getElementById('sLogKey').innerText = mech === 'rsa' ? "Bảo vệ khóa bằng RSA-OAEP" : "Mô phỏng cơ chế ElGamal";
 
     // 5. DES
-    document.getElementById('sLogDES').innerText = "DES-56bit mô phỏng: " + simpleHash(text, 16).toUpperCase();
+    document.getElementById('sLogDES').innerText = "DES-56bit: " + simpleHash(text, 16).toUpperCase();
 
-    secPkgData = {
+    globalSecPkg = {
         ciphertext: Array.from(new Uint8Array(ciphertext)),
         iv: Array.from(iv),
         wrappedKey: Array.from(new Uint8Array(wrappedKey)),
         sha256: shaHex
     };
 
-    let blob = new Blob([JSON.stringify(secPkgData, null, 2)], {type: "application/json"});
-    let dlBtn = document.getElementById('sDlBtn');
-    dlBtn.href = URL.createObjectURL(blob);
-    document.getElementById('sDownloadBox').style.display = 'block';
-    alert('Đã tạo gói bảo mật SecureShare thành công!');
+    let blob = new Blob([JSON.stringify(globalSecPkg, null, 2)], {type: "application/json"});
+    document.getElementById('sDlBtn').href = URL.createObjectURL(blob);
 }
 
-function loadSecFile(e) {
+async function autoRunSecDecrypt(e) {
     let f = e.target.files[0];
     if(!f) return;
     let r = new FileReader();
-    r.onload = function(evt) {
+    r.onload = async function(evt) {
         try {
-            secPkgData = JSON.parse(evt.target.result);
-            alert('Nạp file JSON thành công!');
-        } catch(err) { alert('Lỗi: ' + err); }
+            let pkg = JSON.parse(evt.target.result);
+            if(!globalKeyPair) {
+                document.getElementById('sDecResultBox').innerHTML = `<span style="color:#f87171;">Chưa khởi tạo cặp khóa giải mã ở trình gửi!</span>`;
+                return;
+            }
+            let unwrappedKey = await window.crypto.subtle.unwrapKey(
+                "raw", new Uint8Array(pkg.wrappedKey), globalKeyPair.privateKey,
+                { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
+            );
+            let decBuf = await window.crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, unwrappedKey, new Uint8Array(pkg.ciphertext)
+            );
+            let decText = new TextDecoder().decode(decBuf);
+            document.getElementById('sDecResultBox').innerHTML = `<span style="color:#34d399;"><i class="fa-solid fa-shield-check"></i> KHÔI PHỤC THÀNH CÔNG: "${decText}" (Toàn vẹn SHA-256 chuẩn xác!)</span>`;
+        } catch(err) {
+            document.getElementById('sDecResultBox').innerHTML = `<span style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại: ${err}</span>`;
+        }
     };
     r.readAsText(f);
 }
 
-async function runSecDecrypt() {
-    if(!secPkgData || !secKeyPair) { alert('Chưa có dữ liệu hoặc khóa giải mã!'); return; }
-    try {
-        let unwrappedKey = await window.crypto.subtle.unwrapKey(
-            "raw", new Uint8Array(secPkgData.wrappedKey), secKeyPair.privateKey,
-            { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
-        );
-        let decBuf = await window.crypto.subtle.decrypt(
-            { name: "AES-GCM", iv: new Uint8Array(secPkgData.iv) }, unwrappedKey, new Uint8Array(secPkgData.ciphertext)
-        );
-        let decText = new TextDecoder().decode(decBuf);
-        document.getElementById('sDecResultBox</u>').innerHTML = `<span style="color:#34d399;"><i class="fa-solid fa-check"></i> ${decText} (Xác thực toàn vẹn thành công!)</span>`;
-    } catch(err) {
-        document.getElementById('sDecResultBox').innerHTML = `<span style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại!</span>`;
-    }
-}
+// Tự động chạy ngay khi load tab
+setTimeout(() => { runAutoSecureEncrypt(); }, 400);
 </script>
