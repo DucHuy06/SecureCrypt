@@ -1,17 +1,21 @@
+
 {% extends "base.html" %}
 
 {% block content %}
+
+<!-- Hero Banner -->
 <div class="hero-banner" style="margin-bottom: 32px; text-align: center;">
     <h1 style="font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 10px;">
-        Cryptography Playground & Tools
+        Cryptography Playground &amp; Tools
     </h1>
     <p style="color: var(--text-muted); font-size: 15px;">
         Nền tảng thực thi, trực quan hóa và thử nghiệm các thuật toán mật mã học hiện đại.
     </p>
 </div>
 
+<!-- Cryptography Tools -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-    
+
     <!-- DES Cryptosystem -->
     <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
@@ -70,11 +74,11 @@
     <div class="crypto-card" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="margin: 0; font-size: 20px; color: #fff;">SHA–256 Hash</h3>
+                <h3 style="margin: 0; font-size: 20px; color: #fff;">SHA-256 Hash</h3>
                 <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">HÀM BĂM</span>
             </div>
             <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
-                Hàm băm mật mã an toàn 256-bit (64 ký tự Hex). Cung cấp cơ chế kiểm tra tính toàn vẹn dữ liệu và đảm bảo tính kháng xung đột (Collision Resistance).
+                Hàm băm mật mã 256-bit (64 ký tự Hex), hỗ trợ kiểm tra tính toàn vẹn dữ liệu và minh họa khái niệm kháng xung đột.
             </p>
         </div>
         <div style="margin-top: 20px;">
@@ -92,7 +96,7 @@
                 <span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">BẤT ĐỐI XỨNG</span>
             </div>
             <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
-                Hệ mật mã khóa công khai dựa trên bài toán phân tích thừa số nguyên tố lớn. Minh họa toàn bộ quy trình sinh cặp khóa và các phép tính lũy thừa modulo.
+                Hệ mật mã khóa công khai dựa trên bài toán phân tích thừa số nguyên tố lớn. Minh họa quy trình sinh cặp khóa và phép tính lũy thừa modulo.
             </p>
         </div>
         <div style="margin-top: 20px;">
@@ -110,7 +114,7 @@
                 <span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">BẤT ĐỐI XỨNG</span>
             </div>
             <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">
-                Hệ mật mã bất đối xứng dựa trên độ khó của bài toán Logarit rời rạc trong nhóm nhân modulo số nguyên tố. Hỗ trợ cơ chế mã hóa và khôi phục thông điệp.
+                Hệ mật mã bất đối xứng dựa trên độ khó của bài toán logarit rời rạc trong nhóm nhân modulo số nguyên tố.
             </p>
         </div>
         <div style="margin-top: 20px;">
@@ -121,4 +125,40 @@
     </div>
 
 </div>
+
+<!-- Learn Section -->
+<div class="crypto-card" style="margin-top: 32px; padding: 28px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
+        <div style="flex: 1; min-width: 240px;">
+            <span style="color: #818cf8; font-size: 12px; font-weight: 700; letter-spacing: 1px;">
+                LEARNING CENTER
+            </span>
+
+            <h2 style="color: #fff; font-size: 26px; margin: 10px 0;">
+                Learn Cryptography
+            </h2>
+
+            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.8; margin-bottom: 0;">
+                Khám phá kiến thức mật mã học từ cơ bản đến nâng cao.
+                Tìm hiểu cách hoạt động của các thuật toán mã hóa,
+                hàm băm và chữ ký số thông qua các bài học trực quan.
+            </p>
+        </div>
+
+        <div>
+            <a href="/learn"
+               style="display: inline-block;
+                      background: var(--accent-indigo);
+                      color: #fff;
+                      padding: 12px 22px;
+                      border-radius: 8px;
+                      text-decoration: none;
+                      font-weight: 700;
+                      white-space: nowrap;">
+                Explore Lessons &rarr;
+            </a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

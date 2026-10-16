@@ -1,3 +1,4 @@
+
 import os
 import sqlite3
 from pathlib import Path
@@ -54,7 +55,7 @@ def init_db():
 init_db()
 
 
-# ==================== ROUTE GIAO DIỆN CHÍNH (TRÁNH LỖI 404) ====================
+# ==================== ROUTE GIAO DIỆN ====================
 
 @app.route("/", methods=["GET"])
 def index_page():
@@ -66,6 +67,12 @@ def index_page():
 def demo_page():
     """Trang giao diện demo chung."""
     return render_template("demo.html")
+
+
+@app.route("/learn", methods=["GET"])
+def learn_page():
+    """Trang học kiến thức mật mã học."""
+    return render_template("learn.html")
 
 
 # ==================== ĐĂNG KÝ TÀI KHOẢN ====================
