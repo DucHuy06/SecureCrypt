@@ -1,7 +1,6 @@
 from pathlib import Path
 from io import BytesIO
 import logging
-import sys
 
 from flask import Blueprint, request, jsonify, send_file
 from werkzeug.utils import secure_filename
@@ -12,7 +11,6 @@ from pyhanko.sign.signers import PdfSignatureMetadata
 from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
 from pyhanko.pdf_utils.reader import PdfFileReader
 from pyhanko.sign.validation import validate_pdf_signature, ValidationContext
-from pyhanko.keys import load_cert_from_pem
 
 
 signature_bp = Blueprint(
@@ -160,11 +158,21 @@ def verify_pdf():
             trust_roots = []
             if CERTIFICATE.is_file():
                 try:
-                    trust_roots.append(load_cert_from_pem(str(CERTIFICATE)))
+                    from asn1crypto import x509
+                    cert_bytes = CERTIFICATE.read_bytes()
+                    trust_roots.append(x509.Certificate.load(cert_bytes))
                 except Exception:
-                    pass
+                    try:
+                        from cryptography import x509
+                        from cryptography.hazmat.backends import default_backend
+                        cert_bytes = CERTIFICATE.read_bytes()
+                        cert = x509.load_pem_x509_certificate(cert_bytes, default_backend())
+                        # Fallback nếu dùng pyHanko chuẩn
+                        trust_roots = [CERTIFICATE]
+                    except Exception:
+                        trust_roots = [CERTIFICATE]
 
-            vc = ValidationContext(trust_roots=trust_roots)
+            vc = ValidationContext(trust_roots=trust_roots) if trust_roots else ValidationContext()
 
             report_lines = []
             all_valid = True
