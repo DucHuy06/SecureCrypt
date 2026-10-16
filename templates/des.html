@@ -155,12 +155,12 @@ async function encryptDES() {
         
         let data = await res.json();
         
-        if (!res.ok) {
+        if (!res.ok || data.status === 'error') {
             alert('Lỗi mã hóa từ Server: ' + (data.message || 'Không xác định'));
             return;
         }
 
-        let ciphertext = data.ciphertext || data.result;
+        let ciphertext = data.ciphertext;
         document.getElementById('desCiphertext').value = ciphertext;
 
         let textHex = stringToHex(text);
@@ -203,7 +203,7 @@ async function decryptDES() {
         
         let data = await res.json();
         
-        if (!res.ok) {
+        if (!res.ok || data.status === 'error') {
             document.getElementById('desDecryptedPlaintext').value = "❌ [LỖI GIẢI MÃ]";
             document.getElementById('desDecryptTraceContent').innerHTML = `
                 <div style="color: var(--accent-rose); font-weight: bold; margin-bottom: 6px;">[❌ LỖI GIẢI MÃ DES]</div>

@@ -48,4 +48,3 @@ class DESCrypto:
             return {"status": "success", "plaintext": plaintext}
         except Exception as e:
             return {"status": "error", "message": f"Giải mã DES thất bại: {str(e)}"}
-    
