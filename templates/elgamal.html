@@ -76,7 +76,7 @@
 
     <div style="margin-bottom: 12px;">
         <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Thông điệp M:</label>
-        <textarea id="elgMsg" rows="2" placeholder="Nhập số nguyên M nhỏ hơn p (có thể nhập nhiều số cách nhau bằng dấu cách)..."></textarea>
+        <textarea id="elgMsg" rows="2" placeholder="Nhập số nguyên M nhỏ hơn p..."></textarea>
     </div>
 
     <div style="margin-bottom: 12px;">
@@ -167,11 +167,14 @@ function BaseModInverse(a, m) {
     let m0 = m;
     let y = 0n, x = 1n;
     if (m === 1n) return 0n;
-    while (a > 1n) {
-        let q = a / m;
+    let a0 = a % m0;
+    if (a0 < 0n) a0 += m0;
+    
+    while (a0 > 1n) {
+        let q = a0 / m;
         let t = m;
-        m = a % m;
-        a = t;
+        m = a0 % m;
+        a0 = t;
         t = y;
         y = x - q * y;
         x = t;
@@ -321,12 +324,13 @@ function runElGamalDecrypt() {
         let c1 = BigInt(match[1]);
         let c2 = BigInt(match[2]);
 
-        let c1x = modPow(c1, x, p);
-        let c1xInv = BaseModInverse(c1x, p);
-        let m = (c2 * c1xInv) % p;
+        // Công thức giải mã chuẩn: M = c2 * (c1^x)^(-1) mod p
+        let s = modPow(c1, x, p);
+        let sInv = BaseModInverse(s, p);
+        let m = (c2 * sInv) % p;
 
         plainResults.push(m.toString());
-        mathSteps.push(`(${c1}, ${c2}) ➔ M = c₂ × (c₁ˣ)⁻¹ mod p = ${c2} × (${c1}<sup>${x}</sup>)⁻¹ mod ${p} = <strong>${m}</strong>`);
+        mathSteps.push(`(${c1}, ${c2}) ➔ s = c₁ˣ mod p = ${c1}<sup>${x}</sup> mod ${p} = ${s} ➔ s⁻¹ = ${sInv} ➔ M = (c₂ × s⁻¹) mod p = (${c2} × ${sInv}) mod ${p} = <strong style="color:#34d399">${m}</strong>`);
     });
 
     let decryptedText = plainResults.join(' ');
