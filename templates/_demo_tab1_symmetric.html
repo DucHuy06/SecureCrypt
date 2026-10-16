@@ -32,8 +32,8 @@
                 <tbody>
                     <tr style="border-bottom: 1px solid #1e293b;">
                         <td style="padding: 10px; font-weight: 600; color:#fff;">Cấu trúc / Không gian</td>
-                        <td style="padding: 10px;">Mạng Feistel (2^56 khóa)</td>
-                        <td style="padding: 10px;">Mạng SPN (2^256 khóa)</td>
+                        <td style="padding: 10px;">Mạng Feistel ($2^{56}$ khóa)</td>
+                        <td style="padding: 10px;">Mạng SPN ($2^{256}$ khóa)</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b; display: none;" id="rowRes1">
                         <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả thực thi</td>
@@ -121,7 +121,7 @@
                     <tr style="border-bottom: 1px solid #1e293b;">
                         <td style="padding: 10px; font-weight: 600; color:#fff;">Cơ sở toán học</td>
                         <td style="padding: 10px;">Phân tích thừa số nguyên tố lớn ($n = p \times q$)</td>
-                        <td style="padding: 10px;">Logarit rời rạc trên nhóm nhân Z_p*</td>
+                        <td style="padding: 10px;">Logarit rời rạc trên nhóm nhân $\mathbb{Z}_p^*$</td>
                     </tr>
                     <tr style="border-bottom: 1px solid #1e293b; display: none;" id="rowRes3">
                         <td style="padding: 10px; font-weight: 600; color:#fff;">Kết quả thực thi</td>
@@ -160,7 +160,8 @@ function runPair3() {
     let val = document.getElementById('inputSig').value.trim();
     if(!val) { alert('Vui lòng nhập thông điệp!'); return; }
     document.getElementById('rowRes3').style.display = 'table-row';
-    document.getElementById('resRSA').innerText = "rsa_cipher_" + btoa(val).substring(0, 10);
+    // Đổi hiển thị sang định dạng mô phỏng công thức toán học C = M^e mod n
+    document.getElementById('resRSA').innerText = "C = M^e mod n [" + simpleHash(val, 8) + "]";
     document.getElementById('resElg').innerText = "(c1=" + simpleHash(val, 6) + ", c2=" + simpleHash(val+"k", 6) + ")";
 }
 </script>
