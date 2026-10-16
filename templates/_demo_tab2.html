@@ -1,55 +1,84 @@
-<div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 28px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
+<div class="crypto-card" style="background: #090d16; border: 1px solid #1e293b; padding: 32px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
     
-    <div style="text-align: center; max-width: 600px; margin: 0 auto 24px auto;">
-        <h2 style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px;">Share Files Securely & Privately</h2>
-        <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">
-            Tải lên, mã hóa đầu cuối bằng AES-256 kết hợp RSA-OAEP ngay trên trình duyệt trước khi truyền tải. Bảo mật tuyệt đối, chống đọc lén.
+    <!-- Tiêu đề & Mô tả tổng quan -->
+    <div style="text-align: center; max-width: 650px; margin: 0 auto 32px auto;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 189, 248, 0.1); color: #38bdf8; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; border: 1px solid rgba(56, 189, 248, 0.2);">
+            <i class="fa-solid fa-shield-halved"></i> SecureShare Protocol v2.5
+        </div>
+        <h2 style="font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -0.5px;">Chia Sẻ Tài Liệu Bảo Mật Đầu Cuối</h2>
+        <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.6;">
+            Mã hóa tệp tin và văn bản trực tiếp trên trình duyệt. Lựa chọn linh hoạt thuật toán bảo vệ khóa phiên theo chuẩn thực chiến hoặc mô hình học thuật.
         </p>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <!-- Bố cục 2 cột: Mã hóa (Trái) & Giải mã (Phải) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start;">
         
-        <!-- CỘT TRÁI: ĐÓNG GÓI & MÃ HÓA TÀI LIỆU -->
-        <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px;">
-            <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px;">
-                <i class="fa-solid fa-cloud-arrow-up me-1"></i> 1. Đóng Gói & Mã Hóa Tài Liệu (Sender)
+        <!-- ================= PHẦN 1: MÃ HÓA & ĐÓNG GÓI TÀI LIỆU ================= -->
+        <div style="background: #0f172a; padding: 24px; border-radius: 14px; border: 1px solid #1e293b; display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 12px;">
+                <span style="font-size: 14px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-lock-open" style="color: #818cf8;"></i> 1. Đóng Gói & Mã Hóa (Sender)
+                </span>
             </div>
 
+            <!-- Tiêu đề tài liệu (ĐỂ TRỐNG MẶC ĐỊNH) -->
             <div>
-                <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tiêu đề hoặc tên tệp tin:</label>
-                <input type="text" id="secShareTitle" value="Bao_cao_Do_an_Bao_mat.pdf" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 9px 12px; border-radius: 8px; font-size: 12.5px;">
+                <label style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 6px; font-weight: 500;">Tiêu đề / Tên định danh tài liệu:</label>
+                <input type="text" id="secShareTitle" placeholder="Nhập tiêu đề tài liệu..." style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 13px; outline: none;" onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#334155'">
             </div>
 
+            <!-- Tải tệp lên hoặc nhập nội dung văn bản (ĐỂ TRỐNG MẶC ĐỊNH) -->
             <div>
-                <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Nội dung tài liệu bí mật:</label>
-                <textarea id="secShareContent" rows="4" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; line-height: 1.5;">Nội dung chi tiết báo cáo đồ án an toàn thông tin - Hệ thống SecureSpace phiên bản thực chiến.</textarea>
+                <label style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 6px; font-weight: 500;">Chọn tệp nguồn từ thiết bị (hoặc nhập nội dung dưới đây):</label>
+                <input type="file" id="secShareSourceFile" onchange="handleSourceFileUpload(event)" style="background: #111827; color: #94a3b8; border: 1px dashed #334155; padding: 10px; border-radius: 8px; width: 100%; font-size: 12px; cursor: pointer; margin-bottom: 8px;">
+                
+                <textarea id="secShareContent" rows="4" placeholder="Nhập nội dung văn bản cần bảo vệ..." style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.5; outline: none; resize: vertical;" onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#334155'"></textarea>
             </div>
 
-            <button type="button" onclick="executeSecureSharePack()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
-                <i class="fa-solid fa-lock me-1"></i> Mã Hóa AES-256 + RSA & Tải Xuống (.secure)
+            <!-- Chọn thuật toán bảo vệ khóa (Đã rút gọn nhãn, bỏ từ ngữ cao siêu) -->
+            <div>
+                <label style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 6px; font-weight: 500;">Phương pháp bảo vệ khóa phiên:</label>
+                <select id="secShareAlgo" style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 13px; outline: none;">
+                    <option value="RSA-OAEP">AES-256-GCM + RSA-OAEP 2048-bit</option>
+                    <option value="ElGamal">AES-256-GCM + ElGamal (Mô phỏng học thuật)</option>
+                </select>
+            </div>
+
+            <!-- Nút tạo gói .secure -->
+            <button type="button" id="packBtn" onclick="executeSecureSharePack()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 13.5px; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">
+                <i class="fa-solid fa-file-shield"></i> Mã Hóa & Xuất Tệp .secure
             </button>
         </div>
 
-        <!-- CỘT PHẢI: GIẢI MÃ & KIỂM ĐỊNH TOÀN VẺN -->
-        <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px; justify-content: space-between;">
+        <!-- ================= PHẦN 2: GIẢI MÃ & KIỂM ĐỊNH TOÀN VẺN ================= -->
+        <div style="background: #0f172a; padding: 24px; border-radius: 14px; border: 1px solid #1e293b; display: flex; flex-direction: column; gap: 16px; justify-content: space-between;">
             <div>
-                <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px; margin-bottom: 14px;">
-                    <i class="fa-solid fa-box-open me-1"></i> 2. Giải Mã & Kiểm Định Toàn Vẹn (Receiver)
+                <div style="display: flex; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 16px;">
+                    <span style="font-size: 14px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-box-open" style="color: #34d399;"></i> 2. Giải Mã & Kiểm Định (Receiver)
+                    </span>
                 </div>
 
-                <div>
-                    <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tải lên gói dữ liệu mã hóa (.secure):</label>
-                    <input type="file" id="secShareImportFile" accept=".secure,.json" onchange="executeSecureShareUnpack(event)" style="background: #1f2937; color: #fff; border: 1px solid #374151; padding: 8px; border-radius: 8px; width: 100%; font-size: 12px;">
+                <!-- Tải tệp .secure lên để mở khóa -->
+                <div style="margin-bottom: 16px;">
+                    <label style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 6px; font-weight: 500;">Tải lên gói dữ liệu mã hóa (.secure):</label>
+                    <input type="file" id="secShareImportFile" accept=".secure,.json" onchange="executeSecureShareUnpack(event)" style="background: #111827; color: #fff; border: 1px dashed #334155; padding: 12px; border-radius: 8px; width: 100%; font-size: 12.5px; cursor: pointer;">
                 </div>
 
-                <div style="background: #0b0f19; padding: 14px; border-radius: 8px; border: 1px solid #374151; margin-top: 14px;">
-                    <div style="font-size: 11.5px; color: #9ca3af; margin-bottom: 6px;">Trạng thái & Nội dung khôi phục:</div>
-                    <div id="secShareResultBox" style="color: #34d399; font-size: 13px; font-weight: 600; min-height: 45px; line-height: 1.5;">Chưa có tệp dữ liệu nào được nạp vào...</div>
+                <!-- Khung hiển thị kết quả giải mã -->
+                <div style="background: #090d16; padding: 16px; border-radius: 10px; border: 1px solid #1e293b;">
+                    <div style="font-size: 11.5px; color: #64748b; margin-bottom: 8px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Trạng thái & Dữ liệu khôi phục:</div>
+                    <div id="secShareResultBox" style="color: #94a3b8; font-size: 13px; min-height: 120px; line-height: 1.6; display: flex; align-items: center; justify-content: center; text-align: center;">
+                        <span>Chưa có tệp .secure nào được nạp vào hệ thống...</span>
+                    </div>
                 </div>
             </div>
 
-            <div style="font-size: 11px; color: #64748b; border-top: 1px solid #1f2937; padding-top: 10px;">
-                <i class="fa-solid fa-shield-halved text-emerald"></i> Xác thực chuẩn GCM kết hợp SHA-256 chống giả mạo tuyệt đối.
+            <!-- Footer thông tin bảo mật -->
+            <div style="font-size: 11.5px; color: #64748b; border-top: 1px solid #1e293b; padding-top: 12px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-circle-check" style="color: #34d399;"></i> 
+                <span>Client-side Security: Máy chủ không lưu trữ hoặc đọc được nội dung bản rõ.</span>
             </div>
         </div>
 
@@ -58,86 +87,211 @@
 
 <script>
 let currentSecKeyPair = null;
+let currentElGamalKey = null;
 let currentSecPackage = null;
+let uploadedFileBytes = null;
 
-async function executeSecureSharePack() {
-    let title = document.getElementById('secShareTitle').value.trim();
-    let text = document.getElementById('secShareContent').value.trim();
-    if(!text) { alert('Vui lòng nhập nội dung tài liệu!'); return; }
-
-    let enc = new TextEncoder();
-    let dataBuf = enc.encode(text);
-
-    // 1. Tính SHA-256 toàn vẹn
-    let hashBuf = await window.crypto.subtle.digest("SHA-256", dataBuf);
-    let sha256Hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-    // 2. Mã hóa AES-GCM
-    let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-    let iv = window.crypto.getRandomValues(new Uint8Array(12));
-    let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuf);
-
-    // 3. Bảo vệ khóa AES bằng RSA-OAEP
-    let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
-    currentSecKeyPair = kp;
-    let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
-
-    currentSecPackage = {
-        title: title,
-        ciphertext: Array.from(new Uint8Array(ciphertext)),
-        iv: Array.from(iv),
-        wrappedKey: Array.from(new Uint8Array(wrappedKey)),
-        sha256: sha256Hex,
-        timestamp: new Date().toLocaleString()
+function handleSourceFileUpload(event) {
+    let file = event.target.files[0];
+    if(!file) return;
+    document.getElementById('secShareTitle').value = file.name;
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        uploadedFileBytes = new Uint8Array(e.target.result);
+        document.getElementById('secShareContent').value = `[Đã tải tệp nhị phân: ${file.name} - ${(file.size / 1024).toFixed(2)} KB]`;
     };
-
-    let blob = new Blob([JSON.stringify(currentSecPackage, null, 2)], {type: "application/json"});
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = "SecureShare_" + Date.now() + ".secure";
-    a.click();
-
-    alert('Đã đóng gói và mã hóa tài liệu thành công! Tệp .secure đã được tải xuống.');
+    reader.readAsArrayBuffer(file);
 }
 
-async function executeSecureShareUnpack(e) {
-    let file = e.target.files[0];
+// Hàm hỗ trợ mã hóa mô phỏng ElGamal cho khóa phiên AES
+function simulateElGamalEncrypt(aesKeyRaw) {
+    // ElGamal trên nhóm nhân Z_p mô phỏng bằng cách biến đổi byte khóa qua phép lũy thừa số mũ
+    let g = 5n, p = 2377n, h = 1421n; // Tham số nhóm số nguyên tố mẫu
+    let r = 314n; // Khóa ngẫu nhiên ephemeral
+    let c1 = (g ** r) % p;
+    
+    let encryptedKeyBytes = new Uint8Array(aesKeyRaw.length);
+    for(let i=0; i<aesKeyRaw.length; i++) {
+        let val = BigInt(aesKeyRaw[i]);
+        let s = (h ** r) % p;
+        encryptedKeyBytes[i] = Number((val * s) % p % 256n);
+    }
+    return {
+        type: "ElGamal",
+        c1: Number(c1),
+        encryptedKey: Array.from(encryptedKeyBytes)
+    };
+}
+
+function simulateElGamalDecrypt(elgamalPkg) {
+    // Giải mã ElGamal mô phỏng để khôi phục khóa AES thô
+    let x = 7n; // Khóa bí mật
+    let p = 2377n;
+    let s = (BigInt(elgamalPkg.c1) ** x) % p;
+    let sInv = Number(s) % 256 || 1;
+
+    let recovered = new Uint8Array(elgamalPkg.encryptedKey.length);
+    for(let i=0; i<elgamalPkg.encryptedKey.length; i++) {
+        let val = elgamalPkg.encryptedKey[i];
+        recovered[i] = (val * sInv) % 256;
+    }
+    return recovered.buffer;
+}
+
+// Quy trình Đóng gói & Mã hóa (Lấy chính xác tiêu đề từ ô input)
+async function executeSecureSharePack() {
+    let titleInput = document.getElementById('secShareTitle').value.trim();
+    let textContent = document.getElementById('secShareContent').value.trim();
+    let algoChoice = document.getElementById('secShareAlgo').value;
+
+    if(!titleInput) {
+        alert('Vui lòng nhập tiêu đề tài liệu!');
+        return;
+    }
+    if(!textContent && !uploadedFileBytes) {
+        alert('Vui lòng nhập nội dung hoặc chọn tệp cần mã hóa!');
+        return;
+    }
+
+    let packBtn = document.getElementById('packBtn');
+    packBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang mã hóa...`;
+    packBtn.disabled = true;
+
+    try {
+        let dataBuf = uploadedFileBytes ? uploadedFileBytes : new TextEncoder().encode(textContent);
+
+        // 1. Tính mã băm SHA-256 kiểm định toàn vẹn
+        let hashBuf = await window.crypto.subtle.digest("SHA-256", dataBuf);
+        let sha256Hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+        // 2. Tạo khóa AES-256 ngẫu nhiên & mã hóa nội dung
+        let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+        let iv = window.crypto.getRandomValues(new Uint8Array(12));
+        let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuf);
+        let aesKeyRaw = await window.crypto.subtle.exportKey("raw", aesKey);
+
+        let wrappedKeyData = null;
+
+        if(algoChoice === "RSA-OAEP") {
+            let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
+            currentSecKeyPair = kp;
+            let wrapped = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
+            wrappedKeyData = {
+                method: "RSA-OAEP",
+                wrappedKey: Array.from(new Uint8Array(wrapped))
+            };
+        } else {
+            // ElGamal phương án học thuật
+            let elgamalWrapped = simulateElGamalEncrypt(new Uint8Array(aesKeyRaw));
+            wrappedKeyData = {
+                method: "ElGamal",
+                elgamalPkg: elgamalWrapped
+            };
+        }
+
+        // 3. Tạo gói tin JSON hoàn chỉnh (Lưu chính xác tiêu đề người dùng nhập)
+        currentSecPackage = {
+            version: "SecureShare-v2.5",
+            title: titleInput,
+            ciphertext: Array.from(new Uint8Array(ciphertext)),
+            iv: Array.from(iv),
+            securityModel: algoChoice,
+            wrappedKeyData: wrappedKeyData,
+            sha256: sha256Hex,
+            timestamp: new Date().toLocaleString()
+        };
+
+        // 4. Tự động tải tệp .secure xuống máy
+        let blob = new Blob([JSON.stringify(currentSecPackage, null, 2)], {type: "application/json"});
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = "SecureShare_" + Date.now() + ".secure";
+        a.click();
+
+        alert(`Đã mã hóa thành công với phương án [${algoChoice}] và xuất tệp .secure!`);
+    } catch(err) {
+        alert('Lỗi mã hóa: ' + err.message);
+    } finally {
+        packBtn.innerHTML = `<i class="fa-solid fa-file-shield"></i> Mã Hóa & Xuất Tệp .secure`;
+        packBtn.disabled = false;
+    }
+}
+
+// Quy trình Nhận, Giải mã & Kiểm định toàn vẹn (Hiển thị đúng tiêu đề trong tệp)
+async function executeSecureShareUnpack(event) {
+    let file = event.target.files[0];
     if(!file) return;
+
+    let resultBox = document.getElementById('secShareResultBox');
+    resultBox.innerHTML = `<span style="color: #38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang giải mã và kiểm định toàn vẹn...</span>`;
+
     let reader = new FileReader();
     reader.onload = async function(evt) {
         try {
             let pkg = JSON.parse(evt.target.result);
-            if(!currentSecKeyPair) {
-                document.getElementById('secShareResultBox').innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi: Trình duyệt chưa lưu khóa bất đối xứng tương ứng để mở gói!</span>`;
-                return;
+            let rawAesKeyBuffer = null;
+
+            if(pkg.wrappedKeyData.method === "RSA-OAEP") {
+                if(!currentSecKeyPair) {
+                    throw new Error("Trình duyệt chưa lưu khóa bất đối xứng RSA (Hãy thực hiện thao tác mã hóa RSA ở cột bên trái trước trong phiên này để khởi tạo khóa).");
+                }
+                rawAesKeyBuffer = await window.crypto.subtle.unwrapKey(
+                    "raw", new Uint8Array(pkg.wrappedKeyData.wrappedKey), currentSecKeyPair.privateKey,
+                    { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
+                );
+            } else if(pkg.wrappedKeyData.method === "ElGamal") {
+                rawAesKeyBuffer = simulateElGamalDecrypt(pkg.wrappedKeyData.elgamalPkg);
+                rawAesKeyBuffer = await window.crypto.subtle.importKey(
+                    "raw", rawAesKeyBuffer, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
+                );
+            } else {
+                throw new Error("Phương pháp bảo vệ khóa không hợp lệ hoặc không được hỗ trợ!");
             }
 
-            // 1. Khôi phục khóa AES từ RSA Private Key
-            let unwrappedKey = await window.crypto.subtle.unwrapKey(
-                "raw", new Uint8Array(pkg.wrappedKey), currentSecKeyPair.privateKey,
-                { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
-            );
-
-            // 2. Giải mã AES-GCM
+            // Giải mã AES-GCM
             let decryptedBuf = await window.crypto.subtle.decrypt(
-                { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, unwrappedKey, new Uint8Array(pkg.ciphertext)
+                { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, rawAesKeyBuffer, new Uint8Array(pkg.ciphertext)
             );
 
-            let plaintext = new TextDecoder().decode(decryptedBuf);
-
-            // 3. Kiểm tra toàn vẹn SHA-256
+            // Kiểm định toàn vẹn SHA-256
             let checkBuf = await window.crypto.subtle.digest("SHA-256", decryptedBuf);
             let checkHex = Array.from(new Uint8Array(checkBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
             let isIntact = (checkHex === pkg.sha256);
 
-            document.getElementById('secShareResultBox').innerHTML = `
-                <div style="color: #34d399; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Khôi phục thành công tài liệu: <b>${pkg.title}</b></div>
-                <div style="color: #fff; background: #0b0f19; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 4px;">${plaintext}</div>
-                <div style="font-size: 11px; color: ${isIntact ? '#34d399' : '#f87171'};">Kiểm định SHA-256: ${isIntact ? 'Toàn vẹn tuyệt đối (Verified)' : 'Sai lệch'}</div>
+            let displayStr = "";
+            try {
+                displayStr = new TextDecoder().decode(decryptedBuf);
+                if(displayStr.length > 300) displayStr = displayStr.substring(0, 300) + "... [Đã cắt bớt hiển thị]";
+            } catch(e) {
+                displayStr = "[Dữ liệu nhị phân / Tệp tin]";
+            }
+
+            resultBox.innerHTML = `
+                <div style="text-align: left; width: 100%; display: flex; flex-direction: column; gap: 6px; font-size: 12.5px;">
+                    <div style="color: #34d399; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-circle-check"></i> Giải mã thành công tài liệu: "${pkg.title}"
+                    </div>
+                    <div style="background: #111827; padding: 8px 10px; border-radius: 6px; color: #fff; font-family: monospace; max-height: 80px; overflow-y: auto;">
+                        ${displayStr}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-size: 11.5px;">
+                        <span style="color: #38bdf8; font-weight: 600;">
+                            <i class="fa-solid fa-key"></i> Cơ chế: ${pkg.securityModel || pkg.wrappedKeyData.method}
+                        </span>
+                        <span style="color: ${isIntact ? '#34d399' : '#f87171'}; font-weight: 600;">
+                            <i class="fa-solid ${isIntact ? 'fa-shield-check' : 'fa-triangle-exclamation'}"></i> SHA-256: ${isIntact ? 'Toàn vẹn (Verified)' : 'Không khớp'}
+                        </span>
+                    </div>
+                </div>
             `;
         } catch(err) {
-            document.getElementById('secShareResultBox').innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại: Khóa không khớp hoặc tệp .secure đã bị thay đổi!</span>`;
+            resultBox.innerHTML = `
+                <div style="color: #f87171; text-align: left; width: 100%; font-size: 12.5px;">
+                    <div style="font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại:</div>
+                    <div style="color: #cbd5e1; font-size: 12px; line-height: 1.4;">${err.message}</div>
+                </div>
+            `;
         }
     };
     reader.readAsText(file);
