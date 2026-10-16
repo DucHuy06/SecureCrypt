@@ -1,251 +1,504 @@
-<div class="crypto-card" style="background: #090d16; border: 1px solid #1e293b; padding: 32px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); color: #f8fafc;">
-    
-    <!-- Tiêu đề tổng quan -->
-    <div style="text-align: center; max-width: 750px; margin: 0 auto 28px auto;">
-        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(56, 189, 248, 0.1); color: #38bdf8; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; border: 1px solid rgba(56, 189, 248, 0.2);">
-            <i class="fa-solid fa-shield-halved"></i> SecureShare File & Crypto Vault
-        </div>
-        <h2 style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.5px;">Mã Hóa Tệp Tin & Lựa Chọn Thuật Toán Kết Hợp</h2>
-        <p style="color: #94a3b8; font-size: 13px; line-height: 1.5;">
-            Tải lên tệp thực tế (PDF, DOCX, Ảnh, TXT...), chọn cơ chế thuật toán bảo mật và mã hóa đầu cuối trực tiếp trên trình duyệt.
-        </p>
+<div class="crypto-card secureshare-card" style="background:#090d16;border:1px solid #1e293b;padding:clamp(16px,3vw,32px);border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.35);color:#f8fafc;">
+  <style>
+    .secureshare-card *{box-sizing:border-box}
+    .secureshare-card .ss-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+    .secureshare-card .ss-panel{background:#0f172a;padding:clamp(16px,2vw,24px);border-radius:14px;border:1px solid #1e293b;display:flex;flex-direction:column;min-width:0}
+    .secureshare-card .ss-heading{font-size:14px;font-weight:700;color:#38bdf8;border-bottom:1px solid #1e293b;padding-bottom:10px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .secureshare-card .ss-field{margin-bottom:14px}
+    .secureshare-card label{font-size:12px;color:#cbd5e1;display:block;margin-bottom:6px;font-weight:600}
+    .secureshare-card input[type="file"],.secureshare-card input[type="text"],.secureshare-card input[type="password"],.secureshare-card select{width:100%;min-width:0;background:#111827;color:#f8fafc;border:1px solid #334155;padding:10px 12px;border-radius:8px;font-size:13px;outline:none}
+    .secureshare-card input[type="file"]{border-style:dashed;color:#cbd5e1}
+    .secureshare-card input:focus,.secureshare-card select:focus{border-color:#818cf8;box-shadow:0 0 0 2px rgba(99,102,241,.2)}
+    .secureshare-card .ss-btn{width:100%;padding:11px;border:0;border-radius:8px;color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;transition:filter .2s,opacity .2s;margin-top:auto}
+    .secureshare-card .ss-btn:hover{filter:brightness(1.08)}
+    .secureshare-card .ss-btn:disabled{opacity:.6;cursor:wait}
+    .secureshare-card .ss-primary{background:#4f46e5}
+    .secureshare-card .ss-green{background:#059669}
+    .secureshare-card .ss-result{display:none;margin-top:14px;background:#111827;padding:12px;border-radius:8px;border:1px solid #334155;overflow-wrap:anywhere}
+    .secureshare-card .ss-result-title{font-size:12px;font-weight:700;margin-bottom:6px}
+    .secureshare-card .ss-result-info{font-size:12px;color:#cbd5e1;line-height:1.65;margin-bottom:10px;overflow-wrap:anywhere}
+    .secureshare-card .ss-note{color:#94a3b8;font-size:11.5px;line-height:1.5;margin-top:12px}
+    .secureshare-card .ss-error{color:#f87171}
+    .secureshare-card .ss-success{color:#34d399}
+    @media(max-width:800px){.secureshare-card .ss-grid{grid-template-columns:1fr;gap:16px}}
+  </style>
+
+  <div style="text-align:center;max-width:750px;margin:0 auto 28px">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(56,189,248,.1);color:#38bdf8;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:12px;border:1px solid rgba(56,189,248,.2)">
+      <i class="fa-solid fa-shield-halved"></i> SecureShare File &amp; Crypto Vault
     </div>
+    <h2 style="font-size:clamp(20px,3vw,24px);font-weight:800;color:#fff;margin:0 0 8px;letter-spacing:-.5px">Mã Hóa Tệp Tin An Toàn</h2>
+    <p style="color:#94a3b8;font-size:13px;line-height:1.6;margin:0">Mã hóa tệp trực tiếp trên trình duyệt bằng AES-256-GCM. Tệp gốc không được tải lên máy chủ bởi thành phần này.</p>
+  </div>
 
-    <!-- 2 Cột chính: Đóng gói & Giải mã -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-        
-        <!-- CỘT 1: ĐÓNG GÓI & MÃ HÓA TỆP -->
-        <div style="background: #0f172a; padding: 24px; border-radius: 14px; border: 1px solid #1e293b; display: flex; flex-direction: column;">
-            <div style="font-size: 14px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-file-arrow-up"></i> 1. Đóng Gói & Mã Hóa Tệp
-            </div>
+  <div class="ss-grid">
+    <section class="ss-panel">
+      <div class="ss-heading"><i class="fa-solid fa-file-arrow-up"></i> 1. Đóng Gói &amp; Mã Hóa Tệp</div>
 
-            <!-- Chọn tệp thực tế -->
-            <div style="margin-bottom: 14px;">
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 6px; font-weight: 600;">Chọn tệp tin cần bảo vệ (PDF, DOCX, Ảnh, Văn bản):</label>
-                <input type="file" id="realSourceFile" onchange="handleRealFileSelect(this)" style="width: 100%; background: #111827; color: #94a3b8; border: 1px dashed #334155; padding: 10px; border-radius: 8px; font-size: 12.5px; cursor: pointer;">
-            </div>
+      <div class="ss-field">
+        <label for="realSourceFile">Chọn tệp cần bảo vệ:</label>
+        <input type="file" id="realSourceFile">
+      </div>
 
-            <!-- Tiêu đề tệp -->
-            <div style="margin-bottom: 14px;">
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 6px; font-weight: 600;">Tiêu đề tài liệu:</label>
-                <input type="text" id="realEncTitle" placeholder="Chọn tệp để tự động điền tên..." style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none;">
-            </div>
+      <div class="ss-field">
+        <label for="realEncTitle">Tiêu đề tài liệu:</label>
+        <input type="text" id="realEncTitle" maxlength="240" placeholder="Tên tài liệu (mặc định là tên tệp)">
+      </div>
 
-            <!-- Lựa chọn thuật toán kết hợp -->
-            <div style="margin-bottom: 14px;">
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 6px; font-weight: 600;">Thuật toán mã hóa kết hợp:</label>
-                <select id="cryptoAlgoSelect" style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer;">
-                    <option value="AES-256-GCM">AES-256-GCM (Chuẩn bảo mật cao cấp)</option>
-                    <option value="AES-256-CBC-HMAC">AES-256-CBC + HMAC-SHA256 (Kết hợp ký toàn vẹn)</option>
-                    <option value="ChaCha20-Poly1305">ChaCha20-Poly1305 (Tốc độ cao, tối ưu di động)</option>
-                </select>
-            </div>
+      <div class="ss-field">
+        <label for="cryptoAlgoSelect">Thuật toán mã hóa:</label>
+        <select id="cryptoAlgoSelect" disabled>
+          <option value="AES-256-GCM" selected>AES-256-GCM + PBKDF2-SHA256</option>
+        </select>
+        <div class="ss-note">Chỉ hiển thị thuật toán thực sự được triển khai.</div>
+      </div>
 
-            <!-- Mật khẩu khóa -->
-            <div style="margin-bottom: 20px;">
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 6px; font-weight: 600;">Mật khẩu / Khóa bảo mật:</label>
-                <input type="password" id="realEncPassword" placeholder="Nhập mật khẩu giải mã..." style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none;">
-            </div>
+      <div class="ss-field">
+        <label for="realEncPassword">Mật khẩu bảo vệ tệp:</label>
+        <input type="password" id="realEncPassword" autocomplete="new-password" minlength="12" placeholder="Dùng mật khẩu dài, khó đoán">
+        <div class="ss-note">Khuyến nghị ít nhất 12 ký tự. Hãy nhớ mật khẩu để giải mã tệp sau này.</div>
+      </div>
 
-            <button type="button" onclick="executeRealEncryption()" style="background: #4f46e5; color: #fff; font-weight: 700; width: 100%; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-size: 13.5px; transition: background 0.2s; margin-top: auto;">
-                <i class="fa-solid fa-lock me-1"></i> Mã Hóa & Tạo Tệp .secure
-            </button>
+      <button type="button" class="ss-btn ss-primary" id="realEncryptBtn">
+        <i class="fa-solid fa-lock"></i> Mã Hóa &amp; Tạo Tệp .secure
+      </button>
 
-            <!-- Kết quả mã hóa -->
-            <div id="realEncResultBox" style="display: none; margin-top: 14px; background: #111827; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
-                <div style="color: #34d399; font-size: 12px; font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-circle-check"></i> Đã mã hóa thành công!</div>
-                <div id="realEncInfo" style="font-size: 11.5px; color: #94a3b8; margin-bottom: 8px;"></div>
-                <button type="button" id="realDownloadBtn" style="background: #10b981; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Tải Xuống Tệp .secure</button>
-            </div>
-        </div>
+      <div id="realEncResultBox" class="ss-result" role="status" aria-live="polite">
+        <div id="realEncStatusHeader" class="ss-result-title ss-success">Đã mã hóa thành công.</div>
+        <div id="realEncInfo" class="ss-result-info"></div>
+        <button type="button" id="realDownloadBtn" class="ss-btn ss-green">Tải Xuống Tệp .secure</button>
+      </div>
+    </section>
 
-        <!-- CỘT 2: GIẢI MÃ & KIỂM ĐỊNH TOÀN VẸN -->
-        <div style="background: #0f172a; padding: 24px; border-radius: 14px; border: 1px solid #1e293b; display: flex; flex-direction: column;">
-            <div style="font-size: 14px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-file-arrow-down"></i> 2. Giải Mã & Kiểm Định Toàn Vẹn
-            </div>
+    <section class="ss-panel">
+      <div class="ss-heading"><i class="fa-solid fa-file-arrow-down"></i> 2. Giải Mã &amp; Kiểm Định Toàn Vẹn</div>
 
-            <!-- Chọn tệp .secure -->
-            <div style="margin-bottom: 14px;">
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 6px; font-weight: 600;">Tải lên tệp định dạng .secure:</label>
-                <input type="file" id="realSecureFile" accept=".secure" style="width: 100%; background: #111827; color: #94a3b8; border: 1px dashed #334155; padding: 10px; border-radius: 8px; font-size: 12.5px; cursor: pointer;">
-            </div>
+      <div class="ss-field">
+        <label for="realSecureFile">Chọn tệp .secure:</label>
+        <input type="file" id="realSecureFile" accept=".secure,application/json">
+      </div>
 
-            <!-- Mật khẩu giải mã -->
-            <div style="margin-bottom: 20px;">
-                <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 6px; font-weight: 600;">Mật khẩu giải mã tương ứng:</label>
-                <input type="password" id="realDecPassword" placeholder="Nhập mật khẩu đã dùng..." style="width: 100%; background: #111827; color: #fff; border: 1px solid #334155; padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none;">
-            </div>
+      <div class="ss-field">
+        <label for="realDecPassword">Mật khẩu giải mã:</label>
+        <input type="password" id="realDecPassword" autocomplete="current-password" placeholder="Nhập đúng mật khẩu đã dùng">
+      </div>
 
-            <button type="button" onclick="executeRealDecryption()" style="background: #6366f1; color: #fff; font-weight: 700; width: 100%; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-size: 13.5px; transition: background 0.2s; margin-top: auto;">
-                <i class="fa-solid fa-unlock-keyhole me-1"></i> Giải Mã & Khôi Phục Tệp Gốc
-            </button>
+      <button type="button" class="ss-btn ss-primary" id="realDecryptBtn">
+        <i class="fa-solid fa-unlock-keyhole"></i> Giải Mã &amp; Khôi Phục Tệp Gốc
+      </button>
 
-            <!-- Kết quả giải mã -->
-            <div id="realDecResultBox" style="display: none; margin-top: 14px; background: #111827; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
-                <div id="realDecStatusHeader" style="font-size: 12px; font-weight: 700; margin-bottom: 6px;"></div>
-                <div id="realDecInfo" style="font-size: 11.5px; color: #94a3b8; margin-bottom: 8px;"></div>
-                <button type="button" id="realDownloadOriginalBtn" style="display: none; background: #3b82f6; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Tải Tệp Gốc Về Máy</button>
-            </div>
-        </div>
+      <div id="realDecResultBox" class="ss-result" role="status" aria-live="polite">
+        <div id="realDecStatusHeader" class="ss-result-title"></div>
+        <div id="realDecInfo" class="ss-result-info"></div>
+        <button type="button" id="realDownloadOriginalBtn" class="ss-btn ss-green" style="display:none">Tải Tệp Gốc Về Máy</button>
+      </div>
 
-    </div>
+      <div class="ss-note" style="margin-top:16px;border-top:1px solid #1e293b;padding-top:12px">
+        <i class="fa-solid fa-shield-halved"></i>
+        Xác thực AES-GCM sẽ thất bại nếu mật khẩu sai hoặc dữ liệu được bảo vệ bị thay đổi.
+      </div>
+    </section>
+  </div>
 </div>
 
 <script>
-let realGeneratedBlob = null;
-let realDownloadFilename = "document.secure";
-let realRestoredBlob = null;
-let realRestoredFilename = "recovered_file";
+(() => {
+  'use strict';
 
-function handleRealFileSelect(input) {
-    if (input.files && input.files[0]) {
-        let file = input.files[0];
-        document.getElementById('realEncTitle').value = file.name;
+  const $ = (id) => document.getElementById(id);
+  const ITERATIONS = 600000;
+  const FORMAT_VERSION = 'secureshare-v4';
+
+  let generatedBlob = null;
+  let generatedFilename = 'document.secure';
+  let restoredBlob = null;
+  let restoredFilename = 'recovered_file';
+
+  function showResult(boxId, headerId, infoId, message, isSuccess) {
+    const box = $(boxId);
+    const header = $(headerId);
+    const info = $(infoId);
+
+    box.style.display = 'block';
+    header.textContent = message;
+    header.className = 'ss-result-title ' + (isSuccess ? 'ss-success' : 'ss-error');
+    info.textContent = '';
+  }
+
+  function setInfoLines(element, lines) {
+    element.replaceChildren();
+
+    lines.forEach((line, index) => {
+      if (index) {
+        element.appendChild(document.createElement('br'));
+      }
+
+      const span = document.createElement('span');
+      span.textContent = line;
+      element.appendChild(span);
+    });
+  }
+
+  function bytesToBase64(bytes) {
+    let binary = '';
+    const chunkSize = 0x8000;
+
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
     }
-}
 
-async function getCryptoKeyFromPass(password, salt) {
-    let enc = new TextEncoder();
-    let keyMaterial = await window.crypto.subtle.importKey(
-        "raw",
-        enc.encode(password),
-        { name: "PBKDF2" },
-        false,
-        ["deriveKey"]
+    return btoa(binary);
+  }
+
+  function base64ToBytes(value) {
+    if (
+      typeof value !== 'string' ||
+      value.length > 150000000 ||
+      !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value)
+    ) {
+      throw new Error('Dữ liệu mã hóa Base64 không hợp lệ hoặc quá lớn.');
+    }
+
+    const binary = atob(value);
+    const bytes = new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    return bytes;
+  }
+
+  function buildAuthenticatedMetadata(container) {
+    return JSON.stringify({
+      version: container.version,
+      algorithm: container.algorithm,
+      kdf: container.kdf,
+      iterations: container.iterations,
+      originalName: container.originalName,
+      originalSize: container.originalSize,
+      originalType: container.originalType,
+      title: container.title,
+      salt: container.salt,
+      iv: container.iv,
+      timestamp: container.timestamp
+    });
+  }
+
+  async function deriveKey(password, salt, usages) {
+    const material = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(password),
+      'PBKDF2',
+      false,
+      ['deriveKey']
     );
-    return await window.crypto.subtle.deriveKey(
-        { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
-        keyMaterial,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["encrypt", "decrypt"]
+
+    return crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt,
+        iterations: ITERATIONS,
+        hash: 'SHA-256'
+      },
+      material,
+      {
+        name: 'AES-GCM',
+        length: 256
+      },
+      false,
+      usages
     );
-}
+  }
 
-async function executeRealEncryption() {
-    let fileInput = document.getElementById('realSourceFile');
-    let titleInput = document.getElementById('realEncTitle').value.trim();
-    let algo = document.getElementById('cryptoAlgoSelect').value;
-    let password = document.getElementById('realEncPassword').value;
+  function safeFilename(name, fallback) {
+    const cleaned = String(name || '')
+      .replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_')
+      .trim();
 
-    if (!fileInput.files || fileInput.files.length === 0) {
-        alert("Vui lòng chọn một tệp tin cần mã hóa thực tế!");
-        return;
+    return (cleaned || fallback).slice(0, 240);
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+
+    anchor.href = url;
+    anchor.download = safeFilename(filename, 'download');
+    anchor.style.display = 'none';
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+
+  $('realSourceFile').addEventListener('change', (event) => {
+    const file = event.target.files && event.target.files[0];
+
+    if (file) {
+      $('realEncTitle').value = file.name;
     }
-    if (!password) {
-        alert("Vui lòng nhập mật khẩu bảo mật!");
-        return;
+
+    $('realEncResultBox').style.display = 'none';
+    generatedBlob = null;
+  });
+
+  $('realEncryptBtn').addEventListener('click', async () => {
+    const button = $('realEncryptBtn');
+    const file = $('realSourceFile').files && $('realSourceFile').files[0];
+    const title = $('realEncTitle').value.trim() || (file && file.name) || '';
+    const password = $('realEncPassword').value;
+
+    $('realEncResultBox').style.display = 'none';
+    generatedBlob = null;
+
+    if (!window.crypto || !crypto.subtle) {
+      alert('Trình duyệt không hỗ trợ Web Crypto. Hãy dùng trình duyệt hiện đại qua HTTPS hoặc localhost.');
+      return;
     }
 
-    let file = fileInput.files[0];
-    let title = titleInput || file.name;
+    if (!file) {
+      alert('Vui lòng chọn tệp cần mã hóa.');
+      return;
+    }
+
+    if (!password || password.length < 12) {
+      alert('Hãy nhập mật khẩu dài ít nhất 12 ký tự.');
+      return;
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
+      alert('Tệp lớn hơn 50 MB. Hãy chọn tệp nhỏ hơn để tránh làm treo trình duyệt.');
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Đang mã hóa…';
 
     try {
-        let fileBuffer = await file.arrayBuffer();
-        let salt = window.crypto.getRandomValues(new Uint8Array(16));
-        let iv = window.crypto.getRandomValues(new Uint8Array(12));
-        let cryptoKey = await getCryptoKeyFromPass(password, salt);
+      const plaintext = await file.arrayBuffer();
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
 
-        let ciphertextBuffer = await window.crypto.subtle.encrypt(
-            { name: "AES-GCM", iv: iv },
-            cryptoKey,
-            fileBuffer
-        );
+      const container = {
+        version: FORMAT_VERSION,
+        algorithm: 'AES-256-GCM',
+        kdf: 'PBKDF2-SHA256',
+        iterations: ITERATIONS,
+        originalName: safeFilename(file.name, 'recovered_file'),
+        originalSize: file.size,
+        originalType: file.type || 'application/octet-stream',
+        title: safeFilename(title, file.name),
+        salt: bytesToBase64(salt),
+        iv: bytesToBase64(iv),
+        timestamp: new Date().toISOString()
+      };
 
-        let container = {
-            version: "3.0-secure",
-            algorithm: algo,
-            originalName: file.name,
-            originalSize: file.size,
-            originalType: file.type || "application/octet-stream",
-            title: title,
-            salt: Array.from(salt),
-            iv: Array.from(iv),
-            ciphertext: Array.from(new Uint8Array(ciphertextBuffer)),
-            timestamp: new Date().toISOString()
-        };
+      const key = await deriveKey(password, salt, ['encrypt']);
+      const aad = new TextEncoder().encode(buildAuthenticatedMetadata(container));
 
-        let jsonString = JSON.stringify(container);
-        realGeneratedBlob = new Blob([jsonString], { type: "application/json" });
-        realDownloadFilename = (title.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'secure_file') + '.secure';
+      const encrypted = await crypto.subtle.encrypt(
+        {
+          name: 'AES-GCM',
+          iv,
+          additionalData: aad,
+          tagLength: 128
+        },
+        key,
+        plaintext
+      );
 
-        let box = document.getElementById('realEncResultBox');
-        box.style.display = 'block';
-        document.getElementById('realEncInfo').innerHTML = `• Tệp: <b>${file.name}</b><br>• Thuật toán: <b>${algo}</b><br>• Trạng thái: Đã mã hóa thành công tệp .secure`;
+      container.ciphertext = bytesToBase64(new Uint8Array(encrypted));
 
-        let btn = document.getElementById('realDownloadBtn');
-        btn.onclick = function() {
-            let url = URL.createObjectURL(realGeneratedBlob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = realDownloadFilename;
-            a.click();
-        };
-    } catch (err) {
-        alert("Lỗi mã hóa: " + err.message);
-    }
-}
+      generatedBlob = new Blob(
+        [JSON.stringify(container)],
+        { type: 'application/json' }
+      );
 
-async function executeRealDecryption() {
-    let fileInput = document.getElementById('realSecureFile');
-    let password = document.getElementById('realDecPassword').value;
-    let resBox = document.getElementById('realDecResultBox');
-    let statusHeader = document.getElementById('realDecStatusHeader');
-    let infoBox = document.getElementById('realDecInfo');
-    let downloadBtn = document.getElementById('realDownloadOriginalBtn');
+      const base = safeFilename(
+        title.replace(/\.[^.]+$/, ''),
+        'secure_file'
+      )
+        .replace(/\s+/g, '_')
+        .replace(/[^a-zA-Z0-9._-]/g, '_');
 
-    if (!fileInput.files || fileInput.files.length === 0) {
-        alert("Vui lòng chọn tệp .secure cần giải mã!");
-        return;
-    }
-    if (!password) {
-        alert("Vui lòng nhập mật khẩu giải mã!");
-        return;
-    }
+      generatedFilename = base + '.secure';
 
-    let secureFile = fileInput.files[0];
+      showResult(
+        'realEncResultBox',
+        'realEncStatusHeader',
+        'realEncInfo',
+        'Mã hóa thành công.',
+        true
+      );
 
-    try {
-        let textContent = await secureFile.text();
-        let container = JSON.parse(textContent);
+      setInfoLines($('realEncInfo'), [
+        'Tệp gốc: ' + file.name,
+        'Dung lượng gốc: ' + file.size.toLocaleString() + ' byte',
+        'Thuật toán: AES-256-GCM',
+        'Dẫn xuất khóa: PBKDF2-SHA256 (' + ITERATIONS.toLocaleString() + ' vòng)',
+        'Tệp .secure đã sẵn sàng để tải xuống.'
+      ]);
 
-        if (!container.version || !container.ciphertext) {
-            throw new Error("Cấu trúc tệp không hợp lệ!");
+      $('realDownloadBtn').onclick = () => {
+        if (generatedBlob) {
+          downloadBlob(generatedBlob, generatedFilename);
         }
+      };
+    } catch (error) {
+      showResult(
+        'realEncResultBox',
+        'realEncStatusHeader',
+        'realEncInfo',
+        'Mã hóa thất bại.',
+        false
+      );
 
-        let salt = new Uint8Array(container.salt);
-        let iv = new Uint8Array(container.iv);
-        let ciphertext = new Uint8Array(container.ciphertext);
-        let cryptoKey = await getCryptoKeyFromPass(password, salt);
-
-        let decryptedBuffer = await window.crypto.subtle.decrypt(
-            { name: "AES-GCM", iv: iv },
-            cryptoKey,
-            ciphertext
-        );
-
-        realRestoredBlob = new Blob([decryptedBuffer], { type: container.originalType || "application/octet-stream" });
-        realRestoredFilename = container.originalName || "recovered_file";
-
-        resBox.style.display = 'block';
-        statusHeader.innerHTML = '<span style="color: #34d399;"><i class="fa-solid fa-circle-check"></i> Xác thực toàn vẹn & Giải mã thành công!</span>';
-        infoBox.innerHTML = `• Tệp gốc: <b>${realRestoredFilename}</b><br>• Thuật toán: ${container.algorithm}<br>• Kích thước: ${(container.originalSize/1024).toFixed(2)} KB`;
-        
-        downloadBtn.style.display = 'inline-block';
-        downloadBtn.onclick = function() {
-            let url = URL.createObjectURL(realRestoredBlob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = realRestoredFilename;
-            a.click();
-        };
-    } catch (err) {
-        resBox.style.display = 'block';
-        statusHeader.innerHTML = '<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại!</span>';
-        infoBox.innerHTML = "Sai mật khẩu hoặc tệp .secure đã bị thay đổi cấu trúc.";
-        downloadBtn.style.display = 'none';
+      $('realEncInfo').textContent =
+        error && error.message ? error.message : 'Đã xảy ra lỗi không xác định.';
+    } finally {
+      button.disabled = false;
+      button.innerHTML = '<i class="fa-solid fa-lock"></i> Mã Hóa &amp; Tạo Tệp .secure';
     }
-}
+  });
+
+  $('realDecryptBtn').addEventListener('click', async () => {
+    const button = $('realDecryptBtn');
+    const file = $('realSecureFile').files && $('realSecureFile').files[0];
+    const password = $('realDecPassword').value;
+    const box = $('realDecResultBox');
+    const downloadButton = $('realDownloadOriginalBtn');
+
+    box.style.display = 'none';
+    restoredBlob = null;
+    downloadButton.style.display = 'none';
+
+    if (!window.crypto || !crypto.subtle) {
+      alert('Trình duyệt không hỗ trợ Web Crypto. Hãy dùng trình duyệt hiện đại qua HTTPS hoặc localhost.');
+      return;
+    }
+
+    if (!file) {
+      alert('Vui lòng chọn tệp .secure cần giải mã.');
+      return;
+    }
+
+    if (!password) {
+      alert('Vui lòng nhập mật khẩu giải mã.');
+      return;
+    }
+
+    if (file.size > 75 * 1024 * 1024) {
+      alert('Tệp .secure quá lớn để xử lý an toàn trong trình duyệt.');
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Đang giải mã…';
+
+    try {
+      const raw = await file.text();
+      const container = JSON.parse(raw);
+
+      if (
+        !container ||
+        container.version !== FORMAT_VERSION ||
+        container.algorithm !== 'AES-256-GCM' ||
+        container.kdf !== 'PBKDF2-SHA256' ||
+        container.iterations !== ITERATIONS ||
+        typeof container.originalName !== 'string' ||
+        !Number.isSafeInteger(container.originalSize) ||
+        container.originalSize < 0 ||
+        typeof container.originalType !== 'string' ||
+        typeof container.title !== 'string' ||
+        typeof container.timestamp !== 'string' ||
+        typeof container.ciphertext !== 'string'
+      ) {
+        throw new Error('Cấu trúc tệp không hợp lệ hoặc không được hỗ trợ.');
+      }
+
+      const salt = base64ToBytes(container.salt);
+      const iv = base64ToBytes(container.iv);
+      const ciphertext = base64ToBytes(container.ciphertext);
+
+      if (salt.length !== 16 || iv.length !== 12 || ciphertext.length < 16) {
+        throw new Error('Tệp thiếu dữ liệu mật mã bắt buộc hoặc đã bị hỏng.');
+      }
+
+      const key = await deriveKey(password, salt, ['decrypt']);
+      const aad = new TextEncoder().encode(buildAuthenticatedMetadata(container));
+
+      const plaintext = await crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv,
+          additionalData: aad,
+          tagLength: 128
+        },
+        key,
+        ciphertext
+      );
+
+      if (plaintext.byteLength !== container.originalSize) {
+        throw new Error('Kích thước dữ liệu sau giải mã không khớp metadata.');
+      }
+
+      restoredBlob = new Blob(
+        [plaintext],
+        { type: container.originalType || 'application/octet-stream' }
+      );
+
+      restoredFilename = safeFilename(
+        container.originalName,
+        'recovered_file'
+      );
+
+      showResult(
+        'realDecResultBox',
+        'realDecStatusHeader',
+        'realDecInfo',
+        'Xác thực toàn vẹn và giải mã thành công.',
+        true
+      );
+
+      setInfoLines($('realDecInfo'), [
+        'Tệp gốc: ' + restoredFilename,
+        'Dung lượng khôi phục: ' + plaintext.byteLength.toLocaleString() + ' byte',
+        'Thuật toán: AES-256-GCM',
+        'Dữ liệu và metadata đã được xác thực.'
+      ]);
+
+      downloadButton.style.display = 'block';
+
+      downloadButton.onclick = () => {
+        if (restoredBlob) {
+          downloadBlob(restoredBlob, restoredFilename);
+        }
+      };
+    } catch (error) {
+      showResult(
+        'realDecResultBox',
+        'realDecStatusHeader',
+        'realDecInfo',
+        'Giải mã thất bại.',
+        false
+      );
+
+      $('realDecInfo').textContent =
+        error && error.name === 'OperationError'
+          ? 'Sai mật khẩu hoặc dữ liệu đã bị thay đổi. Không có tệp nào được khôi phục.'
+          : (error && error.message
+              ? error.message
+              : 'Tệp .secure không hợp lệ hoặc đã bị hỏng.');
+
+      downloadButton.style.display = 'none';
+      restoredBlob = null;
+    } finally {
+      button.disabled = false;
+      button.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i> Giải Mã &amp; Khôi Phục Tệp Gốc';
+    }
+  });
+})();
 </script>
