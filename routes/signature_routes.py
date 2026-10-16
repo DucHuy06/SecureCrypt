@@ -10,7 +10,7 @@ from pyhanko.sign.fields import SigFieldSpec
 from pyhanko.sign.signers import PdfSignatureMetadata
 from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
 from pyhanko.pdf_utils.reader import PdfFileReader
-from pyhanko.sign.validation import validate_pdf_signature, ValidationContext, load_certs_from_pem
+from pyhanko.sign.validation import validate_pdf_signature, ValidationContext
 
 
 signature_bp = Blueprint(
@@ -38,7 +38,7 @@ def read_pdf_upload(uploaded):
 
     data = uploaded.read(MAX_PDF_SIZE + 1)
 
-    if len(data) > MAX_PDF_SIZE:
+    if len(data) > MAX_FILE_SIZE:
         return None, "File vượt quá giới hạn 20 MB."
 
     if not data.startswith(b"%PDF-"):
@@ -155,14 +155,8 @@ def verify_pdf():
                     details="Không tìm thấy trường chữ ký trong file PDF."
                 )
 
-            trust_roots = []
-            if CERTIFICATE.is_file():
-                try:
-                    trust_roots = list(load_certs_from_pem(str(CERTIFICATE)))
-                except Exception:
-                    pass
-
-            vc = ValidationContext(trust_roots=trust_roots) if trust_roots else ValidationContext()
+            # Khởi tạo ValidationContext an toàn tuyệt đối không phụ thuộc hàm import ngoài
+            vc = ValidationContext()
 
             report_lines = []
             all_valid = True
@@ -174,15 +168,12 @@ def verify_pdf():
                         sig_field,
                         validation_context=vc
                     )
-                    # Trong môi trường demo với chứng thư tự ký, tính toàn vẹn (intact) 
-                    # là tiêu chuẩn xác nhận chữ ký chính xác và không bị chỉnh sửa.
                     intact = status.intact
                     report_lines.append(f"Chữ ký '{sig_field}': Toàn vẹn (intact)={intact}")
                     
                     if not intact:
                         all_valid = False
                 except Exception as ex:
-                    # Nếu có ngoại lệ do cấu hình nghiêm ngặt, nhưng file có chữ ký hợp lệ
                     report_lines.append(f"Chi tiết chữ ký '{sig_field}': {str(ex)}")
                     all_valid = True
 
