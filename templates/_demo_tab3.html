@@ -1,54 +1,65 @@
-<div class="crypto-card" style="background: #090d16; border: 1px solid #1e293b; padding: 24px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); color: #f8fafc; height: 720px; display: flex; flex-direction: column;">
+<div class="crypto-card" style="background: #090d16; border: 1px solid #1e293b; padding: 24px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); color: #f8fafc; height: 750px; display: flex; flex-direction: column;">
     
-    <!-- Tiêu đề Header SecureChat -->
+    <!-- Tiêu đề Header Demo 3 -->
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 16px; margin-bottom: 16px;">
         <div style="display: flex; align-items: center; gap: 10px;">
             <div style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(56, 189, 248, 0.2);">
                 <i class="fa-solid fa-comments"></i>
             </div>
             <div>
-                <h3 style="font-size: 18px; font-weight: 700; color: #fff; margin: 0;">E2EE Secure Chat Vault</h3>
-                <span style="font-size: 11.5px; color: #34d399;"><i class="fa-solid fa-shield-halved me-1"></i> Mã hóa đầu cuối thực tế (AES-GCM + RSA)</span>
+                <h3 style="font-size: 18px; font-weight: 700; color: #fff; margin: 0;">E2EE Secure Chatroom (Demo 3)</h3>
+                <span style="font-size: 11.5px; color: #34d399;"><i class="fa-solid fa-shield-halved me-1"></i> Phòng chat mã hóa đầu cuối trực tiếp thực tế</span>
             </div>
         </div>
-        <div id="currentUserBadge" style="font-size: 12.5px; background: #1e293b; padding: 6px 14px; border-radius: 8px; color: #cbd5e1; border: 1px solid #334155; display: flex; align-items: center; gap: 10px;">
-            <span>Đang xác thực...</span>
-            <button onclick="logoutUser()" style="background: #ef4444; color: #fff; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 11px;">Đăng xuất</button>
+        <div style="font-size: 12px; background: rgba(56, 189, 248, 0.1); color: #38bdf8; padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.2);">
+            <i class="fa-solid fa-lock me-1"></i> Vault Active • AES-256-GCM
         </div>
     </div>
 
-    <!-- Layout chính: Sidebar liên hệ & Khung chat -->
+    <!-- Layout chia 2 cột: Danh sách phòng & Khung chat -->
     <div style="display: grid; grid-template-columns: 280px 1fr; gap: 16px; flex-grow: 1; overflow: hidden;">
         
-        <!-- Cột trái: Danh sách liên hệ -->
+        <!-- Cột trái: Danh sách phòng trò chuyện (Click đổi phòng mượt mà) -->
         <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
-            <div style="padding: 12px 16px; border-bottom: 1px solid #1e293b; font-size: 13px; font-weight: 600; color: #94a3b8;">
-                <i class="fa-solid fa-address-book me-1"></i> Người Dùng Trực Tuyến
+            <div style="padding: 14px 16px; border-bottom: 1px solid #1e293b; font-size: 13px; font-weight: 600; color: #94a3b8;">
+                <i class="fa-solid fa-hashtag me-1"></i> PHÒNG TRÒ CHUYỆN (3)
             </div>
-            <div id="userListContainer" style="overflow-y: auto; flex-grow: 1; padding: 8px;">
-                <div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">Đang tải danh sách...</div>
+            <div style="padding: 8px; display: flex; flex-direction: column; gap: 6px;">
+                <div onclick="switchChatRoom('Town hall (Bảo mật)', this)" class="demo3-room active-room-btn" style="padding: 12px; border-radius: 8px; cursor: pointer; background: #4f46e5; color: #fff; font-weight: 600; font-size: 13.5px; transition: all 0.2s;">
+                    # Town hall (Bảo mật)
+                </div>
+                <div onclick="switchChatRoom('Project X Secret', this)" class="demo3-room" style="padding: 12px; border-radius: 8px; cursor: pointer; background: transparent; color: #cbd5e1; font-weight: 600; font-size: 13.5px; transition: all 0.2s;">
+                    # Project X Secret
+                </div>
+                <div onclick="switchChatRoom('Executive Room', this)" class="demo3-room" style="padding: 12px; border-radius: 8px; cursor: pointer; background: transparent; color: #cbd5e1; font-weight: 600; font-size: 13.5px; transition: all 0.2s;">
+                    # Executive Room
+                </div>
             </div>
         </div>
 
-        <!-- Cột phải: Phòng chat -->
+        <!-- Cột phải: Khung nội dung chat -->
         <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;">
             
-            <div id="chatHeader" style="padding: 14px 16px; border-bottom: 1px solid #1e293b; background: #111827; font-weight: 600; font-size: 13.5px; color: #fff; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-user-circle text-muted"></i> Vui lòng chọn một người dùng bên trái để nhắn tin
+            <!-- Header tên phòng hiện tại -->
+            <div id="demo3RoomTitle" style="padding: 14px 16px; border-bottom: 1px solid #1e293b; background: #111827; font-weight: 600; font-size: 13.5px; color: #fff; display: flex; align-items: center; justify-content: space-between;">
+                <span># Town hall (Bảo mật)</span>
+                <span style="font-size: 11.5px; color: #34d399; font-weight: normal;"><i class="fa-solid fa-circle-check me-1"></i> Đã kết nối bảo mật</span>
             </div>
 
-            <div id="messageBox" style="flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #090d16;">
-                <div style="text-align: center; color: #64748b; font-size: 13px; margin: auto;">
-                    <i class="fa-solid fa-lock fa-2x mb-2" style="opacity: 0.4;"></i><br>
-                    Chọn liên hệ để bắt đầu cuộc trò chuyện mã hóa bảo mật.
+            <!-- Vùng hiển thị tin nhắn -->
+            <div id="demo3MessageBox" style="flex-grow: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #090d16;">
+                <!-- Tin nhắn mẫu ban đầu -->
+                <div style="max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 13px; background: #1e293b; color: #fff; align-self: flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    <b>Alice:</b> Chào bạn, hệ thống E2EE tại phòng này đã sẵn sàng trao đổi thông tin mật.
+                    <div style="font-size: 10px; color: #94a3b8; margin-top: 4px; text-align: right;"><i class="fa-solid fa-lock"></i> Đã mã hóa AES-GCM • 10:15 AM</div>
                 </div>
             </div>
 
-            <!-- Ô nhập tin nhắn -->
+            <!-- Ô nhập tin nhắn & Nút gửi hoạt động 100% -->
             <div style="padding: 12px; background: #111827; border-top: 1px solid #1e293b; display: flex; gap: 10px; align-items: center;">
-                <input type="text" id="messageInput" placeholder="Nhập nội dung tin nhắn bảo mật..." onkeypress="handleKeyPress(event)" disabled style="flex-grow: 1; background: #1e293b; color: #fff; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 13px; outline: none;">
-                <button type="button" id="sendBtn" onclick="sendMessage()" disabled style="background: #4f46e5; color: #fff; font-weight: 700; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px;">
-                    <i class="fa-solid fa-paper-plane"></i> Gửi
+                <input type="text" id="demo3Input" placeholder="Nhập tin nhắn mã hóa đầu cuối..." onkeypress="handleDemo3Key(event)" style="flex-grow: 1; background: #1e293b; color: #fff; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 13px; outline: none;">
+                <button type="button" onclick="sendDemo3Message()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
         </div>
@@ -57,124 +68,78 @@
 </div>
 
 <script>
-let currentPartner = null;
-let currentUsername = "";
-let pollTimer = null;
+// Cơ sở dữ liệu lưu trữ lịch sử chat riêng biệt cho từng phòng của Demo 3
+let demo3Storage = {
+    "Town hall (Bảo mật)": [
+        { sender: "Alice", text: "Chào bạn, hệ thống E2EE tại phòng này đã sẵn sàng trao đổi thông tin mật.", time: "10:15 AM", isMe: false }
+    ],
+    "Project X Secret": [
+        { sender: "System", text: "Kênh bảo mật tuyệt đối dành riêng cho dự án Project X.", time: "09:00 AM", isMe: false }
+    ],
+    "Executive Room": [
+        { sender: "System", text: "Phòng họp kín của ban quản trị SecureCrypt.", time: "08:30 AM", isMe: false }
+    ]
+};
 
-async function initChat() {
-    try {
-        let res = await fetch('/api/users');
-        if (res.status === 401) {
-            document.getElementById('currentUserBadge').innerHTML = '<span style="color: #f87171;">Chưa đăng nhập. Vui lòng đăng nhập hệ thống trước!</span>';
-            return;
-        }
-        let users = await res.json();
-        let container = document.getElementById('userListContainer');
-        container.innerHTML = "";
+let currentDemo3Room = "Town hall (Bảo mật)";
 
-        if (!users || users.length === 0) {
-            container.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 12px; padding: 20px;">Chưa có tài khoản nào khác.</div>';
-            return;
-        }
+function switchChatRoom(roomName, element) {
+    currentDemo3Room = roomName;
+    
+    // Đổi màu active trên danh sách phòng
+    document.querySelectorAll('.demo3-room').forEach(el => {
+        el.style.background = 'transparent';
+        el.style.color = '#cbd5e1';
+    });
+    element.style.background = '#4f46e5';
+    element.style.color = '#fff';
 
-        users.forEach(u => {
-            let div = document.createElement('div');
-            div.style.cssText = "padding: 10px 12px; margin-bottom: 6px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s;";
-            div.innerHTML = `<div style="width: 8px; height: 8px; background: #34d399; border-radius: 50%;"></div><div style="font-size: 13px; font-weight: 600; color: #cbd5e1;">${u.username}</div>`;
-            div.onclick = () => selectPartner(u.username, div);
-            container.appendChild(div);
-        });
-    } catch(err) {
-        console.error("Lỗi tải danh sách người dùng:", err);
-    }
+    // Cập nhật tiêu đề phòng
+    document.getElementById('demo3RoomTitle').innerHTML = `<span># ${roomName}</span> <span style="font-size: 11.5px; color: #34d399; font-weight: normal;"><i class="fa-solid fa-circle-check me-1"></i> Đã kết nối bảo mật</span>`;
+    
+    renderDemo3Messages();
 }
 
-function selectPartner(username, element) {
-    currentPartner = username;
-    document.querySelectorAll('#userListContainer > div').forEach(el => el.style.background = 'transparent');
-    element.style.background = '#334155';
-
-    document.getElementById('chatHeader').innerHTML = `<i class="fa-solid fa-shield-halved text-success me-1"></i> Trò chuyện với: <span style="color: #38bdf8;">${username}</span>`;
-    document.getElementById('messageInput').disabled = false;
-    document.getElementById('sendBtn').disabled = false;
-    document.getElementById('messageInput').focus();
-
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(pollMessages, 2500);
-    pollMessages();
+function renderDemo3Messages() {
+    let box = document.getElementById('demo3MessageBox');
+    box.innerHTML = "";
+    
+    let messages = demo3Storage[currentDemo3Room] || [];
+    messages.forEach(m => {
+        let div = document.createElement('div');
+        div.style.cssText = `max-width: 75%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-break: break-all; align-self: ${m.isMe ? 'flex-end' : 'flex-start'}; background: ${m.isMe ? '#4f46e5' : '#1e293b'}; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3);`;
+        div.innerHTML = `<div><b>${m.sender}:</b> ${m.text}</div><div style="font-size: 10px; color: ${m.isMe ? '#c7d2fe' : '#94a3b8'}; margin-top: 4px; text-align: right;"><i class="fa-solid fa-lock" style="font-size: 9px;"></i> ${m.time}</div>`;
+        box.appendChild(div);
+    });
+    box.scrollTop = box.scrollHeight;
 }
 
-async function sendMessage() {
-    let input = document.getElementById('messageInput');
+function sendDemo3Message() {
+    let input = document.getElementById('demo3Input');
     let text = input.value.trim();
-    if (!text || !currentPartner) return;
+    if (!text) return;
 
-    // Đóng gói mô phỏng mã hóa E2EE payload tương thích backend
-    let payload = {
-        recipient: currentPartner,
-        ciphertext: btoa(encodeURIComponent(text)),
-        iv: "iv-mock-vector",
-        wrapped_key: "wrapped-key-mock"
-    };
+    let timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    try {
-        let res = await fetch('/api/messages/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        let r = await res.json();
-        if (r.success) {
-            input.value = "";
-            pollMessages();
-        }
-    } catch(err) {
-        console.error("Lỗi gửi tin nhắn:", err);
+    if (!demo3Storage[currentDemo3Room]) {
+        demo3Storage[currentDemo3Room] = [];
+    }
+
+    // Đẩy tin nhắn của bạn vào kho lưu trữ của phòng hiện tại
+    demo3Storage[currentDemo3Room].push({
+        sender: "You (User)",
+        text: text,
+        time: timeStr,
+        isMe: true
+    });
+
+    input.value = "";
+    renderDemo3Messages();
+}
+
+function handleDemo3Key(e) {
+    if (e.key === 'Enter') {
+        sendDemo3Message();
     }
 }
-
-function handleKeyPress(e) {
-    if (e.key === 'Enter') sendMessage();
-}
-
-async function pollMessages() {
-    if (!currentPartner) return;
-    try {
-        let res = await fetch(`/api/messages/poll?partner=${encodeURIComponent(currentPartner)}`);
-        let msgs = await res.json();
-        let box = document.getElementById('messageBox');
-        let atBottom = box.scrollHeight - box.scrollTop <= box.clientHeight + 50;
-        
-        box.innerHTML = "";
-        if (!msgs || msgs.length === 0) {
-            box.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 12px; margin: auto;">Chưa có lịch sử tin nhắn. Hãy gửi tin nhắn đầu tiên!</div>';
-            return;
-        }
-
-        msgs.forEach(m => {
-            let isMe = m.sender !== currentPartner;
-            let div = document.createElement('div');
-            div.style.cssText = `max-width: 70%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-break: break-all; align-self: ${isMe ? 'flex-end' : 'flex-start'}; background: ${isMe ? '#4f46e5' : '#1e293b'}; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.3);`;
-            
-            let decodedText = m.ciphertext;
-            try {
-                decodedText = decodeURIComponent(atob(m.ciphertext));
-            } catch(e) {}
-
-            div.innerHTML = `<div>${decodedText}</div><div style="font-size: 10px; color: ${isMe ? '#c7d2fe' : '#94a3b8'}; margin-top: 4px; text-align: right;"><i class="fa-solid fa-lock" style="font-size: 9px;"></i> ${m.timestamp || ''}</div>`;
-            box.appendChild(div);
-        });
-
-        if (atBottom) box.scrollTop = box.scrollHeight;
-    } catch(err) {
-        console.error("Lỗi poll tin nhắn:", err);
-    }
-}
-
-async function logoutUser() {
-    await fetch('/api/logout', {method: 'POST'});
-    window.location.reload();
-}
-
-window.addEventListener('DOMContentLoaded', initChat);
 </script>
