@@ -1,4 +1,3 @@
-
 <style>
     .secureshare-card {
         background: #0b0f19;
@@ -127,7 +126,7 @@
 
             <div>
                 <label for="ssPlainText">Hoặc nhập nội dung văn bản</label>
-                <textarea id="ssPlainText" rows="5">Tài liệu nội bộ dự án bảo mật thông tin doanh nghiệp.</textarea>
+                <textarea id="ssPlainText" rows="5" placeholder="Nhập nội dung văn bản cần bảo mật..."></textarea>
             </div>
 
             <div>
@@ -162,13 +161,7 @@
             <div>
                 <label for="ssPrivatePassword">Mật khẩu bảo vệ khóa riêng RSA</label>
                 <input id="ssPrivatePassword" type="password"
-                       autocomplete="new-password" placeholder="Tối thiểu 12 ký tự">
-            </div>
-
-            <div>
-                <label for="ssPrivatePassword2">Nhập lại mật khẩu</label>
-                <input id="ssPrivatePassword2" type="password"
-                       autocomplete="new-password" placeholder="Nhập lại mật khẩu">
+                       autocomplete="new-password" placeholder="Tối thiểu 8 ký tự">
             </div>
 
             <div class="ss-note">
@@ -202,7 +195,7 @@
             <div>
                 <label for="ssUnlockPassword">Mật khẩu mở khóa tệp khóa riêng</label>
                 <input id="ssUnlockPassword" type="password"
-                       autocomplete="current-password">
+                       autocomplete="current-password" placeholder="Nhập mật khẩu khóa riêng">
             </div>
 
             <button type="button" class="ss-btn" id="ssDecryptBtn">
@@ -402,10 +395,7 @@
             }
 
             const password = $('ssPrivatePassword').value;
-            if (password.length < 12) throw new Error('Mật khẩu khóa riêng phải có ít nhất 12 ký tự.');
-            if (password !== $('ssPrivatePassword2').value) {
-                throw new Error('Hai mật khẩu không khớp.');
-            }
+            if (password.length < 8) throw new Error('Mật khẩu khóa riêng phải có ít nhất 8 ký tự.');
 
             const input = await getInput();
             const cipher = $('ssCipher').value;
@@ -430,7 +420,6 @@
 
             const iv = randomBytes(cipher === 'AES-256-GCM' ? 12 : 16);
             let ciphertext;
-            let hmac = null;
 
             if (cipher === 'AES-256-GCM') {
                 ciphertext = new Uint8Array(await crypto.subtle.encrypt(
@@ -466,8 +455,6 @@
             };
 
             if (cipher === 'AES-256-CBC') {
-                // Derive a separate MAC key from the AES key using HKDF.
-                // The MAC key itself is never saved in the package.
                 const hkdf = await crypto.subtle.importKey(
                     'raw', rawKey, 'HKDF', false, ['deriveKey']
                 );
@@ -598,7 +585,6 @@
                 if (iv.length !== 16) throw new Error('IV AES-CBC không hợp lệ.');
                 if (!pkg.hmac) throw new Error('Tệp AES-CBC thiếu HMAC.');
 
-                // Verify HMAC before CBC decryption.
                 const metadata = {
                     format: FORMAT,
                     cipher: pkg.cipher,
