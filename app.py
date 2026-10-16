@@ -1,4 +1,4 @@
-
+```python
 import os
 import sqlite3
 from pathlib import Path
@@ -9,8 +9,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from routes.crypto_routes import crypto_bp
 from routes.file_routes import file_bp
 from routes.signature_routes import signature_bp
-
-# Chỉ giữ demo_bp nếu bạn vẫn cần các trang demo hiện tại.
 from routes.demo_routes import demo_bp
 
 
@@ -26,7 +24,7 @@ app.config["SECRET_KEY"] = os.environ.get(
 )
 
 # Giới hạn tổng dung lượng request.
-# File PDF trong signature_routes.py được giới hạn riêng ở 20 MB.
+# File PDF có giới hạn riêng trong signature_routes.py.
 app.config["MAX_CONTENT_LENGTH"] = 32 * 1024 * 1024
 
 
@@ -185,17 +183,21 @@ def api_current_user():
     )
 
 
+# ==================== KIỂM TRA ROUTE CHỮ KÝ ====================
+
+@app.route("/signature/health", methods=["GET"])
+def signature_health():
+    return jsonify(
+        success=True,
+        message="Signature route is active"
+    ), 200
+
+
 # ==================== ĐĂNG KÝ BLUEPRINT ====================
 
-# Các chức năng mã hóa và xử lý file hiện có.
 app.register_blueprint(crypto_bp)
 app.register_blueprint(file_bp)
-
-# Chức năng ký và xác minh chữ ký số PDF.
 app.register_blueprint(signature_bp)
-
-# Giữ các route demo hiện có để tránh làm hỏng giao diện
-# hoặc những chức năng khác đang sử dụng chúng.
 app.register_blueprint(demo_bp)
 
 
@@ -213,9 +215,4 @@ def request_entity_too_large(error):
 
 if __name__ == "__main__":
     app.run(debug=True)
-@app.route("/signature/health", methods=["GET"])
-def signature_health():
-    return {
-        "success": True,
-        "message": "Signature blueprint is registered"
-    }, 200
+```
