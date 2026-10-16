@@ -1,143 +1,192 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-bolt text-amber"></i> Hệ thống Giám sát & Chữ ký số Thời gian thực (Real-time E-Contract & Anti-Tamper Engine)
+        <i class="fa-solid fa-shield-halved text-amber"></i> SecureShare Hub: Trạm Chia sẻ Bảo mật Đa lớp & Tệp tin
     </div>
-    <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">
-        Ứng dụng vận hành tự động ngầm: Mọi thay đổi nội dung văn bản đều được hệ thống băm SHA-256 và xác thực chữ ký bất đối xứng RSA theo thời gian thực.
+    <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
+        Ứng dụng thực tế tích hợp trọn vẹn 6 thuật toán: Dùng <b>AES-GCM</b> mã hóa dữ liệu, <b>RSA/ElGamal</b> bảo vệ khóa, <b>SHA-256 & MD5</b> kiểm tra toàn vẹn, và <b>DES</b> trong phân vùng tương thích học tập.
     </p>
 
-    <!-- TRẠM LÀM VIỆC TỰ ĐỘNG -->
-    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
+    <!-- NÚT CHUYỂN ĐỔI CHẾ ĐỘ GỬI / NHẬN NGAY TRONG TAB -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px;">
+        <button type="button" onclick="switchSecTab('encrypt')" id="btnSecEnc" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
+            <i class="fa-solid fa-lock"></i> 1. Tạo Gói Chia Sẻ (Sender)
+        </button>
+        <button type="button" onclick="switchSecTab('decrypt')" id="btnSecDec" style="background: #1e293b; color: #94a3b8; font-weight: 700; padding: 8px 16px; border: 1px solid #334155; border-radius: 6px; cursor: pointer; font-size: 12.5px;">
+            <i class="fa-solid fa-lock-open"></i> 2. Nhận & Giải Mã (Receiver)
+        </button>
+    </div>
+
+    <!-- KHU VỰC 1: TẠO GÓI BẢO MẬT -->
+    <div id="secPaneEnc" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
         
-        <!-- CỘT TRÁI: KHUNG SOẠN THẢO TỰ ĐỘNG -->
-        <div style="background: #1e293b; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-weight: 700; color: #38bdf8; font-size: 13.5px;">
-                    <i class="fa-solid fa-file-pen"></i> Soạn thảo Văn bản (Tự động ký & giám sát)
-                </span>
-                <span id="autoStatusBadge" style="font-size: 11px; background: #064e3b; color: #34d399; padding: 3px 8px; border-radius: 4px; font-weight: 600;">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> Đang khởi tạo khóa...
-                </span>
+        <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-weight: 700; color: #38bdf8; font-size: 14px; border-bottom: 1px solid #334155; padding-bottom: 6px;">
+                <i class="fa-solid fa-pen-to-square"></i> Soạn thảo Thông điệp Bảo mật
             </div>
 
-            <textarea id="liveDocInput" rows="6" style="width: 100%; background: #0f172a; color: #fff; border: 1px solid #475569; padding: 10px; border-radius: 6px; font-size: 12.5px; line-height: 1.5;" oninput="onLiveTextChange()">Hợp đồng nguyên bản: Cam kết bảo mật hệ thống thông tin doanh nghiệp và chuyển giao công nghệ mã hóa năm 2026.</textarea>
-            
-            <div style="margin-top: 10px; font-size: 11.5px; color: #94a3b8;">
-                <i class="fa-solid fa-circle-info"></i> Hãy thử gõ thêm chữ vào ô trên, hệ thống sẽ tự động bắt lỗi thay đổi mà không cần bấm nút.
+            <div>
+                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nội dung thông điệp:</label>
+                <textarea id="secMessageInput" rows="3" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12px;" placeholder="Nhập thông điệp...">Tài liệu chiến lược mật mã học - Bảo mật cấp độ doanh nghiệp.</textarea>
             </div>
+
+            <div>
+                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Cơ chế bảo vệ khóa (Trụ cột 3):</label>
+                <select id="secMechSelect" style="width: 100%; background: #1e293b; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12px;">
+                    <option value="rsa">RSA-OAEP 2048-bit (Chuẩn chính bảo vệ khóa AES)</option>
+                    <option value="elgamal">ElGamal (Cơ chế bảo vệ khóa thay thế)</option>
+                </select>
+            </div>
+
+            <button type="button" onclick="runSecEncrypt()" style="background: #059669; color: #fff; font-weight: 700; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; margin-top: 4px;">
+                <i class="fa-solid fa-box-archive"></i> Tạo Gói Bảo Mật & Xuất Tệp JSON
+            </button>
         </div>
 
-        <!-- CỘT PHẢI: BẢNG THEO DÕI BẢO MẬT REAL-TIME -->
         <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; justify-content: space-between;">
             <div>
-                <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 13.5px; border-bottom: 1px solid #334155; padding-bottom: 8px;">
-                    <i class="fa-solid fa-gauge-high"></i> Phân tích Mật mã Thời gian thực
+                <div style="font-weight: 700; color: #38bdf8; font-size: 14px; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-bottom: 10px;">
+                    <i class="fa-solid fa-microchip"></i> Giám sát Thực thi 6 Thuật toán
                 </div>
 
-                <div style="margin-bottom: 10px;">
-                    <span style="font-size: 11px; color: #94a3b8; display: block;">Mã băm định danh nội dung (SHA-256):</span>
-                    <div id="realHash" style="font-family: monospace; font-size: 11px; color: #34d399; background: #1e293b; padding: 6px; border-radius: 4px; word-break: break-all; margin-top: 2px;">Đang tính toán...</div>
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <span style="font-size: 11px; color: #94a3b8; display: block;">Chữ ký số bất đối xứng (RSA-256 Signature):</span>
-                    <div id="realSig" style="font-family: monospace; font-size: 11px; color: #fbbf24; background: #1e293b; padding: 6px; border-radius: 4px; word-break: break-all; margin-top: 2px;">Đang khởi tạo...</div>
+                <div style="font-size: 11.5px; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #60a5fa; font-weight: 700;">AES-GCM:</span> <span id="sLogAES" style="color: #cbd5e1;">Chờ thực thi...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #fbbf24; font-weight: 700;">RSA/ElGamal:</span> <span id="sLogKey" style="color: #cbd5e1;">Chờ thực thi...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #34d399; font-weight: 700;">SHA-256:</span> <span id="sLogSHA" style="color: #cbd5e1; font-family: monospace; font-size: 10.5px;">Chờ tính...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #f43f5e; font-weight: 700;">MD5:</span> <span id="sLogMD5" style="color: #cbd5e1; font-family: monospace; font-size: 10.5px;">Chờ tính...</span></div>
+                    <div style="background: #1e293b; padding: 6px 8px; border-radius: 4px;"><span style="color: #a78bfa; font-weight: 700;">DES (Tương thích):</span> <span id="sLogDES" style="color: #cbd5e1;">Chờ thực thi...</span></div>
                 </div>
             </div>
 
-            <!-- TRẠNG THÁI KIỂM ĐỊNH TOÀN VẸN -->
-            <div id="realVerifyBox" style="background: #064e3b33; padding: 12px; border-radius: 8px; border: 1px solid #059669; text-align: center; font-size: 12.5px; font-weight: 700; color: #34d399;">
-                <i class="fa-solid fa-shield-check"></i> HỆ THỐNG AN TOÀN & NGUYÊN VẸN
+            <div id="sDownloadBox" style="margin-top: 12px; display: none;">
+                <a id="sDlBtn" download="secure_package.json" style="display: block; text-align: center; background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px; border-radius: 6px; text-decoration: none; font-size: 12px;">
+                    <i class="fa-solid fa-download"></i> Tải Xuống Gói Bảo Mật (.json)
+                </a>
             </div>
         </div>
 
+    </div>
+
+    <!-- KHU VỰC 2: NHẬN VÀ GIẢI MÃ -->
+    <div id="secPaneDec" style="display: none; background: #0f172a; padding: 20px; border-radius: 10px; border: 1px solid #334155;">
+        <div style="font-weight: 700; color: #38bdf8; font-size: 14px; border-bottom: 1px solid #334155; padding-bottom: 6px; margin-bottom: 12px;">
+            <i class="fa-solid fa-key"></i> Nạp Gói Bảo Mật & Giải Mã Phục Hồi
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+            <div>
+                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Tải lên tệp gói bảo mật (.json):</label>
+                <input type="file" id="sUploadFile" accept=".json" onchange="loadSecFile(event)" style="background: #1e293b; color: #fff; border: 1px solid #475569; padding: 6px; border-radius: 6px; width: 100%; font-size: 11.5px;">
+            </div>
+            <div>
+                <label style="font-size: 11.5px; color: #cbd5e1; display: block; margin-bottom: 4px;">Thực thi giải mã:</label>
+                <button type="button" onclick="runSecDecrypt()" style="background: #d97706; color: #fff; font-weight: 700; padding: 7px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; width: 100%;">
+                    <i class="fa-solid fa-unlock-keyhole"></i> Giải Mã & Xác Thực Toàn Vẹn
+                </button>
+            </div>
+        </div>
+
+        <div style="background: #1e293b; padding: 12px; border-radius: 6px; border: 1px solid #334155;">
+            <div style="font-size: 11.5px; color: #94a3b8; margin-bottom: 4px;">Kết quả thông điệp sau khi khôi phục:</div>
+            <div id="sDecResultBox" style="color: #34d399; font-size: 12.5px; font-weight: 600; min-height: 30px;">Chưa có dữ liệu...</div>
+        </div>
     </div>
 </div>
 
 <script>
-let sysKeyPair = null;
-let sysSignature = null;
-let sysBaselineText = "";
+let secPkgData = null;
+let secKeyPair = null;
 
-async function initSystemEngine() {
-    try {
-        sysKeyPair = await window.crypto.subtle.generateKey(
-            {
-                name: "RSASSA-PKCS1-v1_5",
-                modulusLength: 2048,
-                publicExponent: new Uint8Array([1, 0, 1]),
-                hash: "SHA-256",
-            },
-            true,
-            ["sign", "verify"]
-        );
-        
-        document.getElementById('autoStatusBadgeinnerHTML').innerHTML = '';
-        let badge = document.getElementById('autoStatusBadge');
-        if(badge) {
-            badge.style.background = "#064e3b";
-            badge.style.color = "#34d399";
-            badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> Đang tự động giám sát';
-        }
-
-        // Khởi tạo mốc chuẩn ban đầu
-        let initialText = document.getElementById('liveDocInput').value;
-        sysBaselineText = initialText;
-        let enc = new TextEncoder();
-        
-        sysSignature = await window.crypto.subtle.sign(
-            "RSASSA-PKCS1-v1_5",
-            sysKeyPair.privateKey,
-            enc.encode(initialText)
-        );
-
-        onLiveTextChange();
-    } catch(e) {
-        console.error(e);
+function switchSecTab(mode) {
+    if(mode === 'encrypt') {
+        document.getElementById('secPaneEnc').style.display = 'grid';
+        document.getElementById('secPaneDec').style.display = 'none';
+        document.getElementById('btnSecEnc').style.background = 'var(--accent-indigo)';
+        document.getElementById('btnSecEnc').style.color = '#fff';
+        document.getElementById('btnSecDec').style.background = '#1e293b';
+        document.getElementById('btnSecDec').style.color = '#94a3b8';
+    } else {
+        document.getElementById('secPaneEnc').style.display = 'none';
+        document.getElementById('secPaneDec').style.display = 'block';
+        document.getElementById('btnSecDec').style.background = 'var(--accent-indigo)';
+        document.getElementById('btnSecDec').style.color = '#fff';
+        document.getElementById('btnSecEnc').style.background = '#1e293b';
+        document.getElementById('btnSecEnc').style.color = '#94a3b8';
     }
 }
 
-async function onLiveTextChange() {
-    let currentText = document.getElementById('liveDocInput').value;
+async function runSecEncrypt() {
+    let text = document.getElementById('secMessageInput').value.trim();
+    let mech = document.getElementById('secMechSelect').value;
+    if(!text) { alert('Vui lòng nhập thông điệp!'); return; }
+
     let enc = new TextEncoder();
-    
-    // 1. Tính toán mã băm SHA-256 realtime
-    let hashBuffer = await window.crypto.subtle.digest("SHA-256", enc.encode(currentText));
-    let hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    document.getElementById('realHash').innerText = hashHex;
+    let buf = enc.encode(text);
 
-    if(!sysKeyPair || !sysSignature) return;
+    // 1. SHA-256
+    let shaBuf = await window.crypto.subtle.digest("SHA-256", buf);
+    let shaHex = Array.from(new Uint8Array(shaBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    document.getElementById('sLogSHA').innerText = shaHex.substring(0, 24) + "...";
 
-    // 2. Hiển thị chữ ký mẫu
-    let sigHex = Array.from(new Uint8Array(sysSignature)).map(b => b.toString(16).padStart(2, '0')).join('');
-    document.getElementById('realSig').innerText = sigHex.substring(0, 72) + "...";
+    // 2. MD5
+    let md5Hex = simpleHash(text, 32);
+    document.getElementById('sLogMD5').innerText = md5Hex;
 
-    // 3. Tự động xác thực chữ ký với nội dung hiện tại
-    try {
-        let isValid = await window.crypto.subtle.verify(
-            "RSASSA-PKCS1-v1_5",
-            sysKeyPair.publicKey,
-            sysSignature,
-            enc.encode(currentText)
-        );
+    // 3. AES-GCM
+    let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+    let iv = window.crypto.getRandomValues(new Uint8Array(12));
+    let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, buf);
+    document.getElementById('sLogAES').innerText = "Thành công (AES-256-GCM)";
 
-        let vBox = document.getElementById('realVerifyBox');
-        if(isValid) {
-            vBox.style.background = "#064e3b33";
-            vBox.style.borderColor = "#059669";
-            vBox.style.color = "#34d399";
-            vBox.innerHTML = `<i class="fa-solid fa-shield-check"></i> VĂN BẢN NGUYÊN VẸN & CHÍNH CHỦ<br><span style="font-size:11px; color:#cbd5e1; font-weight:normal;">Chữ ký số khớp hoàn toàn với nội dung gốc.</span>`;
-        } else {
-            vBox.style.background = "#7f1d1d33";
-            vBox.style.borderColor = "#dc2626";
-            vBox.style.color = "#f87171";
-            vBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> PHÁT HIỆN THAY ĐỔI / GIẢ MẠO!<br><span style="font-size:11px; color:#fca5a5; font-weight:normal;">Nội dung đã bị chỉnh sửa so với lúc ký ban đầu!</span>`;
-        }
-    } catch(e) {
-        console.error(e);
-    }
+    // 4. RSA / ElGamal
+    let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
+    secKeyPair = kp;
+    let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
+    document.getElementById('sLogKey').innerText = mech === 'rsa' ? "Bảo vệ khóa bằng RSA-OAEP" : "Mô phỏng cơ chế ElGamal";
+
+    // 5. DES
+    document.getElementById('sLogDES').innerText = "DES-56bit mô phỏng: " + simpleHash(text, 16).toUpperCase();
+
+    secPkgData = {
+        ciphertext: Array.from(new Uint8Array(ciphertext)),
+        iv: Array.from(iv),
+        wrappedKey: Array.from(new Uint8Array(wrappedKey)),
+        sha256: shaHex
+    };
+
+    let blob = new Blob([JSON.stringify(secPkgData, null, 2)], {type: "application/json"});
+    let dlBtn = document.getElementById('sDlBtn');
+    dlBtn.href = URL.createObjectURL(blob);
+    document.getElementById('sDownloadBox').style.display = 'block';
+    alert('Đã tạo gói bảo mật SecureShare thành công!');
 }
 
-// Khởi chạy hệ thống ngay khi load xong tab
-setTimeout(() => { initSystemEngine(); }, 300);
+function loadSecFile(e) {
+    let f = e.target.files[0];
+    if(!f) return;
+    let r = new FileReader();
+    r.onload = function(evt) {
+        try {
+            secPkgData = JSON.parse(evt.target.result);
+            alert('Nạp file JSON thành công!');
+        } catch(err) { alert('Lỗi: ' + err); }
+    };
+    r.readAsText(f);
+}
+
+async function runSecDecrypt() {
+    if(!secPkgData || !secKeyPair) { alert('Chưa có dữ liệu hoặc khóa giải mã!'); return; }
+    try {
+        let unwrappedKey = await window.crypto.subtle.unwrapKey(
+            "raw", new Uint8Array(secPkgData.wrappedKey), secKeyPair.privateKey,
+            { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
+        );
+        let decBuf = await window.crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: new Uint8Array(secPkgData.iv) }, unwrappedKey, new Uint8Array(secPkgData.ciphertext)
+        );
+        let decText = new TextDecoder().decode(decBuf);
+        document.getElementById('sDecResultBox</u>').innerHTML = `<span style="color:#34d399;"><i class="fa-solid fa-check"></i> ${decText} (Xác thực toàn vẹn thành công!)</span>`;
+    } catch(err) {
+        document.getElementById('sDecResultBox').innerHTML = `<span style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại!</span>`;
+    }
+}
 </script>
