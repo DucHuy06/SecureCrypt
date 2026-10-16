@@ -1,10 +1,10 @@
-
 from pathlib import Path
 from io import BytesIO
 import tempfile
 import subprocess
 import logging
 import shutil
+import sys
 
 from flask import Blueprint, request, jsonify, send_file
 from werkzeug.utils import secure_filename
@@ -72,10 +72,7 @@ def sign_pdf():
 
         return jsonify(
             success=False,
-            message=(
-                "Không tìm thấy khóa hoặc chứng thư "
-                "trong thư mục certificates."
-            )
+            message="Không tìm thấy file private_key.pem hoặc certificate.pem trong thư mục certificates."
         ), 500
 
     try:
@@ -85,14 +82,9 @@ def sign_pdf():
         )
 
         if signer is None:
-            logger.error(
-                "PDF signing: pyHanko could not load "
-                "the private key or certificate."
-            )
-
             return jsonify(
                 success=False,
-                message="Không đọc được khóa riêng hoặc chứng thư."
+                message="pyHanko không thể tải được khóa riêng hoặc chứng thư."
             ), 500
 
         with BytesIO(pdf_data) as source:
@@ -130,15 +122,12 @@ def sign_pdf():
                 download_name=f"{stem}_signed.pdf",
             )
 
-    except Exception:
+    except Exception as e:
         logger.exception("PDF signing failed")
-
+        # Trả về nguyên bản lỗi chi tiết từ Python để dễ debug
         return jsonify(
             success=False,
-            message=(
-                "Ký PDF thất bại. Kiểm tra khóa, "
-                "chứng thư và file PDF."
-            )
+            message=f"Lỗi ký PDF: {str(e)}"
         ), 500
 
 
@@ -155,22 +144,7 @@ def verify_pdf():
             message=error
         ), 400
 
-    # Tìm CLI trong môi trường chạy ứng dụng.
-    pyhanko_executable = shutil.which("pyhanko")
-
-    if not pyhanko_executable:
-        logger.error(
-            "PDF verification failed: 'pyhanko' CLI was not found "
-            "in PATH. Check the deployed pyHanko installation."
-        )
-
-        return jsonify(
-            success=False,
-            message=(
-                "Máy chủ chưa tìm thấy công cụ xác minh pyHanko. "
-                "Hãy kiểm tra requirements.txt và Render Logs."
-            )
-        ), 500
+    python_executable = sys.executable
 
     try:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -179,7 +153,9 @@ def verify_pdf():
 
             result = subprocess.run(
                 [
-                    pyhanko_executable,
+                    python_executable,
+                    "-m",
+                    "pyhanko",
                     "sign",
                     "validate",
                     "--pretty-print",
@@ -197,10 +173,8 @@ def verify_pdf():
                 + (result.stderr or "")
             ).strip()
 
-            # Lưu kết quả CLI để điều tra nếu xác minh thất bại.
             logger.info(
-                "PDF verification CLI completed: returncode=%s, "
-                "report=%s",
+                "PDF verification CLI completed: returncode=%s, report=%s",
                 result.returncode,
                 report[-3000:],
             )
@@ -209,41 +183,19 @@ def verify_pdf():
                 success=True,
                 valid=(result.returncode == 0),
                 trusted=False,
-                message=(
-                    "Đã chạy công cụ xác minh. "
-                    "Cần xem báo cáo để đánh giá chữ ký và chứng thư."
-                ),
+                message="Đã hoàn tất kiểm tra chữ ký.",
                 details=report[-6000:],
             )
 
     except subprocess.TimeoutExpired:
-        logger.warning("PDF verification timed out.")
-
         return jsonify(
             success=False,
-            message="Quá thời gian xác minh PDF."
+            message="Quá thời gian thực hiện xác minh PDF (Timeout)."
         ), 504
 
-    except FileNotFoundError:
-        logger.exception(
-            "PDF verification failed: executable not found."
-        )
-
-        return jsonify(
-            success=False,
-            message=(
-                "Không tìm thấy chương trình xác minh PDF "
-                "trên máy chủ."
-            )
-        ), 500
-
-    except Exception:
+    except Exception as e:
         logger.exception("PDF verification failed")
-
         return jsonify(
             success=False,
-            message=(
-                "Không thể xác minh PDF. "
-                "Hãy kiểm tra Render Logs để biết chi tiết."
-            )
+            message=f"Lỗi xác minh PDF: {str(e)}"
         ), 500
