@@ -3,27 +3,26 @@ import sqlite3
 import json
 from flask import Flask, render_template, request, jsonify, session
 
-# (Giữ nguyên các blueprint hiện có của bạn)
 from routes.crypto_routes import crypto_bp
 from routes.file_routes import file_bp
 from routes.demo_routes import demo_bp
 
 app = Flask(__name__)
 app.secret_key = 'securespace_secret_key_production_2026'
-app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Tối đa 32MB
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Tối đa 32MB file upload
 
-# Khởi tạo Database SQLite cho SecureChat
+# ==================== KHỞI TẠO CƠ SỞ DỮ LIỆU SQLITE CHO CHAT & TÀI KHOẢN ====================
 def init_db():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    # Bảng lưu thông tin tài khoản và Public Key RSA
+    # Bảng người dùng (Lưu thông tin tài khoản và Public Key RSA)
     c.execute('''CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE NOT NULL,
                     password TEXT NOT NULL,
                     public_key TEXT
                 )''')
-    # Bảng lưu gói tin nhắn mã hóa đầu cuối (E2EE)
+    # Bảng tin nhắn mã hóa đầu cuối E2EE
     c.execute('''CREATE TABLE IF NOT EXISTS messages (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     sender TEXT NOT NULL,
@@ -38,11 +37,12 @@ def init_db():
 
 init_db()
 
+# ==================== ĐĂNG KÝ API BLUEPRINTS ====================
 app.register_blueprint(crypto_bp, url_prefix='/api')
 app.register_blueprint(file_bp, url_prefix='/api')
 app.register_blueprint(demo_bp, url_prefix='/api')
 
-# --- API Xác thực tài khoản ---
+# ==================== API XÁC THỰC & TÀI KHOẢN SECURECHAT ====================
 @app.route('/api/register', methods=['POST'])
 def api_register():
     data = request.json
@@ -62,7 +62,7 @@ def api_register():
         conn.close()
         return jsonify({"success": True, "message": "Đăng ký tài khoản thành công!"})
     except sqlite3.IntegrityError:
-        return jsonify({"success": False, "message": "Tên tài khoản này đã tồn tại!"})
+        return jsonify({"success": False, "message": "Tên tài khoản này đã tồn tại trong hệ thống!"})
 
 @app.route('/api/login', methods=['POST'])
 def api_login():
@@ -98,7 +98,7 @@ def api_get_users():
     conn.close()
     return jsonify(users)
 
-# --- API Nhắn tin mã hóa E2EE ---
+# ==================== API NHẮN TIN MÃ HÓA E2EE ====================
 @app.route('/api/messages/send', methods=['POST'])
 def api_send_message():
     sender = session.get('username')
@@ -112,7 +112,7 @@ def api_send_message():
     wrapped_key = data.get('wrapped_key')
     
     if not recipient or not ciphertext:
-        return jsonify({"success": False, "message": "Thiếu thông tin tin nhắn!"}), 400
+        return jsonify({"success": False, "message": "Thiếu dữ liệu tin nhắn!"}), 400
 
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
@@ -131,7 +131,7 @@ def api_poll_messages():
     
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    # Chỉ cho phép truy vấn tin nhắn thuộc về cuộc hội thoại giữa 2 người (Bảo mật phân quyền)
+    # Truy vấn phân quyền bảo mật: chỉ lấy tin nhắn trao đổi giữa 2 tài khoản này
     c.execute("""SELECT sender, recipient, ciphertext, iv, wrapped_key, timestamp 
                  FROM messages 
                  WHERE (sender = ? AND recipient = ?) OR (sender = ? AND recipient = ?) 
@@ -157,4 +157,48 @@ def api_poll_messages():
     conn.close()
     return jsonify(msgs)
 
-# Các định nghĩa route trang HTML giữ nguyên như cũ...
+# ==================== HTML PAGE ROUTES (ĐẦY ĐỦ GẦN 200 DÒNG) ====================
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/des')
+def des_route():
+    return render_template('des.html')
+
+@app.route('/aes')
+def aes_route():
+    return render_template('aes.html')
+
+@app.route('/md5')
+def md5_route():
+    return render_template('md5.html')
+
+@app.route('/sha256')
+def sha256_route():
+    return render_template('sha256.html')
+
+@app.route('/rsa')
+def rsa_route():
+    return render_template('rsa.html')
+
+@app.route('/elgamal')
+def elgamal_route():
+    return render_template('elgamal.html')
+
+@app.route('/integrity')
+def integrity_page():
+    return render_template('integrity.html')
+
+@app.route('/demo')
+@app.route('/demos')
+def demo_page():
+    return render_template('demo.html')
+
+@app.route('/about')
+def about_page():
+    return render_template('about.html')
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
