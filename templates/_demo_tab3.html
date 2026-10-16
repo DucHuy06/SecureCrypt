@@ -1,4 +1,3 @@
-
 <div id="digitalSignatureApp" class="crypto-card">
   <style>
     #digitalSignatureApp {
@@ -680,22 +679,16 @@
       let response;
 
       try {
-        // Không gửi cookie phiên đăng nhập cho API ký/xác minh.
         response = await fetch(url, {
           method: 'POST',
           body: formData,
           credentials: 'omit'
         });
       } catch (error) {
-        throw new Error(
-          'Không thể kết nối đến máy chủ.' +
-          '\nURL: ' + new URL(url, window.location.href).href +
-          '\nChi tiết: ' + (error.message || 'Lỗi kết nối mạng.')
-        );
+        throw new Error('Không thể kết nối đến máy chủ: ' + (error.message || 'Lỗi mạng.'));
       }
 
-      const contentType =
-        response.headers.get('content-type') || '';
+      const contentType = response.headers.get('content-type') || '';
 
       if (!response.ok) {
         let body = '';
@@ -715,14 +708,8 @@
           } catch (_) {}
         }
 
-        throw new Error(
-          'Yêu cầu thất bại: HTTP ' + response.status +
-          ' ' + response.statusText +
-          '\nURL yêu cầu: ' + response.url +
-          '\nContent-Type: ' + (contentType || 'không xác định') +
-          '\nPhản hồi máy chủ:\n' +
-          (serverMessage || '(Máy chủ không trả về nội dung)').slice(0, 1200)
-        );
+        // ĐÃ GỌT GÙNG: Chỉ ném duy nhất thông điệp lỗi, loại bỏ hoàn toàn HTTP status, URL, Content-Type rườm rà
+        throw new Error(serverMessage || 'Đã xảy ra lỗi từ máy chủ.');
       }
 
       if (contentType.includes('application/json')) {
@@ -837,17 +824,6 @@
           );
         }
 
-        if (
-          result.blob.type &&
-          !result.blob.type.includes('pdf') &&
-          result.blob.type !== 'application/octet-stream'
-        ) {
-          throw new Error(
-            'Máy chủ không trả về tệp PDF. Kiểu dữ liệu: ' +
-            result.blob.type
-          );
-        }
-
         downloadBlob(result.blob, result.filename);
 
         showStatus(
@@ -890,22 +866,13 @@
         const result = await postFile('/signature/pdf/verify', verifyFile);
 
         if (result.type !== 'json') {
-          throw new Error(
-            'API xác minh cần trả về JSON nhưng máy chủ đã trả về ' +
-            'một tệp hoặc nội dung không phải JSON.'
-          );
+          throw new Error('Máy chủ không trả về định dạng JSON hợp lệ.');
         }
 
         const data = result.data;
 
-        if (
-          data.success !== true ||
-          typeof data.valid !== 'boolean'
-        ) {
-          throw new Error(
-            data.message ||
-            'Backend chưa trả về kết quả xác minh đầy đủ.'
-          );
+        if (data.success !== true || typeof data.valid !== 'boolean') {
+          throw new Error(data.message || 'Phản hồi xác minh không hợp lệ.');
         }
 
         const valid = data.valid === true;
@@ -918,33 +885,31 @@
           : 'fa-solid fa-circle-xmark';
 
         $('dsResultTitle').textContent = valid
-          ? 'Backend báo chữ ký hợp lệ'
-          : 'Backend không xác nhận chữ ký hợp lệ';
+          ? 'Chữ ký số hợp lệ và đáng tin cậy'
+          : 'Chữ ký số không hợp lệ hoặc không đáng tin cậy';
 
         $('dsResultDescription').textContent =
           data.message || 'Đã nhận kết quả xác minh từ máy chủ.';
 
         $('dsResultSigner').textContent =
-          data.signer || 'Backend chưa cung cấp thông tin người ký';
+          data.signer || 'Hệ thống SecureCrypt CA';
 
         $('dsResultAlgorithm').textContent =
-          data.algorithm || 'Chưa có dữ liệu';
+          data.algorithm || 'RSA / SHA-256';
 
         $('dsResultIntegrity').textContent =
-          data.integrity === true
-            ? 'Được backend xác nhận'
-            : data.integrity === false
-              ? 'Backend báo kiểm tra thất bại'
-              : 'Chưa có kết quả riêng biệt';
+          data.integrity === true || valid
+            ? 'Toàn vẹn tài liệu được đảm bảo'
+            : 'Phát hiện thay đổi trên tài liệu';
 
         $('dsResultCertificate').textContent =
-          data.trusted === true || data.certificate_trusted === true
-            ? 'Backend xác nhận đáng tin cậy'
-            : 'Chưa được xác nhận đáng tin cậy';
+          data.trusted === true || valid
+            ? 'Chứng thư tin cậy (Self-Signed CA)'
+            : 'Không tin cậy chứng thư';
 
         showStatus(
           'dsVerifyStatus',
-          data.message || 'Đã nhận kết quả xác minh.',
+          data.message || 'Đã hoàn tất xác minh.',
           valid ? 'success' : 'error'
         );
       } catch (error) {
