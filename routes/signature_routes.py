@@ -4,6 +4,7 @@ from io import BytesIO
 import tempfile
 import subprocess
 import logging
+import shutil
 
 from flask import Blueprint, request, jsonify, send_file
 from werkzeug.utils import secure_filename
@@ -19,6 +20,8 @@ signature_bp = Blueprint(
     __name__,
     url_prefix="/signature"
 )
+
+logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CERT_DIR = BASE_DIR / "certificates"
@@ -46,18 +49,33 @@ def read_pdf_upload(uploaded):
     return data, None
 
 
+# ==================== KÝ PDF ====================
+
 @signature_bp.route("/pdf/sign", methods=["POST"])
 def sign_pdf():
     uploaded = request.files.get("file")
     pdf_data, error = read_pdf_upload(uploaded)
 
     if error:
-        return jsonify(success=False, message=error), 400
-
-    if not PRIVATE_KEY.is_file() or not CERTIFICATE.is_file():
         return jsonify(
             success=False,
-            message="Không tìm thấy khóa hoặc chứng thư trong thư mục certificates."
+            message=error
+        ), 400
+
+    if not PRIVATE_KEY.is_file() or not CERTIFICATE.is_file():
+        logger.error(
+            "PDF signing: private key or certificate not found. "
+            "Key exists=%s, certificate exists=%s",
+            PRIVATE_KEY.is_file(),
+            CERTIFICATE.is_file(),
+        )
+
+        return jsonify(
+            success=False,
+            message=(
+                "Không tìm thấy khóa hoặc chứng thư "
+                "trong thư mục certificates."
+            )
         ), 500
 
     try:
@@ -67,6 +85,11 @@ def sign_pdf():
         )
 
         if signer is None:
+            logger.error(
+                "PDF signing: pyHanko could not load "
+                "the private key or certificate."
+            )
+
             return jsonify(
                 success=False,
                 message="Không đọc được khóa riêng hoặc chứng thư."
@@ -108,12 +131,18 @@ def sign_pdf():
             )
 
     except Exception:
-        logging.exception("PDF signing failed")
+        logger.exception("PDF signing failed")
+
         return jsonify(
             success=False,
-            message="Ký PDF thất bại. Kiểm tra khóa, chứng thư và file PDF."
+            message=(
+                "Ký PDF thất bại. Kiểm tra khóa, "
+                "chứng thư và file PDF."
+            )
         ), 500
 
+
+# ==================== XÁC MINH PDF ====================
 
 @signature_bp.route("/pdf/verify", methods=["POST"])
 def verify_pdf():
@@ -121,7 +150,27 @@ def verify_pdf():
     pdf_data, error = read_pdf_upload(uploaded)
 
     if error:
-        return jsonify(success=False, message=error), 400
+        return jsonify(
+            success=False,
+            message=error
+        ), 400
+
+    # Tìm CLI trong môi trường chạy ứng dụng.
+    pyhanko_executable = shutil.which("pyhanko")
+
+    if not pyhanko_executable:
+        logger.error(
+            "PDF verification failed: 'pyhanko' CLI was not found "
+            "in PATH. Check the deployed pyHanko installation."
+        )
+
+        return jsonify(
+            success=False,
+            message=(
+                "Máy chủ chưa tìm thấy công cụ xác minh pyHanko. "
+                "Hãy kiểm tra requirements.txt và Render Logs."
+            )
+        ), 500
 
     try:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -130,7 +179,7 @@ def verify_pdf():
 
             result = subprocess.run(
                 [
-                    "pyhanko",
+                    pyhanko_executable,
                     "sign",
                     "validate",
                     "--pretty-print",
@@ -148,6 +197,14 @@ def verify_pdf():
                 + (result.stderr or "")
             ).strip()
 
+            # Lưu kết quả CLI để điều tra nếu xác minh thất bại.
+            logger.info(
+                "PDF verification CLI completed: returncode=%s, "
+                "report=%s",
+                result.returncode,
+                report[-3000:],
+            )
+
             return jsonify(
                 success=True,
                 valid=(result.returncode == 0),
@@ -160,14 +217,33 @@ def verify_pdf():
             )
 
     except subprocess.TimeoutExpired:
+        logger.warning("PDF verification timed out.")
+
         return jsonify(
             success=False,
             message="Quá thời gian xác minh PDF."
         ), 504
 
-    except Exception:
-        logging.exception("PDF verification failed")
+    except FileNotFoundError:
+        logger.exception(
+            "PDF verification failed: executable not found."
+        )
+
         return jsonify(
             success=False,
-            message="Không thể xác minh PDF."
+            message=(
+                "Không tìm thấy chương trình xác minh PDF "
+                "trên máy chủ."
+            )
+        ), 500
+
+    except Exception:
+        logger.exception("PDF verification failed")
+
+        return jsonify(
+            success=False,
+            message=(
+                "Không thể xác minh PDF. "
+                "Hãy kiểm tra Render Logs để biết chi tiết."
+            )
         ), 500
