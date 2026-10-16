@@ -36,11 +36,11 @@
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
-            <input type="text" id="rsaP" value="" placeholder="Nhập giá trị p (ví dụ: 977)...">
+            <input type="text" id="rsaP" value="" placeholder="Nhập giá trị p...">
         </div>
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố q:</label>
-            <input type="text" id="rsaQ" value="" placeholder="Nhập giá trị q (ví dụ: 17)...">
+            <input type="text" id="rsaQ" value="" placeholder="Nhập giá trị q...">
         </div>
     </div>
 
@@ -92,7 +92,7 @@
     </div>
 
     <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Văn bản gốc / Các số nguyên M (nhỏ hơn n, cách nhau bằng dấu cách):</label>
-    <textarea id="rsaPlaintext" rows="2" placeholder="Nhập thông điệp M (Ví dụ: 123)..."></textarea>
+    <textarea id="rsaPlaintext" rows="2" placeholder="Nhập thông điệp M..."></textarea>
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
         <div>
@@ -255,11 +255,7 @@ function generateRSAKeys() {
     document.getElementById('rsaPrivateD').value = d.toString();
     document.getElementById('rsaPrivateN').value = n.toString();
 
-    // Tự động điền luôn vào ô mã hóa và giải mã cho tiện test
-    document.getElementById('rsaEncryptKeyE').value = e.toString();
-    document.getElementById('rsaEncryptKeyN').value = n.toString();
-    document.getElementById('rsaDecryptKeyD').value = d.toString();
-    document.getElementById('rsaDecryptKeyN').value = n.toString();
+    // ĐÃ XÓA cơ chế tự động điền (autofill) xuống khối 2 và khối 3 theo yêu cầu của bạn
 
     document.getElementById('rsaKeyVisualStep').style.display = 'block';
     document.getElementById('rsaKeyTraceText').innerHTML = `
@@ -268,7 +264,7 @@ function generateRSAKeys() {
         <div>• <strong>Tính tích khóa chung (n):</strong> n = p × q = <span style="color:#06b6d4">${n.toString()}</span></div>
         <div>• <strong>Tính hàm số Euler Phi:</strong> φ(n) = (p-1)(q-1) = <span style="color:#06b6d4">${phi.toString()}</span></div>
         <div>• <strong>Số mũ công khai (e):</strong> <span style="color:#06b6d4">${e.toString()}</span> | <strong>Số mũ bí mật (d):</strong> <span style="color:#10b981">${d.toString()}</span></div>
-        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT: Cấp khóa thành công. Khóa đã được tự động điền vào các ô bên dưới.</div>
+        <div style="color: var(--accent-emerald); font-weight: bold; margin-top: 6px;">✓ HOÀN TẤT: Cấp khóa thành công.</div>
     `;
 }
 
@@ -303,13 +299,13 @@ function encryptRSA() {
     let eStr = document.getElementById('rsaEncryptKeyE').value.trim();
     let nStr = document.getElementById('rsaEncryptKeyN').value.trim();
 
-    let e = eStr ? BigInt(eStr) : lastE;
-    let n = nStr ? BigInt(nStr) : lastN;
-
-    if(n === 0n || e === 0n) {
+    if(!eStr || !nStr) {
         alert('Vui lòng nhập đầy đủ khóa e và n!');
         return;
     }
+
+    let e = BigInt(eStr);
+    let n = BigInt(nStr);
 
     let cipherArr = [];
     let summaryList = [];
@@ -330,8 +326,7 @@ function encryptRSA() {
     let ciphertext = cipherArr.join(' ');
     document.getElementById('rsaCiphertext').value = ciphertext;
     
-    // Tự động điền luôn bản mã sang ô giải mã cho tiện test
-    document.getElementById('rsaDecryptCiphertext').value = ciphertext;
+    // ĐÃ XÓA cơ chế tự động copy bản mã sang ô giải mã
 
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
@@ -351,13 +346,13 @@ function decryptRSA() {
     let dStr = document.getElementById('rsaDecryptKeyD').value.trim();
     let nStr = document.getElementById('rsaDecryptKeyN').value.trim();
 
-    let d = dStr ? BigInt(dStr) : lastD;
-    let n = nStr ? BigInt(nStr) : lastN;
-
-    if(d === 0n || n === 0n) {
+    if(!dStr || !nStr) {
         alert('Vui lòng nhập đầy đủ khóa d và n!');
         return;
     }
+
+    let d = BigInt(dStr);
+    let n = BigInt(nStr);
 
     let cipherArr = cipherText.split(/\s+/);
     let plainResults = [];
