@@ -160,8 +160,7 @@ function runPair3() {
     let val = document.getElementById('inputSig').value.trim();
     if(!val) { alert('Vui lòng nhập thông điệp!'); return; }
     document.getElementById('rowRes3').style.display = 'table-row';
-    // Đổi hiển thị sang định dạng mô phỏng công thức toán học C = M^e mod n
-    document.getElementById('resRSA').innerText = "C = M^e mod n [" + simpleHash(val, 8) + "]";
+    document.getElementById('resRSA').innerText = "c = " + simpleHash(val, 12).toUpperCase() + " [RSA]";
     document.getElementById('resElg').innerText = "(c1=" + simpleHash(val, 6) + ", c2=" + simpleHash(val+"k", 6) + ")";
 }
 </script>
