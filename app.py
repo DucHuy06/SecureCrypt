@@ -1,3 +1,4 @@
+
 import os
 import sqlite3
 from pathlib import Path
@@ -192,6 +193,26 @@ def signature_health():
     ), 200
 
 
+# ==================== KIỂM TRA DANH SÁCH ROUTE ====================
+
+@app.route("/debug/routes", methods=["GET"])
+def debug_routes():
+    routes = []
+
+    for rule in app.url_map.iter_rules():
+        routes.append({
+            "path": rule.rule,
+            "methods": sorted(
+                rule.methods - {"HEAD", "OPTIONS"}
+            ),
+            "endpoint": rule.endpoint,
+        })
+
+    return jsonify(
+        routes=sorted(routes, key=lambda item: item["path"])
+    )
+
+
 # ==================== ĐĂNG KÝ BLUEPRINT ====================
 
 app.register_blueprint(crypto_bp)
@@ -209,6 +230,8 @@ def request_entity_too_large(error):
         message="Dung lượng dữ liệu tải lên vượt quá giới hạn 32 MB."
     ), 413
 
+
 # ==================== CHẠY ỨNG DỤNG ====================
+
 if __name__ == "__main__":
     app.run(debug=True)
