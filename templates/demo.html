@@ -1,8 +1,10 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 <style>
-    .demo-card textarea, .demo-card input[type="text"] {
+    .demo-card textarea,
+    .demo-card input[type="text"] {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
@@ -11,270 +13,147 @@
         font-family: inherit !important;
         font-size: 14px !important;
     }
+
     .tab-content {
         display: none;
     }
+
     .tab-content.active {
         display: block;
     }
+
+    .demo-tab-navigation {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .demo-tab-navigation .tab-btn {
+        background: #1e293b;
+        color: #94a3b8;
+        border: 1px solid #334155;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .demo-tab-navigation .tab-btn.active-tab-btn {
+        background: var(--accent-indigo);
+        color: #fff;
+        border: none;
+        font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+        .demo-tab-navigation {
+            flex-direction: column;
+        }
+
+        .demo-tab-navigation .tab-btn {
+            width: 100%;
+            text-align: left;
+        }
+    }
 </style>
 
+<!-- HEADER -->
 <div class="hero-banner" style="margin-bottom: 24px;">
     <h1 style="font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 6px;">
-        <i class="fa-solid fa-flask text-rose me-2"></i>Comparative Cryptography Demos & Benchmark
+        <i class="fa-solid fa-flask text-rose me-2"></i>
+        Comparative Cryptography Demos &amp; Benchmark
     </h1>
+
     <div style="color: var(--text-muted); font-size: 14px;">
         Hệ thống mô phỏng, so sánh trực diện và ứng dụng thực chiến các thuật toán mật mã hiện đại.
     </div>
 </div>
 
-<!-- ĐIỀU HƯỚNG TAB (Đã bỏ số thứ tự, đổi tên chuyên nghiệp) -->
-<div style="display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;">
-    <button type="button" class="btn tab-btn active-tab-btn" onclick="switchTab(0)" style="background: var(--accent-indigo); font-weight: 700; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-shield me-1"></i> So sánh Cặp Thuật toán Mật mã
+<!-- ĐIỀU HƯỚNG TAB -->
+<div class="demo-tab-navigation">
+    <button
+        type="button"
+        class="btn tab-btn active-tab-btn"
+        onclick="switchTab(0)"
+        aria-controls="tabContent0"
+        aria-selected="true"
+    >
+        <i class="fa-solid fa-shield me-1"></i>
+        So sánh Cặp Thuật toán Mật mã
     </button>
-    <button type="button" class="btn tab-btn" onclick="switchTab(1)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-file-shield me-1"></i> SecureShare (Chia sẻ tài liệu mật)
+
+    <button
+        type="button"
+        class="btn tab-btn"
+        onclick="switchTab(1)"
+        aria-controls="tabContent1"
+        aria-selected="false"
+    >
+        <i class="fa-solid fa-file-shield me-1"></i>
+        SecureShare (Chia sẻ tài liệu mật)
     </button>
-    <button type="button" class="btn tab-btn" onclick="switchTab(2)" style="background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 18px; border-radius: 8px; cursor: pointer;">
-        <i class="fa-solid fa-comments me-1"></i> E2EE Chat (Nhắn tin mã hóa)
+
+    <button
+        type="button"
+        class="btn tab-btn"
+        onclick="switchTab(2)"
+        aria-controls="tabContent2"
+        aria-selected="false"
+    >
+        <i class="fa-solid fa-comments me-1"></i>
+        E2EE Chat (Nhắn tin mã hóa)
     </button>
 </div>
 
-<!-- TAB 1: MÃ HÓA ĐỐI XỨNG -->
+<!-- TAB 1: SO SÁNH THUẬT TOÁN -->
 <div class="tab-content active" id="tabContent0">
     {% include '_demo_tab1.html' %}
 </div>
 
-<!-- TAB 2: SECURESHARE (Ứng dụng chia sẻ tài liệu mật) -->
+<!-- TAB 2: SECURESHARE -->
 <div class="tab-content" id="tabContent1">
-    <div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 28px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
-        
-        <div style="text-align: center; max-width: 600px; margin: 0 auto 24px auto;">
-            <h2 style="font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px;">Share Files Securely & Privately</h2>
-            <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5;">
-                Tải lên, mã hóa đầu cuối bằng AES-256 ngay trên trình duyệt trước khi rời khỏi thiết bị của bạn. Bảo mật tuyệt đối, chống đọc lén.
-            </p>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-            
-            <!-- Cột Trái: Đóng Gói & Mã Hóa -->
-            <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px;">
-                <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px;">
-                    <i class="fa-solid fa-cloud-arrow-up me-1"></i> 1. Đóng Gói & Mã Hóa Tài Liệu
-                </div>
-
-                <div>
-                    <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tiêu đề tài liệu mật:</label>
-                    <input type="text" id="secShareTitle" value="Báo cáo tài chính Q4.pdf" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 9px 12px; border-radius: 8px; font-size: 12.5px;">
-                </div>
-
-                <div>
-                    <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Nội dung văn bản / Dữ liệu cần mã hóa:</label>
-                    <textarea id="secShareContent" rows="4" style="width: 100%; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; line-height: 1.5;">Tài liệu nội bộ dự án bảo mật thông tin doanh nghiệp - Cam kết không chia sẻ ra ngoài.</textarea>
-                </div>
-
-                <button type="button" onclick="executeSecureSharePack()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 11px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
-                    <i class="fa-solid fa-lock me-1"></i> Mã Hóa AES-256 & Tạo Tệp .secure
-                </button>
-            </div>
-
-            <!-- Cột Phải: Giải Mã & Kiểm Định -->
-            <div style="background: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 14px; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 13.5px; font-weight: 700; color: #38bdf8; border-bottom: 1px solid #1f2937; padding-bottom: 10px; margin-bottom: 14px;">
-                        <i class="fa-solid fa-box-open me-1"></i> 2. Giải Mã & Kiểm Định Toàn Vẹn
-                    </div>
-
-                    <div>
-                        <label style="font-size: 12px; color: #9ca3af; display: block; margin-bottom: 5px;">Tải lên tệp định dạng .secure để mở khóa:</label>
-                        <input type="file" id="secShareImportFile" accept=".secure,.json" onchange="executeSecureShareUnpack(event)" style="background: #1f2937; color: #fff; border: 1px solid #374151; padding: 8px; border-radius: 8px; width: 100%; font-size: 12px;">
-                    </div>
-
-                    <div style="background: #0b0f19; padding: 14px; border-radius: 8px; border: 1px solid #374151; margin-top: 14px;">
-                        <div style="font-size: 11.5px; color: #9ca3af; margin-bottom: 6px;">Nội dung khôi phục sau khi giải mã chuẩn GCM:</div>
-                        <div id="secShareResultBox" style="color: #34d399; font-size: 13px; font-weight: 600; min-height: 45px; line-height: 1.5;">Chưa có dữ liệu nạp vào...</div>
-                    </div>
-                </div>
-
-                <div style="font-size: 11px; color: #64748b; border-top: 1px solid #1f2937; padding-top: 10px;">
-                    <i class="fa-solid fa-shield-halved text-emerald"></i> Client-side Encryption: Máy chủ hoàn toàn không thể đọc hoặc truy cập dữ liệu của bạn.
-                </div>
-            </div>
-
-        </div>
-    </div>
+    {% include '_demo_tab2.html' %}
 </div>
 
-<!-- TAB 3: E2EE CHAT (Ứng dụng nhắn tin mã hóa đầu cuối) -->
+<!-- TAB 3: E2EE CHAT -->
 <div class="tab-content" id="tabContent2">
-    <div class="crypto-card" style="background: #0b0f19; border: 1px solid #1e293b; padding: 24px; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.5);">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 14px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="background: #10b981; color: #000; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800;">
-                    <i class="fa-solid fa-comments"></i>
-                </div>
-                <div>
-                    <h2 style="margin: 0; font-size: 17px; color: #fff; font-weight: 700;">E2EE Secure Chatroom</h2>
-                    <p style="color: #94a3b8; font-size: 12px; margin: 2px 0 0 0;">Phòng chat mã hóa đầu cuối trực tiếp giữa Alice và Bob (End-to-End Encrypted).</p>
-                </div>
-            </div>
-            <div style="background: #111827; padding: 6px 12px; border-radius: 8px; border: 1px solid #374151; color: #34d399; font-size: 12px; font-weight: 600;">
-                <i class="fa-solid fa-shield-keyhole me-1"></i> Vault Unlocked • AES-256
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 240px 1fr; gap: 20px; background: #111827; border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; height: 420px;">
-            
-            <!-- Danh sách phòng chat -->
-            <div style="background: #0f172a; border-right: 1px solid #1f2937; padding: 16px;">
-                <div style="font-size: 12px; font-weight: 700; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase;">Phòng Trò Chuyện (3)</div>
-                <div style="background: #4f46e5; color: #fff; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; cursor: pointer;">
-                    <i class="fa-solid fa-hashtag me-1"></i> Town hall (Bảo mật)
-                </div>
-                <div style="color: #94a3b8; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; cursor: pointer;">
-                    <i class="fa-solid fa-hashtag me-1"></i> Project X Secret
-                </div>
-                <div style="color: #94a3b8; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; cursor: pointer;">
-                    <i class="fa-solid fa-hashtag me-1"></i> Executive Room
-                </div>
-            </div>
-
-            <!-- Khung tin nhắn -->
-            <div style="display: flex; flex-direction: column; justify-content: space-between; padding: 18px; height: 100%;">
-                <div id="chatMessagesBox" style="overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 8px; max-height: 310px;">
-                    <div style="background: #1f2937; padding: 10px 14px; border-radius: 8px; max-width: 80%; font-size: 12.5px; color: #fff;">
-                        <b>Alice:</b> Chào Bob, hệ thống E2EE đã sẵn sàng trao đổi thông tin mật.
-                        <div style="font-size: 10px; color: #9ca3af; margin-top: 2px;">Đã mã hóa AES-GCM • 10:15 AM</div>
-                    </div>
-                    <div style="background: #4f46e5; padding: 10px 14px; border-radius: 8px; max-width: 80%; align-self: flex-end; font-size: 12.5px; color: #fff;">
-                        <b>You (Bob):</b> Tuyệt vời, tôi đã nhận được khóa công khai.
-                        <div style="font-size: 10px; color: #cbd5e1; margin-top: 2px; text-align: right;">Đã xác thực chữ ký • 10:16 AM</div>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 10px; margin-top: 14px; border-top: 1px solid #1f2937; padding-top: 14px;">
-                    <input type="text" id="chatInputMsg" placeholder="Nhập tin nhắn mã hóa đầu cuối..." style="flex-grow: 1; background: #1f2937; color: #fff; border: 1px solid #374151; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; outline: none;" onkeydown="if(event.key==='Enter') sendChatMessage()">
-                    <button type="button" onclick="sendChatMessage()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 0 18px; border: none; border-radius: 8px; cursor: pointer;">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    {% include '_demo_tab3.html' %}
 </div>
 
 <script>
-function switchTab(index) {
-    let contents = document.querySelectorAll('.tab-content');
-    let buttons = document.querySelectorAll('.tab-btn');
-    contents.forEach((c, idx) => c.classList.toggle('active', idx === index));
-    buttons.forEach((b, idx) => {
-        b.style.background = idx === index ? 'var(--accent-indigo)' : '#1e293b';
-        b.style.color = idx === index ? '#fff' : '#94a3b8';
-        b.style.border = idx === index ? 'none' : '1px solid #334155';
+(function () {
+    function switchTab(index) {
+        const contents = document.querySelectorAll('.tab-content');
+        const buttons = document.querySelectorAll('.demo-tab-navigation .tab-btn');
+
+        contents.forEach((content, i) => {
+            const isActive = i === index;
+
+            content.classList.toggle('active', isActive);
+            content.setAttribute('aria-hidden', String(!isActive));
+        });
+
+        buttons.forEach((button, i) => {
+            const isActive = i === index;
+
+            button.classList.toggle('active-tab-btn', isActive);
+            button.setAttribute('aria-selected', String(isActive));
+        });
+    }
+
+    // Giữ hàm switchTab có thể gọi từ thuộc tính onclick của các nút.
+    window.switchTab = switchTab;
+
+    // Đồng bộ trạng thái ban đầu.
+    document.addEventListener('DOMContentLoaded', function () {
+        const activeIndex = Array.from(
+            document.querySelectorAll('.demo-tab-navigation .tab-btn')
+        ).findIndex(button => button.classList.contains('active-tab-btn'));
+
+        switchTab(activeIndex >= 0 ? activeIndex : 0);
     });
-}
-
-// Javascript cho SecureShare (Tab 2)
-let lastSecPackage = null;
-let lastSecKeyPair = null;
-
-async function executeSecureSharePack() {
-    let title = document.getElementById('secShareTitle').value.trim();
-    let text = document.getElementById('secShareContent').value.trim();
-    if(!text) { alert('Vui lòng nhập nội dung!'); return; }
-
-    let enc = new TextEncoder();
-    let dataBuf = enc.encode(text);
-
-    let hashBuf = await window.crypto.subtle.digest("SHA-256", dataBuf);
-    let sha256Hex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-    let aesKey = await window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
-    let iv = window.crypto.getRandomValues(new Uint8Array(12));
-    let ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, aesKey, dataBuf);
-
-    let kp = await window.crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: "SHA-256" }, true, ["wrapKey", "unwrapKey"]);
-    lastSecKeyPair = kp;
-    let wrappedKey = await window.crypto.subtle.wrapKey("raw", aesKey, kp.publicKey, { name: "RSA-OAEP" });
-
-    lastSecPackage = {
-        title: title,
-        ciphertext: Array.from(new Uint8Array(ciphertext)),
-        iv: Array.from(iv),
-        wrappedKey: Array.from(new Uint8Array(wrappedKey)),
-        sha256: sha256Hex,
-        timestamp: new Date().toLocaleString()
-    };
-
-    let blob = new Blob([JSON.stringify(lastSecPackage, null, 2)], {type: "application/json"});
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement('a');
-    a.href = url;
-    a.download = "SecureShare_" + Date.now() + ".secure";
-    a.click();
-
-    alert('Đã mã hóa thành công! Tệp tin .secure đã được tải xuống máy.');
-}
-
-async function executeSecureShareUnpack(e) {
-    let file = e.target.files[0];
-    if(!file) return;
-    let reader = new FileReader();
-    reader.onload = async function(evt) {
-        try {
-            let pkg = JSON.parse(evt.target.result);
-            if(!lastSecKeyPair) throw new Error("Chưa có khóa giải mã trên trình duyệt!");
-            
-            let unwrappedKey = await window.crypto.subtle.unwrapKey(
-                "raw", new Uint8Array(pkg.wrappedKey), lastSecKeyPair.privateKey,
-                { name: "RSA-OAEP" }, { name: "AES-GCM", length: 256 }, true, ["decrypt"]
-            );
-            let decryptedBuf = await window.crypto.subtle.decrypt(
-                { name: "AES-GCM", iv: new Uint8Array(pkg.iv) }, unwrappedKey, new Uint8Array(pkg.ciphertext)
-            );
-            let plaintext = new TextDecoder().decode(decryptedBuf);
-
-            document.getElementById('secShareResultBox').innerHTML = `
-                <div style="color: #34d399; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Khôi phục tài liệu "${pkg.title}" thành công!</div>
-                <div style="color: #fff; background: #0b0f19; padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px;">${plaintext}</div>
-            `;
-        } catch(err) {
-            document.getElementById('secShareResultBox').innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> Giải mã thất bại: Khóa không khớp hoặc tệp bị hỏng!</span>`;
-        }
-    };
-    reader.readAsText(file);
-}
-
-// Javascript cho E2EE Chat (Tab 3)
-async function sendChatMessage() {
-    let input = document.getElementById('chatInputMsg');
-    let text = input.value.trim();
-    if(!text) return;
-
-    let box = document.getElementById('chatMessagesBox');
-    box.innerHTML += `
-        <div style="background: #4f46e5; padding: 10px 14px; border-radius: 8px; max-width: 80%; align-self: flex-end; font-size: 12.5px; color: #fff;">
-            <b>You:</b> ${text}
-            <div style="font-size: 10px; color: #cbd5e1; margin-top: 2px; text-align: right;">Đã mã hóa AES-GCM • Vừa xong</div>
-        </div>
-    `;
-    input.value = "";
-    box.scrollTop = box.scrollHeight;
-
-    setTimeout(() => {
-        box.innerHTML += `
-            <div style="background: #1f2937; padding: 10px 14px; border-radius: 8px; max-width: 80%; font-size: 12.5px; color: #fff;">
-                <b>Alice:</b> Đã nhận và giải mã thành công thông điệp của bạn: "${text}" 🔒
-                <div style="font-size: 10px; color: #9ca3af; margin-top: 2px;">Xác thực toàn vẹn SHA-256 • Vừa xong</div>
-            </div>
-        `;
-        box.scrollTop = box.scrollHeight;
-    }, 1000);
-}
+})();
 </script>
 {% endblock %}

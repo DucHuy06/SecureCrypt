@@ -1,92 +1,264 @@
+
 <div id="secureChatApp" class="crypto-card">
   <style>
     #secureChatApp {
-      background:#090d16;color:#f8fafc;border:1px solid #1e293b;
-      padding:24px;border-radius:18px;height:760px;max-height:85vh;
-      min-height:560px;display:flex;flex-direction:column;
-      font-family:inherit;box-sizing:border-box
+      background: #090d16;
+      color: #f8fafc;
+      border: 1px solid #1e293b;
+      padding: 24px;
+      border-radius: 18px;
+      height: 760px;
+      max-height: 85vh;
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      font-family: inherit;
+      box-sizing: border-box;
     }
-    #secureChatApp *{box-sizing:border-box}
-    #secureChatApp button,#secureChatApp input{font:inherit}
-    #secureChatApp button{cursor:pointer}
-    #secureChatApp button:disabled{opacity:.55;cursor:not-allowed}
-    #secureChatApp .sc-muted{color:#94a3b8;font-size:12px}
-    #secureChatApp .sc-primary{background:#4f46e5;color:white;border:0}
-    #secureChatApp .sc-secondary{background:#1e293b;color:#e2e8f0;border:1px solid #334155}
-    #secureChatApp .sc-btn{padding:10px 14px;border-radius:8px;font-size:13px;font-weight:700}
-    #secureChatApp .sc-input{
-      width:100%;background:#0f172a;color:#f8fafc;
-      border:1px solid #334155;padding:11px 12px;border-radius:8px;
-      outline:none;min-width:0
+
+    #secureChatApp * { box-sizing: border-box; }
+    #secureChatApp button,
+    #secureChatApp input { font: inherit; }
+    #secureChatApp button { cursor: pointer; }
+    #secureChatApp button:disabled { opacity: .55; cursor: not-allowed; }
+
+    #secureChatApp .sc-muted {
+      color: #94a3b8;
+      font-size: 12px;
     }
-    #secureChatApp .sc-input:focus{border-color:#818cf8}
-    #secureChatApp .sc-header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      border-bottom:1px solid #1e293b;padding-bottom:16px;margin-bottom:16px
+
+    #secureChatApp .sc-primary {
+      background: #4f46e5;
+      color: white;
+      border: 0;
     }
-    #secureChatApp .sc-layout{
-      flex:1;min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr);gap:14px
+
+    #secureChatApp .sc-secondary {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
     }
-    #secureChatApp .sc-sidebar,#secureChatApp .sc-conversation{
-      background:#0f172a;border:1px solid #1e293b;border-radius:12px;
-      min-height:0;overflow:hidden
+
+    #secureChatApp .sc-btn {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
     }
-    #secureChatApp .sc-sidebar{display:flex;flex-direction:column}
-    #secureChatApp .sc-side-title{
-      padding:14px;border-bottom:1px solid #1e293b;
-      color:#94a3b8;font-size:12px;font-weight:700
+
+    #secureChatApp .sc-input {
+      width: 100%;
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      padding: 11px 12px;
+      border-radius: 8px;
+      outline: none;
+      min-width: 0;
     }
-    #secureChatApp .sc-rooms{padding:8px;overflow-y:auto}
-    #secureChatApp .sc-room{
-      display:block;width:100%;text-align:left;padding:11px;
-      margin-bottom:5px;border:0;border-radius:8px;
-      background:transparent;color:#cbd5e1;font-size:13px
+
+    #secureChatApp .sc-input:focus { border-color: #818cf8; }
+
+    #secureChatApp .sc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
     }
-    #secureChatApp .sc-room.active{background:#4f46e5;color:white}
-    #secureChatApp .sc-conversation{display:flex;flex-direction:column}
-    #secureChatApp .sc-room-header{
-      padding:13px 16px;background:#111827;border-bottom:1px solid #1e293b;
-      display:flex;justify-content:space-between;align-items:center;gap:10px
+
+    #secureChatApp .sc-layout {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 14px;
     }
-    #secureChatApp .sc-messages{
-      flex:1;min-height:0;overflow-y:auto;padding:16px;
-      display:flex;flex-direction:column;gap:12px;background:#090d16
+
+    #secureChatApp .sc-sidebar,
+    #secureChatApp .sc-conversation {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      min-height: 0;
+      overflow: hidden;
     }
-    #secureChatApp .sc-message{
-      max-width:85%;padding:10px 13px;border-radius:12px;
-      font-size:13px;line-height:1.5;overflow-wrap:anywhere
+
+    #secureChatApp .sc-sidebar {
+      display: flex;
+      flex-direction: column;
     }
-    #secureChatApp .sc-message.mine{align-self:flex-end;background:#4f46e5}
-    #secureChatApp .sc-message.other{align-self:flex-start;background:#1e293b}
-    #secureChatApp .sc-message-meta{font-size:10px;color:#cbd5e1;margin-top:5px;text-align:right}
-    #secureChatApp .sc-compose{
-      padding:12px;display:flex;gap:8px;background:#111827;
-      border-top:1px solid #1e293b
+
+    #secureChatApp .sc-side-title {
+      padding: 14px;
+      border-bottom: 1px solid #1e293b;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
     }
-    #secureChatApp .sc-status{font-size:12px;line-height:1.5;margin-top:10px;overflow-wrap:anywhere}
-    #secureChatApp .sc-status.error{color:#f87171}
-    #secureChatApp .sc-status.success{color:#34d399}
-    #secureChatApp .sc-auth{
-      margin:auto;width:100%;max-width:420px;padding:24px;
-      background:#0f172a;border:1px solid #1e293b;border-radius:14px
+
+    #secureChatApp .sc-rooms {
+      padding: 8px;
+      overflow-y: auto;
     }
-    #secureChatApp .sc-auth h3{margin:0 0 8px;font-size:20px}
-    #secureChatApp .sc-auth-form{display:flex;flex-direction:column;gap:12px;margin-top:20px}
-    #secureChatApp .sc-hidden{display:none!important}
-    #secureChatApp .sc-empty{margin:auto;text-align:center;color:#94a3b8;font-size:13px;padding:20px}
-    @media(max-width:700px){
-      #secureChatApp{padding:12px;height:780px;max-height:90vh}
-      #secureChatApp .sc-layout{grid-template-columns:110px minmax(0,1fr);gap:8px}
-      #secureChatApp .sc-room{padding:9px 6px;font-size:11px;overflow-wrap:anywhere}
-      #secureChatApp .sc-message{max-width:95%}
-      #secureChatApp .sc-header{align-items:flex-start}
-      #secureChatApp .sc-header .sc-muted{display:none}
-      #secureChatApp .sc-room-header{padding:10px;font-size:12px}
-      #secureChatApp .sc-compose{padding:8px}
-      #secureChatApp .sc-btn{padding:9px;font-size:12px}
+
+    #secureChatApp .sc-room {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 11px;
+      margin-bottom: 5px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #cbd5e1;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    #secureChatApp .sc-room.active {
+      background: #4f46e5;
+      color: white;
+    }
+
+    #secureChatApp .sc-conversation {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #secureChatApp .sc-room-header {
+      padding: 13px 16px;
+      background: #111827;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #secureChatApp .sc-messages {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #090d16;
+    }
+
+    #secureChatApp .sc-message {
+      max-width: 85%;
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    #secureChatApp .sc-message.mine {
+      align-self: flex-end;
+      background: #4f46e5;
+    }
+
+    #secureChatApp .sc-message.other {
+      align-self: flex-start;
+      background: #1e293b;
+    }
+
+    #secureChatApp .sc-message-meta {
+      font-size: 10px;
+      color: #cbd5e1;
+      margin-top: 5px;
+      text-align: right;
+    }
+
+    #secureChatApp .sc-compose {
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+      background: #111827;
+      border-top: 1px solid #1e293b;
+    }
+
+    #secureChatApp .sc-status {
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    #secureChatApp .sc-status.error { color: #f87171; }
+    #secureChatApp .sc-status.success { color: #34d399; }
+
+    #secureChatApp .sc-auth {
+      margin: auto;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+    }
+
+    #secureChatApp .sc-auth h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    #secureChatApp .sc-auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    #secureChatApp .sc-hidden { display: none !important; }
+
+    #secureChatApp .sc-empty {
+      margin: auto;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 13px;
+      padding: 20px;
+    }
+
+    @media (max-width: 700px) {
+      #secureChatApp {
+        padding: 12px;
+        height: 780px;
+        max-height: 90vh;
+      }
+
+      #secureChatApp .sc-layout {
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      #secureChatApp .sc-room {
+        padding: 9px 6px;
+        font-size: 11px;
+      }
+
+      #secureChatApp .sc-message { max-width: 95%; }
+
+      #secureChatApp .sc-header { align-items: flex-start; }
+      #secureChatApp .sc-header .sc-muted { display: none; }
+
+      #secureChatApp .sc-room-header {
+        padding: 10px;
+        font-size: 12px;
+      }
+
+      #secureChatApp .sc-compose { padding: 8px; }
+      #secureChatApp .sc-btn { padding: 9px; font-size: 12px; }
     }
   </style>
 
+  <!-- HEADER -->
   <div class="sc-header">
     <div style="display:flex;align-items:center;gap:12px;min-width:0">
       <div style="width:40px;height:40px;border-radius:11px;background:#4f46e5;display:grid;place-items:center;flex-shrink:0">
@@ -97,81 +269,123 @@
         <div class="sc-muted">Nhắn tin giữa các tài khoản</div>
       </div>
     </div>
+
     <div style="text-align:right">
-      <div id="scAccountLabel" style="font-size:12px;color:#34d399">Chưa đăng nhập</div>
-      <button id="scLogoutBtn" type="button" class="sc-btn sc-secondary sc-hidden" style="margin-top:6px">Đăng xuất</button>
+      <div id="scAccountLabel" style="font-size:12px;color:#34d399">
+        Chưa đăng nhập
+      </div>
+      <button id="scLogoutBtn" type="button"
+        class="sc-btn sc-secondary sc-hidden" style="margin-top:6px">
+        Đăng xuất
+      </button>
     </div>
   </div>
 
-  <!-- Đăng nhập / đăng ký -->
+  <!-- ĐĂNG NHẬP / ĐĂNG KÝ -->
   <section id="scAuthView" class="sc-auth">
     <h3 id="scAuthTitle">Đăng nhập SecureChat</h3>
-    <p class="sc-muted">Đăng nhập để trò chuyện bằng tài khoản của bạn.</p>
+    <p class="sc-muted">
+      Đăng nhập để trò chuyện bằng tài khoản của bạn.
+    </p>
 
     <div style="display:flex;gap:8px;margin-top:18px">
-      <button id="scLoginTab" class="sc-btn sc-primary" type="button" style="flex:1">Đăng nhập</button>
-      <button id="scRegisterTab" class="sc-btn sc-secondary" type="button" style="flex:1">Đăng ký</button>
+      <button id="scLoginTab" class="sc-btn sc-primary"
+        type="button" style="flex:1">
+        Đăng nhập
+      </button>
+
+      <button id="scRegisterTab" class="sc-btn sc-secondary"
+        type="button" style="flex:1">
+        Đăng ký
+      </button>
     </div>
 
     <form id="scAuthForm" class="sc-auth-form">
-      <div id="scUsernameGroup">
+      <div>
         <label for="scUsername" class="sc-muted">Tên tài khoản</label>
-        <input id="scUsername" class="sc-input" name="username" autocomplete="username" required minlength="3" maxlength="40" placeholder="Nhập tên tài khoản">
-      </div>
-
-      <div id="scEmailGroup" class="sc-hidden">
-        <label for="scEmail" class="sc-muted">Email</label>
-        <input id="scEmail" class="sc-input" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+        <input id="scUsername" class="sc-input" name="username"
+          autocomplete="username" required minlength="3" maxlength="40"
+          placeholder="Nhập tên tài khoản">
       </div>
 
       <div>
         <label for="scPassword" class="sc-muted">Mật khẩu</label>
-        <input id="scPassword" class="sc-input" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128" placeholder="Ít nhất 8 ký tự">
+        <input id="scPassword" class="sc-input" name="password"
+          type="password" autocomplete="current-password"
+          required minlength="8" maxlength="128"
+          placeholder="Nhập mật khẩu">
       </div>
 
-      <button id="scAuthSubmit" type="submit" class="sc-btn sc-primary">Đăng nhập</button>
+      <button id="scAuthSubmit" type="submit"
+        class="sc-btn sc-primary">
+        Đăng nhập
+      </button>
     </form>
 
-    <div id="scAuthStatus" class="sc-status" role="status" aria-live="polite"></div>
+    <div id="scAuthStatus" class="sc-status"
+      role="status" aria-live="polite"></div>
   </section>
 
-  <!-- Giao diện chat -->
+  <!-- GIAO DIỆN CHAT -->
   <section id="scChatView" class="sc-layout sc-hidden">
     <aside class="sc-sidebar">
-      <div class="sc-side-title">CUỘC TRÒ CHUYỆN</div>
+      <div class="sc-side-title">NGƯỜI DÙNG</div>
 
       <div style="padding:8px;border-bottom:1px solid #1e293b">
-        <button id="scNewChatBtn" class="sc-btn sc-primary" type="button" style="width:100%">+ Chat mới</button>
+        <button id="scRefreshUsers" class="sc-btn sc-secondary"
+          type="button" style="width:100%">
+          Làm mới danh sách
+        </button>
       </div>
 
       <div id="scRooms" class="sc-rooms">
-        <div class="sc-empty">Đang tải cuộc trò chuyện…</div>
+        <div class="sc-empty">Đang tải người dùng…</div>
       </div>
     </aside>
 
     <section class="sc-conversation">
       <div class="sc-room-header">
-        <div>
-          <div id="scRoomTitle" style="font-weight:700">Chọn cuộc trò chuyện</div>
-          <div id="scRoomSubtitle" class="sc-muted" style="margin-top:4px">Tin nhắn được đồng bộ qua máy chủ</div>
+        <div style="min-width:0">
+          <div id="scRoomTitle" style="font-weight:700">
+            Chọn người trò chuyện
+          </div>
+          <div id="scRoomSubtitle" class="sc-muted" style="margin-top:4px">
+            Chọn tài khoản ở cột bên trái
+          </div>
         </div>
-        <span id="scConnectionStatus" class="sc-muted">Đang kết nối…</span>
+
+        <span id="scConnectionStatus" class="sc-muted">
+          Chưa kết nối
+        </span>
       </div>
 
       <div id="scMessages" class="sc-messages" aria-live="polite">
-        <div class="sc-empty">Chọn một cuộc trò chuyện ở cột bên trái.</div>
+        <div class="sc-empty">
+          Chọn một tài khoản để bắt đầu trò chuyện.
+        </div>
       </div>
 
       <form id="scComposeForm" class="sc-compose">
-        <input id="scMessageInput" class="sc-input" type="text" maxlength="4000" autocomplete="off" placeholder="Nhập tin nhắn..." disabled>
-        <button id="scSendBtn" type="submit" class="sc-btn sc-primary" disabled aria-label="Gửi tin nhắn">
+        <input id="scMessageInput" class="sc-input"
+          type="text" maxlength="4000" autocomplete="off"
+          placeholder="Nhập tin nhắn..." disabled>
+
+        <button id="scSendBtn" type="submit"
+          class="sc-btn sc-primary" disabled
+          aria-label="Gửi tin nhắn">
           <i class="fa-solid fa-paper-plane"></i>
         </button>
       </form>
     </section>
   </section>
 
-  <div id="scGlobalStatus" class="sc-status" role="status" aria-live="polite"></div>
+  <div id="scGlobalStatus" class="sc-status"
+    role="status" aria-live="polite"></div>
+
+  <p style="font-size:11px;color:#fbbf24;margin:10px 0 0">
+    Lưu ý: Phiên bản hiện tại chưa mã hóa đầu cuối. Nội dung tin nhắn
+    được lưu ở trường ciphertext nhưng thực tế chưa được mã hóa.
+  </p>
 </div>
 
 <script>
@@ -179,231 +393,205 @@
   'use strict';
 
   const root = document.getElementById('secureChatApp');
+
   if (!root || root.dataset.initialized === 'true') return;
   root.dataset.initialized = 'true';
 
-  /*
-   * API BACKEND FLASK CẦN CUNG CẤP:
-   *
-   * POST /api/chat/register
-   *   JSON: {username, email, password}
-   *   Response: {token, user: {id, username}}
-   *
-   * POST /api/chat/login
-   *   JSON: {username, password}
-   *   Response: {token, user: {id, username}}
-   *
-   * GET /api/chat/rooms
-   *   Response: {rooms: [{id, name, type, unread_count}]}
-   *
-   * POST /api/chat/rooms
-   *   JSON: {username}
-   *   Tạo hoặc lấy cuộc trò chuyện riêng với username đó.
-   *   Response: {room: {id, name, type}}
-   *
-   * GET /api/chat/rooms/<room_id>/messages
-   *   Response: {messages: [{id, sender_id, sender_username, content, created_at}]}
-   *
-   * POST /api/chat/rooms/<room_id>/messages
-   *   JSON: {content}
-   *   Response: {message: {...}}
-   *
-   * Các endpoint cần xác thực người dùng và kiểm tra quyền truy cập phòng.
-   * Giao diện này dùng REST + polling; chưa tự tạo WebSocket hoặc E2EE.
-   */
-
-  const API = '/api/chat';
   const $ = (id) => document.getElementById(id);
 
   const state = {
-    token: null,
-    user: null,
+    username: null,
     authMode: 'login',
-    rooms: [],
-    roomId: null,
+    users: [],
+    partner: null,
     messages: [],
     pollTimer: null,
     loadingMessages: false,
     sending: false,
-    lastMessageId: null
+    requestVersion: 0
   };
 
-  function setStatus(id, message, kind = '') {
-    const el = $(id);
-    el.textContent = message || '';
-    el.className = 'sc-status' + (kind ? ' ' + kind : '');
-  }
+  // Các API sử dụng đúng theo app.py hiện tại.
+  const API = {
+    register: '/api/register',
+    login: '/api/login',
+    logout: '/api/logout',
+    currentUser: '/api/current_user',
+    users: '/api/users',
+    send: '/api/messages/send',
+    poll: '/api/messages/poll'
+  };
 
-  function escapeText(value) {
-    return String(value ?? '');
-  }
-
-  async function apiRequest(path, options = {}) {
-    const headers = {
-      'Accept': 'application/json',
-      ...(options.headers || {})
-    };
-
-    if (options.body !== undefined) {
-      headers['Content-Type'] = 'application/json';
-    }
-
-    if (state.token) {
-      headers['Authorization'] = 'Bearer ' + state.token;
-    }
-
-    const response = await fetch(API + path, {
+  async function apiRequest(url, options = {}) {
+    const response = await fetch(url, {
       method: options.method || 'GET',
-      headers,
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
       credentials: 'same-origin',
-      cache: 'no-store'
+      cache: 'no-store',
+      headers: {
+        'Accept': 'application/json',
+        ...(options.body !== undefined
+          ? { 'Content-Type': 'application/json' }
+          : {})
+      },
+      body: options.body !== undefined
+        ? JSON.stringify(options.body)
+        : undefined
     });
 
-    let data = {};
-    const responseText = await response.text();
+    let data;
 
-    if (responseText) {
-      try {
-        data = JSON.parse(responseText);
-      } catch {
-        throw new Error('Máy chủ trả về dữ liệu không phải JSON. Hãy kiểm tra API Flask.');
-      }
-    }
-
-    if (response.status === 401) {
-      clearSession();
-      throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error('Máy chủ không trả về JSON hợp lệ.');
     }
 
     if (!response.ok) {
-      throw new Error(data.error || data.message || ('Yêu cầu thất bại (HTTP ' + response.status + ').'));
+      const message = data.message || data.error ||
+        ('Yêu cầu thất bại (HTTP ' + response.status + ').');
+      throw new Error(message);
     }
 
     return data;
   }
 
+  function setStatus(id, message, type = '') {
+    const element = $(id);
+    element.textContent = message || '';
+    element.className = 'sc-status' + (type ? ' ' + type : '');
+  }
+
+  function showEmptyMessage(message, container = $('scMessages')) {
+    container.replaceChildren();
+
+    const element = document.createElement('div');
+    element.className = 'sc-empty';
+    element.textContent = message;
+
+    container.appendChild(element);
+  }
+
   function setAuthMode(mode) {
     state.authMode = mode;
 
-    const register = mode === 'register';
+    const isRegister = mode === 'register';
 
-    $('scAuthTitle').textContent = register ? 'Tạo tài khoản SecureChat' : 'Đăng nhập SecureChat';
-    $('scAuthSubmit').textContent = register ? 'Đăng ký' : 'Đăng nhập';
-    $('scEmailGroup').classList.toggle('sc-hidden', !register);
-    $('scEmail').required = register;
-    $('scPassword').autocomplete = register ? 'new-password' : 'current-password';
+    $('scAuthTitle').textContent = isRegister
+      ? 'Đăng ký SecureChat'
+      : 'Đăng nhập SecureChat';
 
-    $('scLoginTab').className = 'sc-btn ' + (!register ? 'sc-primary' : 'sc-secondary');
-    $('scRegisterTab').className = 'sc-btn ' + (register ? 'sc-primary' : 'sc-secondary');
+    $('scAuthSubmit').textContent = isRegister
+      ? 'Đăng ký tài khoản'
+      : 'Đăng nhập';
 
-    setStatus('scAuthStatus', '');
-  }
+    $('scPassword').autocomplete = isRegister
+      ? 'new-password'
+      : 'current-password';
 
-  function saveSession(data) {
-    if (!data || !data.token || !data.user || !data.user.id) {
-      throw new Error('API đăng nhập phải trả về token và thông tin user hợp lệ.');
-    }
+    $('scLoginTab').className = 'sc-btn ' +
+      (!isRegister ? 'sc-primary' : 'sc-secondary');
 
-    state.token = data.token;
-    state.user = data.user;
-
-    // Chỉ lưu token phiên đăng nhập; không lưu mật khẩu.
-    sessionStorage.setItem('securechat_token', state.token);
-    sessionStorage.setItem('securechat_user', JSON.stringify(state.user));
-
-    renderAuthenticatedView();
-  }
-
-  function clearSession() {
-    stopPolling();
-
-    state.token = null;
-    state.user = null;
-    state.rooms = [];
-    state.roomId = null;
-    state.messages = [];
-    state.lastMessageId = null;
-
-    sessionStorage.removeItem('securechat_token');
-    sessionStorage.removeItem('securechat_user');
-
-    $('scChatView').classList.add('sc-hidden');
-    $('scAuthView').classList.remove('sc-hidden');
-    $('scLogoutBtn').classList.add('sc-hidden');
-    $('scAccountLabel').textContent = 'Chưa đăng nhập';
-
-    $('scMessageInput').disabled = true;
-    $('scSendBtn').disabled = true;
+    $('scRegisterTab').className = 'sc-btn ' +
+      (isRegister ? 'sc-primary' : 'sc-secondary');
 
     setStatus('scAuthStatus', '');
-    setStatus('scGlobalStatus', '');
   }
 
-  async function restoreSession() {
-    const token = sessionStorage.getItem('securechat_token');
-    const userJson = sessionStorage.getItem('securechat_user');
+  function showChatView(username) {
+    state.username = username;
 
-    if (!token || !userJson) return;
-
-    try {
-      state.token = token;
-      state.user = JSON.parse(userJson);
-
-      if (!state.user || !state.user.id) {
-        clearSession();
-        return;
-      }
-
-      renderAuthenticatedView();
-      await loadRooms();
-    } catch (error) {
-      setStatus('scGlobalStatus', error.message, 'error');
-    }
-  }
-
-  function renderAuthenticatedView() {
     $('scAuthView').classList.add('sc-hidden');
     $('scChatView').classList.remove('sc-hidden');
     $('scLogoutBtn').classList.remove('sc-hidden');
-    $('scAccountLabel').textContent = 'Đăng nhập: ' + escapeText(state.user.username);
+
+    $('scAccountLabel').textContent = 'Tài khoản: ' + username;
     $('scConnectionStatus').textContent = 'Đã đăng nhập';
+
+    setStatus('scAuthStatus', '');
     setStatus('scGlobalStatus', '');
   }
 
-  async function submitAuth(event) {
+  function showAuthView() {
+    stopPolling();
+
+    state.username = null;
+    state.users = [];
+    state.partner = null;
+    state.messages = [];
+    state.requestVersion++;
+
+    $('scAuthView').classList.remove('sc-hidden');
+    $('scChatView').classList.add('sc-hidden');
+    $('scLogoutBtn').classList.add('sc-hidden');
+
+    $('scAccountLabel').textContent = 'Chưa đăng nhập';
+    $('scRoomTitle').textContent = 'Chọn người trò chuyện';
+    $('scRoomSubtitle').textContent = 'Chọn tài khoản ở cột bên trái';
+    $('scConnectionStatus').textContent = 'Chưa kết nối';
+
+    $('scMessageInput').value = '';
+    $('scMessageInput').disabled = true;
+    $('scSendBtn').disabled = true;
+
+    $('scRooms').replaceChildren();
+    showEmptyMessage('Chọn một tài khoản để bắt đầu trò chuyện.');
+
+    setStatus('scGlobalStatus', '');
+  }
+
+  async function handleAuth(event) {
     event.preventDefault();
 
     const username = $('scUsername').value.trim();
     const password = $('scPassword').value;
 
-    const body = { username, password };
+    if (!username || !password) {
+      setStatus('scAuthStatus', 'Vui lòng nhập tên tài khoản và mật khẩu.', 'error');
+      return;
+    }
 
-    if (state.authMode === 'register') {
-      body.email = $('scEmail').value.trim();
-
-      if (username.length < 3) {
-        setStatus('scAuthStatus', 'Tên tài khoản cần ít nhất 3 ký tự.', 'error');
-        return;
-      }
-
-      if (password.length < 8) {
-        setStatus('scAuthStatus', 'Mật khẩu cần ít nhất 8 ký tự.', 'error');
-        return;
-      }
+    if (state.authMode === 'register' && password.length < 8) {
+      setStatus('scAuthStatus', 'Mật khẩu cần ít nhất 8 ký tự.', 'error');
+      return;
     }
 
     const button = $('scAuthSubmit');
     button.disabled = true;
+
     setStatus('scAuthStatus', 'Đang xử lý…');
 
     try {
-      const endpoint = state.authMode === 'register' ? '/register' : '/login';
-      const data = await apiRequest(endpoint, { method: 'POST', body });
+      if (state.authMode === 'register') {
+        const result = await apiRequest(API.register, {
+          method: 'POST',
+          body: { username, password }
+        });
 
-      saveSession(data);
+        setStatus(
+          'scAuthStatus',
+          result.message || 'Đăng ký thành công. Bạn hãy đăng nhập.',
+          'success'
+        );
+
+        setAuthMode('login');
+        $('scPassword').value = '';
+        return;
+      }
+
+      const result = await apiRequest(API.login, {
+        method: 'POST',
+        body: { username, password }
+      });
+
+      if (!result.success) {
+        throw new Error(result.message || 'Đăng nhập thất bại.');
+      }
+
       $('scPassword').value = '';
-      await loadRooms();
+      showChatView(username);
+
+      await loadUsers();
+      startPolling();
 
       setStatus('scGlobalStatus', 'Đăng nhập thành công.', 'success');
     } catch (error) {
@@ -413,153 +601,193 @@
     }
   }
 
-  async function loadRooms() {
+  async function restoreLogin() {
     try {
-      const data = await apiRequest('/rooms');
-      state.rooms = Array.isArray(data.rooms) ? data.rooms : [];
+      const result = await apiRequest(API.currentUser);
 
-      renderRooms();
-
-      if (state.roomId && !state.rooms.some(room => String(room.id) === String(state.roomId))) {
-        state.roomId = null;
+      if (!result.logged_in || !result.username) {
+        showAuthView();
+        return;
       }
 
-      if (state.roomId) {
-        const selected = state.rooms.find(room => String(room.id) === String(state.roomId));
-        if (selected) await openRoom(selected.id);
-      } else if (state.rooms.length > 0) {
-        await openRoom(state.rooms[0].id);
-      } else {
-        $('scRoomTitle').textContent = 'Chưa có cuộc trò chuyện';
-        $('scRoomSubtitle').textContent = 'Bấm “Chat mới” để tìm người dùng.';
-        $('scMessages').replaceChildren();
-        showEmptyMessage('Chưa có cuộc trò chuyện. Hãy tạo cuộc trò chuyện mới.');
-      }
-    } catch (error) {
-      setStatus('scGlobalStatus', error.message, 'error');
+      showChatView(result.username);
+
+      await loadUsers();
+      startPolling();
+    } catch {
+      showAuthView();
     }
   }
 
-  function renderRooms() {
+  async function loadUsers() {
+    try {
+      const data = await apiRequest(API.users);
+
+      if (!Array.isArray(data)) {
+        throw new Error('API danh sách người dùng không đúng định dạng.');
+      }
+
+      state.users = data.filter(
+        user => user && user.username &&
+          user.username !== state.username
+      );
+
+      renderUsers();
+
+      if (state.partner &&
+          !state.users.some(user => user.username === state.partner)) {
+        state.partner = null;
+        state.messages = [];
+        $('scRoomTitle').textContent = 'Chọn người trò chuyện';
+        $('scMessageInput').disabled = true;
+        $('scSendBtn').disabled = true;
+        showEmptyMessage('Người dùng này không còn trong danh sách.');
+      }
+
+      if (!state.users.length) {
+        $('scRoomTitle').textContent = 'Chưa có người dùng khác';
+        $('scRoomSubtitle').textContent = 'Đăng ký tài khoản thứ hai để thử chat.';
+        showEmptyMessage('Chưa có tài khoản nào khác để trò chuyện.');
+      } else if (!state.partner) {
+        $('scRoomSubtitle').textContent =
+          'Chọn một tài khoản ở cột bên trái.';
+      }
+    } catch (error) {
+      if (error.message.includes('401')) {
+        showAuthView();
+      } else {
+        setStatus('scGlobalStatus', error.message, 'error');
+      }
+    }
+  }
+
+  function renderUsers() {
     const container = $('scRooms');
     container.replaceChildren();
 
-    if (!state.rooms.length) {
-      showEmptyMessage('Chưa có cuộc trò chuyện.', container);
+    if (!state.users.length) {
+      showEmptyMessage('Chưa có người dùng khác.', container);
       return;
     }
 
-    state.rooms.forEach(room => {
+    state.users.forEach(user => {
       const button = document.createElement('button');
+
       button.type = 'button';
       button.className = 'sc-room' +
-        (String(room.id) === String(state.roomId) ? ' active' : '');
-      button.textContent = (room.type === 'group' ? '# ' : '@ ') + room.name;
+        (user.username === state.partner ? ' active' : '');
 
-      if (Number(room.unread_count) > 0) {
-        button.textContent += ' (' + Number(room.unread_count) + ')';
-      }
+      button.textContent = '@ ' + user.username;
+      button.title = 'Trò chuyện với ' + user.username;
 
-      button.addEventListener('click', () => openRoom(room.id));
+      button.addEventListener('click', () => openConversation(user.username));
+
       container.appendChild(button);
     });
   }
 
-  function showEmptyMessage(message, container = $('scMessages')) {
-    container.replaceChildren();
-    const empty = document.createElement('div');
-    empty.className = 'sc-empty';
-    empty.textContent = message;
-    container.appendChild(empty);
-  }
-
-  async function openRoom(roomId) {
-    state.roomId = roomId;
+  async function openConversation(username) {
+    state.partner = username;
     state.messages = [];
-    state.lastMessageId = null;
+    state.requestVersion++;
 
-    const room = state.rooms.find(item => String(item.id) === String(roomId));
-
-    $('scRoomTitle').textContent = room ? room.name : 'Cuộc trò chuyện';
-    $('scRoomSubtitle').textContent = 'Lịch sử tin nhắn';
+    $('scRoomTitle').textContent = username;
+    $('scRoomSubtitle').textContent = 'Cuộc trò chuyện riêng';
     $('scMessageInput').disabled = false;
     $('scSendBtn').disabled = false;
 
-    renderRooms();
+    $('scMessageInput').focus();
+
+    renderUsers();
     showEmptyMessage('Đang tải tin nhắn…');
-    startPolling();
-    await loadMessages(true);
+
+    await loadMessages();
+  }
+
+  async function loadMessages() {
+    if (!state.username || !state.partner || state.loadingMessages) return;
+
+    state.loadingMessages = true;
+
+    const partner = state.partner;
+    const requestVersion = state.requestVersion;
+
+    try {
+      const url = API.poll + '?partner=' + encodeURIComponent(partner);
+      const data = await apiRequest(url);
+
+      // Bỏ qua kết quả cũ nếu người dùng đã chuyển cuộc trò chuyện.
+      if (partner !== state.partner ||
+          requestVersion !== state.requestVersion) {
+        return;
+      }
+
+      if (!Array.isArray(data)) {
+        throw new Error('API tin nhắn không đúng định dạng.');
+      }
+
+      state.messages = data;
+      renderMessages();
+
+      $('scConnectionStatus').textContent = 'Đã đồng bộ';
+    } catch (error) {
+      $('scConnectionStatus').textContent = 'Lỗi kết nối';
+      setStatus('scGlobalStatus', error.message, 'error');
+    } finally {
+      state.loadingMessages = false;
+    }
   }
 
   function renderMessages() {
-    const box = $('scMessages');
-    const wasNearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+    const container = $('scMessages');
 
-    box.replaceChildren();
+    const nearBottom =
+      container.scrollHeight - container.scrollTop -
+      container.clientHeight < 90;
+
+    container.replaceChildren();
 
     if (!state.messages.length) {
-      showEmptyMessage('Chưa có tin nhắn. Hãy gửi lời chào đầu tiên.', box);
+      showEmptyMessage('Chưa có tin nhắn. Hãy gửi lời chào đầu tiên.');
       return;
     }
 
     state.messages.forEach(message => {
-      const mine = String(message.sender_id) === String(state.user.id);
+      const mine = message.sender === state.username;
 
       const bubble = document.createElement('div');
       bubble.className = 'sc-message ' + (mine ? 'mine' : 'other');
 
-      const sender = document.createElement('div');
-      const strong = document.createElement('strong');
-      strong.textContent = mine ? 'Bạn' : escapeText(message.sender_username || 'Người dùng');
-      sender.appendChild(strong);
-      sender.appendChild(document.createTextNode(': ' + escapeText(message.content)));
+      const content = document.createElement('div');
+
+      const sender = document.createElement('strong');
+      sender.textContent = mine ? 'Bạn' : message.sender;
+
+      content.appendChild(sender);
+      content.appendChild(
+        document.createTextNode(': ' + String(message.ciphertext ?? ''))
+      );
 
       const meta = document.createElement('div');
       meta.className = 'sc-message-meta';
 
-      const date = message.created_at ? new Date(message.created_at) : null;
-      meta.textContent = date && !Number.isNaN(date.getTime())
-        ? date.toLocaleString()
-        : '';
+      if (message.timestamp) {
+        const date = new Date(
+          String(message.timestamp).replace(' ', 'T') + 'Z'
+        );
 
-      bubble.appendChild(sender);
+        meta.textContent = Number.isNaN(date.getTime())
+          ? String(message.timestamp)
+          : date.toLocaleString();
+      }
+
+      bubble.appendChild(content);
       bubble.appendChild(meta);
-      box.appendChild(bubble);
+      container.appendChild(bubble);
     });
 
-    if (wasNearBottom) box.scrollTop = box.scrollHeight;
-  }
-
-  async function loadMessages(initial = false) {
-    if (!state.token || !state.roomId || state.loadingMessages) return;
-
-    state.loadingMessages = true;
-
-    const requestedRoomId = state.roomId;
-
-    try {
-      const data = await apiRequest(
-        '/rooms/' + encodeURIComponent(requestedRoomId) + '/messages'
-      );
-
-      if (String(state.roomId) !== String(requestedRoomId)) return;
-
-      const messages = Array.isArray(data.messages) ? data.messages : [];
-
-      // Backend nên trả lịch sử theo thứ tự thời gian tăng dần.
-      state.messages = messages;
-      state.lastMessageId = messages.length ? messages[messages.length - 1].id : null;
-
-      renderMessages();
-      $('scConnectionStatus').textContent = 'Đã đồng bộ';
-      $('scRoomSubtitle').textContent = 'Tin nhắn mới được kiểm tra định kỳ';
-    } catch (error) {
-      $('scConnectionStatus').textContent = 'Mất kết nối';
-      if (initial) {
-        showEmptyMessage('Không tải được lịch sử: ' + error.message);
-      }
-    } finally {
-      state.loadingMessages = false;
+    if (nearBottom) {
+      container.scrollTop = container.scrollHeight;
     }
   }
 
@@ -567,66 +795,58 @@
     event.preventDefault();
 
     const input = $('scMessageInput');
-    const content = input.value.trim();
+    const message = input.value.trim();
 
-    if (!content || !state.roomId || state.sending) return;
+    if (!message || !state.partner || state.sending) return;
 
     state.sending = true;
     $('scSendBtn').disabled = true;
 
-    try {
-      const roomId = state.roomId;
+    const recipient = state.partner;
 
-      await apiRequest(
-        '/rooms/' + encodeURIComponent(roomId) + '/messages',
-        {
-          method: 'POST',
-          body: { content }
+    try {
+      const result = await apiRequest(API.send, {
+        method: 'POST',
+        body: {
+          recipient,
+          ciphertext: message
         }
-      );
+      });
+
+      if (result.success === false) {
+        throw new Error(result.message || 'Không gửi được tin nhắn.');
+      }
 
       input.value = '';
-      await loadMessages(true);
+      await loadMessages();
       input.focus();
+
+      setStatus('scGlobalStatus', '');
     } catch (error) {
-      setStatus('scGlobalStatus', 'Không gửi được tin nhắn: ' + error.message, 'error');
+      setStatus(
+        'scGlobalStatus',
+        'Gửi tin nhắn thất bại: ' + error.message,
+        'error'
+      );
     } finally {
       state.sending = false;
-      $('scSendBtn').disabled = !state.roomId;
+      $('scSendBtn').disabled = !state.partner;
     }
   }
 
-  async function createPrivateChat() {
-    const username = prompt('Nhập tên tài khoản muốn trò chuyện:');
-    if (username === null) return;
-
-    const target = username.trim();
-
-    if (!target) {
-      setStatus('scGlobalStatus', 'Vui lòng nhập tên tài khoản.', 'error');
-      return;
-    }
-
+  async function logout() {
     try {
-      const data = await apiRequest('/rooms', {
-        method: 'POST',
-        body: { username: target }
-      });
-
-      if (!data.room || !data.room.id) {
-        throw new Error('API tạo cuộc trò chuyện không trả về room hợp lệ.');
-      }
-
-      await loadRooms();
-      await openRoom(data.room.id);
-      setStatus('scGlobalStatus', 'Đã mở cuộc trò chuyện.', 'success');
+      await apiRequest(API.logout, { method: 'POST' });
     } catch (error) {
       setStatus('scGlobalStatus', error.message, 'error');
+    } finally {
+      showAuthView();
+      setStatus('scAuthStatus', 'Bạn đã đăng xuất.', 'success');
     }
   }
 
   function stopPolling() {
-    if (state.pollTimer) {
+    if (state.pollTimer !== null) {
       clearInterval(state.pollTimer);
       state.pollTimer = null;
     }
@@ -635,26 +855,24 @@
   function startPolling() {
     stopPolling();
 
-    // Đồng bộ định kỳ; để chat thời gian thực tốt hơn nên dùng WebSocket.
+    // Kiểm tra tin nhắn mới mỗi 2,5 giây.
     state.pollTimer = setInterval(() => {
-      if (state.token && state.roomId) loadMessages(false);
+      if (state.username && state.partner) {
+        loadMessages();
+      }
     }, 2500);
   }
 
   $('scLoginTab').addEventListener('click', () => setAuthMode('login'));
   $('scRegisterTab').addEventListener('click', () => setAuthMode('register'));
-  $('scAuthForm').addEventListener('submit', submitAuth);
+  $('scAuthForm').addEventListener('submit', handleAuth);
   $('scComposeForm').addEventListener('submit', sendMessage);
-  $('scNewChatBtn').addEventListener('click', createPrivateChat);
-
-  $('scLogoutBtn').addEventListener('click', () => {
-    clearSession();
-    setStatus('scAuthStatus', 'Bạn đã đăng xuất.', 'success');
-  });
+  $('scRefreshUsers').addEventListener('click', loadUsers);
+  $('scLogoutBtn').addEventListener('click', logout);
 
   window.addEventListener('beforeunload', stopPolling);
 
   setAuthMode('login');
-  restoreSession();
+  restoreLogin();
 })();
 </script>
