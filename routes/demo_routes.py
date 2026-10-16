@@ -1,8 +1,15 @@
-
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from crypto.hybrid_crypto import HybridCrypto
 
 demo_bp = Blueprint("demo_api", __name__)
+
+
+# ---------------------------------------------------------------------
+# Giao diện trang Demo chính (GET /demo)
+# ---------------------------------------------------------------------
+@demo_bp.route("/demo", methods=["GET"])
+def demo_page():
+    return render_template("demo.html")
 
 
 # ---------------------------------------------------------------------
