@@ -1,58 +1,67 @@
 <div class="crypto-card">
     <div class="card-title-header">
-        <i class="fa-solid fa-file-signature text-amber"></i> Ứng dụng Thực tế: Hệ thống Chữ ký số & Chống Giả mạo (Hàm băm + Bất đối xứng)
+        <i class="fa-solid fa-bolt text-amber"></i> Hệ thống Giám sát & Chữ ký số Thời gian thực (Real-time E-Contract & Anti-Tamper Engine)
     </div>
-    <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.6; margin-bottom: 20px;">
-        Ứng dụng thực tế kết hợp Trụ cột 2 (Hàm băm SHA-256 để định danh toàn vẹn nội dung) và Trụ cột 3 (Mã hóa bất đối xứng RSA để phát hành và xác thực chữ ký pháp lý).
+    <p style="color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 20px;">
+        Ứng dụng vận hành tự động ngầm: Mọi thay đổi nội dung văn bản đều được hệ thống băm SHA-256 và xác thực chữ ký bất đối xứng RSA theo thời gian thực.
     </p>
 
-    <!-- BƯỚC 1: SINH CẶP KHÓA -->
-    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 16px;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 13.5px;">
-            <i class="fa-solid fa-key"></i> Bước 1: Khởi tạo Cặp Khóa RSA (Public / Private Key)
-        </div>
-        <button type="button" onclick="generateKeys()" style="background: var(--accent-indigo); color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
-            <i class="fa-solid fa-sync"></i> Tạo Cặp Khóa Mới (Web Crypto API)
-        </button>
-        <div id="keyStatus" style="font-size: 12px; color: #34d399; margin-top: 8px; font-family: monospace;">Trạng thái: Chưa khởi tạo khóa...</div>
-    </div>
-
-    <!-- BƯỚC 2: NHẬP VĂN BẢN VÀ KÝ SỐ -->
-    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155; margin-bottom: 16px;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 13.5px;">
-            <i class="fa-solid fa-file-contract"></i> Bước 2: Soạn thảo Văn bản Hợp đồng & Ký số
-        </div>
-        <label style="font-size: 12px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nội dung hợp đồng gốc:</label>
-        <textarea id="contractText" rows="2" style="width: 100%; background: #0f172a; color: #fff; border: 1px solid #475569; padding: 8px; border-radius: 6px; font-size: 12.5px;">Cam kết chuyển nhượng cổ phần và tài sản trị giá 5.000.000.000 VNĐ.</textarea>
+    <!-- TRẠM LÀM VIỆC TỰ ĐỘNG -->
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
         
-        <button type="button" onclick="signDocument()" style="margin-top: 8px; background: #d97706; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
-            <i class="fa-solid fa-pen-nib"></i> Ký số Văn bản (Private Key)
-        </button>
-        <div id="signOutput" style="font-size: 11.5px; color: #fbbf24; margin-top: 8px; font-family: monospace; word-break: break-all;"></div>
-    </div>
+        <!-- CỘT TRÁI: KHUNG SOẠN THẢO TỰ ĐỘNG -->
+        <div style="background: #1e293b; padding: 18px; border-radius: 10px; border: 1px solid #334155;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 700; color: #38bdf8; font-size: 13.5px;">
+                    <i class="fa-solid fa-file-pen"></i> Soạn thảo Văn bản (Tự động ký & giám sát)
+                </span>
+                <span id="autoStatusBadge" style="font-size: 11px; background: #064e3b; color: #34d399; padding: 3px 8px; border-radius: 4px; font-weight: 600;">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Đang khởi tạo khóa...
+                </span>
+            </div>
 
-    <!-- BƯỚC 3: XÁC THỰC & CHỐNG GIẢ MẠO -->
-    <div style="background: #1e293b; padding: 16px; border-radius: 10px; border: 1px solid #334155;">
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px; font-size: 13.5px;">
-            <i class="fa-solid fa-shield-check"></i> Bước 3: Kiểm tra & Xác thực Chữ ký (Public Key)
+            <textarea id="liveDocInput" rows="6" style="width: 100%; background: #0f172a; color: #fff; border: 1px solid #475569; padding: 10px; border-radius: 6px; font-size: 12.5px; line-height: 1.5;" oninput="onLiveTextChange()">Hợp đồng nguyên bản: Cam kết bảo mật hệ thống thông tin doanh nghiệp và chuyển giao công nghệ mã hóa năm 2026.</textarea>
+            
+            <div style="margin-top: 10px; font-size: 11.5px; color: #94a3b8;">
+                <i class="fa-solid fa-circle-info"></i> Hãy thử gõ thêm chữ vào ô trên, hệ thống sẽ tự động bắt lỗi thay đổi mà không cần bấm nút.
+            </div>
         </div>
-        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
-            Hệ thống dùng Khóa công khai để kiểm tra xem nội dung văn bản có bị ai đó sửa đổi trái phép hay không.
-        </p>
-        <button type="button" onclick="verifyDocument()" style="background: #059669; color: #fff; font-weight: 700; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
-            <i class="fa-solid fa-check-double"></i> Xác thực Tính nguyên vẹn
-        </button>
-        <div id="verifyResult" style="font-size: 12.5px; margin-top: 10px; font-weight: 700;"></div>
+
+        <!-- CỘT PHẢI: BẢNG THEO DÕI BẢO MẬT REAL-TIME -->
+        <div style="background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="font-weight: 700; color: #38bdf8; margin-bottom: 12px; font-size: 13.5px; border-bottom: 1px solid #334155; padding-bottom: 8px;">
+                    <i class="fa-solid fa-gauge-high"></i> Phân tích Mật mã Thời gian thực
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <span style="font-size: 11px; color: #94a3b8; display: block;">Mã băm định danh nội dung (SHA-256):</span>
+                    <div id="realHash" style="font-family: monospace; font-size: 11px; color: #34d399; background: #1e293b; padding: 6px; border-radius: 4px; word-break: break-all; margin-top: 2px;">Đang tính toán...</div>
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <span style="font-size: 11px; color: #94a3b8; display: block;">Chữ ký số bất đối xứng (RSA-256 Signature):</span>
+                    <div id="realSig" style="font-family: monospace; font-size: 11px; color: #fbbf24; background: #1e293b; padding: 6px; border-radius: 4px; word-break: break-all; margin-top: 2px;">Đang khởi tạo...</div>
+                </div>
+            </div>
+
+            <!-- TRẠNG THÁI KIỂM ĐỊNH TOÀN VẸN -->
+            <div id="realVerifyBox" style="background: #064e3b33; padding: 12px; border-radius: 8px; border: 1px solid #059669; text-align: center; font-size: 12.5px; font-weight: 700; color: #34d399;">
+                <i class="fa-solid fa-shield-check"></i> HỆ THỐNG AN TOÀN & NGUYÊN VẸN
+            </div>
+        </div>
+
     </div>
 </div>
 
 <script>
-let globalKeyPair = null;
-let globalSignature = null;
+let sysKeyPair = null;
+let sysSignature = null;
+let sysBaselineText = "";
 
-async function generateKeys() {
+async function initSystemEngine() {
     try {
-        globalKeyPair = await window.crypto.subtle.generateKey(
+        sysKeyPair = await window.crypto.subtle.generateKey(
             {
                 name: "RSASSA-PKCS1-v1_5",
                 modulusLength: 2048,
@@ -62,55 +71,73 @@ async function generateKeys() {
             true,
             ["sign", "verify"]
         );
-        document.getElementById('keyStatus').innerHTML = `Trạng thái: Đã tạo thành công cặp khóa RSA-256 thực tế trên trình duyệt!`;
-    } catch(e) {
-        alert('Lỗi tạo khóa: ' + e);
-    }
-}
+        
+        document.getElementById('autoStatusBadgeinnerHTML').innerHTML = '';
+        let badge = document.getElementById('autoStatusBadge');
+        if(badge) {
+            badge.style.background = "#064e3b";
+            badge.style.color = "#34d399";
+            badge.innerHTML = '<i class="fa-solid fa-check-circle"></i> Đang tự động giám sát';
+        }
 
-async function signDocument() {
-    if(!globalKeyPair) {
-        alert('Vui lòng tạo cặp khóa ở Bước 1 trước!');
-        return;
-    }
-    let text = document.getElementById('contractText').value;
-    let enc = new TextEncoder();
-    try {
-        let signature = await window.crypto.subtle.sign(
+        // Khởi tạo mốc chuẩn ban đầu
+        let initialText = document.getElementById('liveDocInput').value;
+        sysBaselineText = initialText;
+        let enc = new TextEncoder();
+        
+        sysSignature = await window.crypto.subtle.sign(
             "RSASSA-PKCS1-v1_5",
-            globalKeyPair.privateKey,
-            enc.encode(text)
+            sysKeyPair.privateKey,
+            enc.encode(initialText)
         );
-        globalSignature = signature;
-        let hexSig = Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
-        document.getElementById('signOutput').innerHTML = `[CHỮ KÝ SỐ THÀNH CÔNG]: ${hexSig.substring(0, 64)}... (Đã băm SHA-256 và ký bằng Private Key)`;
+
+        onLiveTextChange();
     } catch(e) {
-        alert('Lỗi ký số: ' + e);
+        console.error(e);
     }
 }
 
-async function verifyDocument() {
-    if(!globalKeyPair || !globalSignature) {
-        alert('Vui lòng thực hiện ký số ở Bước 2 trước!');
-        return;
-    }
-    let text = document.getElementById('contractText').value;
+async function onLiveTextChange() {
+    let currentText = document.getElementById('liveDocInput').value;
     let enc = new TextEncoder();
+    
+    // 1. Tính toán mã băm SHA-256 realtime
+    let hashBuffer = await window.crypto.subtle.digest("SHA-256", enc.encode(currentText));
+    let hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    document.getElementById('realHash').innerText = hashHex;
+
+    if(!sysKeyPair || !sysSignature) return;
+
+    // 2. Hiển thị chữ ký mẫu
+    let sigHex = Array.from(new Uint8Array(sysSignature)).map(b => b.toString(16).padStart(2, '0')).join('');
+    document.getElementById('realSig').innerText = sigHex.substring(0, 72) + "...";
+
+    // 3. Tự động xác thực chữ ký với nội dung hiện tại
     try {
         let isValid = await window.crypto.subtle.verify(
             "RSASSA-PKCS1-v1_5",
-            globalKeyPair.publicKey,
-            globalSignature,
-            enc.encode(text)
+            sysKeyPair.publicKey,
+            sysSignature,
+            enc.encode(currentText)
         );
-        let resBox = document.getElementById('verifyResult');
+
+        let vBox = document.getElementById('realVerifyBox');
         if(isValid) {
-            resBox.innerHTML = `<span style="color: #34d399;"><i class="fa-solid fa-circle-check"></i> XÁC THỰC THÀNH CÔNG: Văn bản hoàn toàn nguyên vẹn, chữ ký hợp lệ từ chính chủ!</span>`;
+            vBox.style.background = "#064e3b33";
+            vBox.style.borderColor = "#059669";
+            vBox.style.color = "#34d399";
+            vBox.innerHTML = `<i class="fa-solid fa-shield-check"></i> VĂN BẢN NGUYÊN VẸN & CHÍNH CHỦ<br><span style="font-size:11px; color:#cbd5e1; font-weight:normal;">Chữ ký số khớp hoàn toàn với nội dung gốc.</span>`;
         } else {
-            resBox.innerHTML = `<span style="color: #f87171;"><i class="fa-solid fa-triangle-exclamation"></i> CẢNH BÁO GIẢ MẠO: Nội dung văn bản đã bị thay đổi trái phép so với lúc ký! Chữ ký không hợp lệ!</span>`;
+            vBox.style.background = "#7f1d1d33";
+            vBox.style.borderColor = "#dc2626";
+            vBox.style.color = "#f87171";
+            vBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> PHÁT HIỆN THAY ĐỔI / GIẢ MẠO!<br><span style="font-size:11px; color:#fca5a5; font-weight:normal;">Nội dung đã bị chỉnh sửa so với lúc ký ban đầu!</span>`;
         }
     } catch(e) {
-        alert('Lỗi xác thực: ' + e);
+        console.error(e);
     }
 }
+
+// Khởi chạy hệ thống ngay khi load xong tab
+setTimeout(() => { initSystemEngine(); }, 300);
 </script>
