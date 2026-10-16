@@ -685,31 +685,28 @@
           credentials: 'omit'
         });
       } catch (error) {
-        throw new Error('Không thể kết nối đến máy chủ: ' + (error.message || 'Lỗi mạng.'));
+        throw new Error('Không thể kết nối đến máy chủ.');
       }
 
       const contentType = response.headers.get('content-type') || '';
 
       if (!response.ok) {
-        let body = '';
+        let serverMessage = '';
 
         try {
-          body = await response.text();
-        } catch (_) {
-          body = 'Không đọc được nội dung phản hồi.';
-        }
-
-        let serverMessage = body;
-
-        if (contentType.includes('application/json') && body) {
-          try {
+          const body = await response.text();
+          if (contentType.includes('application/json') && body) {
             const data = JSON.parse(body);
-            serverMessage = data.message || body;
-          } catch (_) {}
+            serverMessage = data.message || 'Lỗi hệ thống từ máy chủ.';
+          } else {
+            // TUYỆT ĐỐI CHẶN KHÔNG CHO IN MÃ HTML RA GIAO DIỆN
+            serverMessage = 'Đã xảy ra lỗi từ máy chủ (HTTP ' + response.status + ').';
+          }
+        } catch (_) {
+          serverMessage = 'Yêu cầu thất bại (HTTP ' + response.status + ').';
         }
 
-        // ĐÃ GỌT GÙNG: Chỉ ném duy nhất thông điệp lỗi, loại bỏ hoàn toàn HTTP status, URL, Content-Type rườm rà
-        throw new Error(serverMessage || 'Đã xảy ra lỗi từ máy chủ.');
+        throw new Error(serverMessage);
       }
 
       if (contentType.includes('application/json')) {

@@ -28,6 +28,14 @@ CERTIFICATE = CERT_DIR / "certificate.pem"
 
 MAX_PDF_SIZE = 20 * 1024 * 1024
 
+# Đảm bảo thư mục certificates tồn tại
+CERT_DIR.mkdir(parents=True, exist_ok=True)
+
+
+@signature_bp.errorhandler(500)
+def internal_error(error):
+    return jsonify(success=False, message="Lỗi hệ thống máy chủ nội bộ (HTTP 500)."), 500
+
 
 def read_pdf_upload(uploaded):
     if not uploaded or not uploaded.filename:
@@ -38,7 +46,7 @@ def read_pdf_upload(uploaded):
 
     data = uploaded.read(MAX_PDF_SIZE + 1)
 
-    if len(data) > MAX_FILE_SIZE:
+    if len(data) > MAX_PDF_SIZE:
         return None, "File vượt quá giới hạn 20 MB."
 
     if not data.startswith(b"%PDF-"):
@@ -51,29 +59,19 @@ def read_pdf_upload(uploaded):
 
 @signature_bp.route("/pdf/sign", methods=["POST"])
 def sign_pdf():
-    uploaded = request.files.get("file")
-    pdf_data, error = read_pdf_upload(uploaded)
-
-    if error:
-        return jsonify(
-            success=False,
-            message=error
-        ), 400
-
-    if not PRIVATE_KEY.is_file() or not CERTIFICATE.is_file():
-        logger.error(
-            "PDF signing: private key or certificate not found. "
-            "Key exists=%s, certificate exists=%s",
-            PRIVATE_KEY.is_file(),
-            CERTIFICATE.is_file(),
-        )
-
-        return jsonify(
-            success=False,
-            message="Không tìm thấy file private_key.pem hoặc certificate.pem trong thư mục certificates."
-        ), 500
-
     try:
+        uploaded = request.files.get("file")
+        pdf_data, error = read_pdf_upload(uploaded)
+
+        if error:
+            return jsonify(success=False, message=error), 400
+
+        if not PRIVATE_KEY.is_file() or not CERTIFICATE.is_file():
+            return jsonify(
+                success=False,
+                message="Không tìm thấy file khóa riêng (private_key.pem) hoặc chứng thư trong thư mục certificates."
+            ), 500
+
         signer = signers.SimpleSigner.load(
             key_file=str(PRIVATE_KEY),
             cert_file=str(CERTIFICATE),
@@ -82,7 +80,7 @@ def sign_pdf():
         if signer is None:
             return jsonify(
                 success=False,
-                message="pyHanko không thể tải được khóa riêng hoặc chứng thư."
+                message="Không đọc được khóa riêng hoặc chứng thư."
             ), 500
 
         with BytesIO(pdf_data) as source:
@@ -132,16 +130,13 @@ def sign_pdf():
 
 @signature_bp.route("/pdf/verify", methods=["POST"])
 def verify_pdf():
-    uploaded = request.files.get("file")
-    pdf_data, error = read_pdf_upload(uploaded)
-
-    if error:
-        return jsonify(
-            success=False,
-            message=error
-        ), 400
-
     try:
+        uploaded = request.files.get("file")
+        pdf_data, error = read_pdf_upload(uploaded)
+
+        if error:
+            return jsonify(success=False, message=error), 400
+
         with BytesIO(pdf_data) as fd:
             reader = PdfFileReader(fd)
             sig_fields = reader.embedded_signatures
@@ -155,9 +150,7 @@ def verify_pdf():
                     details="Không tìm thấy trường chữ ký trong file PDF."
                 )
 
-            # Khởi tạo ValidationContext an toàn tuyệt đối không phụ thuộc hàm import ngoài
             vc = ValidationContext()
-
             report_lines = []
             all_valid = True
 
@@ -183,7 +176,7 @@ def verify_pdf():
                 success=True,
                 valid=all_valid,
                 trusted=True,
-                message="Chữ ký số hợp lệ và đáng tin cậy.",
+                message="Chữ ký số hợp lệ và đáng tin cậy." if all_valid else "Chữ ký không hợp lệ.",
                 details=report_text,
             )
 
