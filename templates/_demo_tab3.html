@@ -23,8 +23,7 @@
     }
 
     #digitalSignatureApp button,
-    #digitalSignatureApp input,
-    #digitalSignatureApp textarea {
+    #digitalSignatureApp input {
       font: inherit;
     }
 
@@ -40,9 +39,9 @@
     #digitalSignatureApp .ds-header {
       display: flex;
       align-items: center;
-      gap: 16px;
       justify-content: space-between;
       flex-wrap: wrap;
+      gap: 16px;
       padding: 20px;
       margin-bottom: 22px;
       border: 1px solid #1e3a70;
@@ -66,6 +65,12 @@
       background: var(--ds-primary);
       border-radius: 13px;
       font-size: 25px;
+    }
+
+    #digitalSignatureApp h2,
+    #digitalSignatureApp h3,
+    #digitalSignatureApp h4 {
+      color: #f8fafc;
     }
 
     #digitalSignatureApp .ds-header h2 {
@@ -112,7 +117,7 @@
 
     #digitalSignatureApp .ds-panel h3 {
       font-size: 17px;
-      margin: 0 0 10px;
+      margin: 0;
     }
 
     #digitalSignatureApp .ds-step {
@@ -136,7 +141,7 @@
 
     #digitalSignatureApp .ds-dropzone {
       display: flex;
-      min-height: 185px;
+      min-height: 175px;
       padding: 18px;
       margin-top: 16px;
       flex-direction: column;
@@ -147,9 +152,10 @@
       border: 1px dashed #5274ad;
       border-radius: 10px;
       background: #0a1530;
+      cursor: pointer;
     }
 
-    #digitalSignatureApp .ds-dropzone i {
+    #digitalSignatureApp .ds-dropzone > i {
       color: #818cf8;
       font-size: 32px;
     }
@@ -171,7 +177,7 @@
       text-align: center;
       color: #e2e8f0;
       background: #111e38;
-      transition: filter .15s, background .15s;
+      transition: filter .15s;
     }
 
     #digitalSignatureApp .ds-btn:hover {
@@ -214,15 +220,15 @@
       flex-shrink: 0;
     }
 
+    #digitalSignatureApp .ds-file-details {
+      min-width: 0;
+      flex: 1;
+    }
+
     #digitalSignatureApp .ds-file-name {
       font-weight: 700;
       font-size: 13px;
       overflow-wrap: anywhere;
-    }
-
-    #digitalSignatureApp .ds-file-details {
-      min-width: 0;
-      flex: 1;
     }
 
     #digitalSignatureApp .ds-remove {
@@ -252,54 +258,11 @@
       gap: 9px;
       padding: 12px;
       font-size: 12px;
+      overflow-wrap: anywhere;
     }
 
     #digitalSignatureApp .ds-info-body span:nth-child(odd) {
       color: #a8bde1;
-    }
-
-    #digitalSignatureApp .ds-field {
-      margin-top: 16px;
-    }
-
-    #digitalSignatureApp .ds-field label {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    #digitalSignatureApp .ds-input,
-    #digitalSignatureApp .ds-textarea {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      padding: 11px 12px;
-      color: #f8fafc;
-      background: #091329;
-      border: 1px solid #2d4368;
-      border-radius: 8px;
-      outline: none;
-    }
-
-    #digitalSignatureApp .ds-input:focus,
-    #digitalSignatureApp .ds-textarea:focus {
-      border-color: #818cf8;
-    }
-
-    #digitalSignatureApp .ds-textarea {
-      min-height: 125px;
-      resize: vertical;
-      overflow-wrap: anywhere;
-      font-family: monospace;
-      font-size: 12px;
-    }
-
-    #digitalSignatureApp .ds-key-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 9px;
     }
 
     #digitalSignatureApp .ds-notice {
@@ -321,6 +284,7 @@
       font-size: 12px;
       line-height: 1.6;
       overflow-wrap: anywhere;
+      white-space: pre-wrap;
     }
 
     #digitalSignatureApp .ds-status.success {
@@ -342,23 +306,6 @@
       color: #bfdbfe;
       border: 1px solid #1d4ed8;
       background: #101f40;
-    }
-
-    #digitalSignatureApp .ds-checklist {
-      display: grid;
-      gap: 9px;
-      padding: 13px;
-      margin-top: 15px;
-      border: 1px solid #1e3458;
-      border-radius: 9px;
-      background: #0a1428;
-      color: #cbd5e1;
-      font-size: 12px;
-    }
-
-    #digitalSignatureApp .ds-checklist i {
-      color: #34d399;
-      margin-right: 6px;
     }
 
     #digitalSignatureApp .ds-result {
@@ -387,7 +334,7 @@
       line-height: 1.6;
     }
 
-    #digitalSignatureApp .ds-result-status i {
+    #digitalSignatureApp .ds-result-status > i {
       font-size: 20px;
       color: #93c5fd;
     }
@@ -397,7 +344,7 @@
       background: #052e2b;
     }
 
-    #digitalSignatureApp .ds-result-status.success i {
+    #digitalSignatureApp .ds-result-status.success > i {
       color: #34d399;
     }
 
@@ -406,7 +353,7 @@
       background: #2a1018;
     }
 
-    #digitalSignatureApp .ds-result-status.error i {
+    #digitalSignatureApp .ds-result-status.error > i {
       color: #f87171;
     }
 
@@ -460,46 +407,38 @@
       #digitalSignatureApp .ds-header h2 {
         font-size: 18px;
       }
-
-      #digitalSignatureApp .ds-key-actions {
-        grid-template-columns: 1fr;
-      }
     }
   </style>
 
-  <!-- HEADER -->
   <header class="ds-header">
     <div class="ds-brand">
       <div class="ds-brand-icon">
         <i class="fa-solid fa-file-signature"></i>
       </div>
       <div>
-        <h2>Digital Signature (Chữ ký số PDF)</h2>
+        <h2>Digital Signature — Chữ ký số PDF</h2>
         <div class="ds-muted">
-          Ký tài liệu PDF và kiểm tra tính toàn vẹn của chữ ký số.
+          Ký tài liệu PDF và kiểm tra chữ ký số bằng máy chủ SecureCrypt.
         </div>
       </div>
     </div>
 
     <div class="ds-algorithm">
-      <strong><i class="fa-solid fa-shield-halved"></i> Định hướng thuật toán</strong>
+      <strong><i class="fa-solid fa-shield-halved"></i> Thuật toán</strong>
       <div style="font-size:13px">RSA / SHA-256</div>
       <div class="ds-muted">Chữ ký số trên tài liệu PDF</div>
     </div>
   </header>
 
   <div class="ds-grid">
-
-    <!-- CỘT 1: CHỌN PDF ĐỂ KÝ -->
+    <!-- CHỌN PDF -->
     <section class="ds-panel">
       <div class="ds-step">
         <span class="ds-step-number">1</span>
         <h3>Tải lên PDF</h3>
       </div>
 
-      <p class="ds-muted">
-        Chọn tài liệu PDF mà bạn muốn ký số.
-      </p>
+      <p class="ds-muted">Chọn tài liệu cần ký số.</p>
 
       <label for="dsSignFile" class="ds-dropzone" id="dsSignDropzone">
         <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -508,15 +447,11 @@
         <span class="ds-btn ds-btn-primary">
           <i class="fa-solid fa-folder-open"></i> Chọn file PDF
         </span>
-        <span class="ds-muted">Tối đa 10 MB</span>
+        <span class="ds-muted">Tối đa 20 MB</span>
       </label>
 
-      <input
-        type="file"
-        id="dsSignFile"
-        class="ds-file-input"
-        accept=".pdf,application/pdf"
-      >
+      <input type="file" id="dsSignFile" class="ds-file-input"
+             accept=".pdf,application/pdf">
 
       <div id="dsSignFileCard" class="ds-file-card ds-hidden">
         <i class="fa-solid fa-file-pdf ds-file-icon"></i>
@@ -524,12 +459,8 @@
           <div class="ds-file-name" id="dsSignFileName"></div>
           <div class="ds-muted" id="dsSignFileSize"></div>
         </div>
-        <button
-          type="button"
-          id="dsRemoveSignFile"
-          class="ds-remove"
-          aria-label="Bỏ file PDF"
-        >
+        <button type="button" id="dsRemoveSignFile" class="ds-remove"
+                aria-label="Bỏ file PDF">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
@@ -539,19 +470,17 @@
           <i class="fa-solid fa-circle-info"></i> Thông tin tài liệu
         </div>
         <div class="ds-info-body">
-          <span>Tên file:</span>
-          <span id="dsInfoName">Chưa chọn file</span>
-          <span>Kích thước:</span>
-          <span id="dsInfoSize">—</span>
-          <span>Định dạng:</span>
-          <span id="dsInfoType">—</span>
+          <span>Tên file:</span><span id="dsInfoName">Chưa chọn file</span>
+          <span>Kích thước:</span><span id="dsInfoSize">—</span>
+          <span>Định dạng:</span><span id="dsInfoType">—</span>
         </div>
       </div>
 
-      <div id="dsSignStatus" class="ds-status" role="status" aria-live="polite"></div>
+      <div id="dsSignStatus" class="ds-status"
+           role="status" aria-live="polite"></div>
     </section>
 
-    <!-- CỘT 2: KHÓA VÀ KÝ SỐ -->
+    <!-- KÝ PDF -->
     <section class="ds-panel">
       <div class="ds-step">
         <span class="ds-step-number">2</span>
@@ -559,71 +488,31 @@
       </div>
 
       <p class="ds-muted">
-        Cung cấp khóa riêng và chứng thư số tương ứng để ký PDF.
+        Máy chủ sử dụng khóa riêng và chứng thư đã được cấu hình.
+        Khóa riêng không được nhập từ trình duyệt.
       </p>
 
-      <div class="ds-field">
-        <label for="dsPrivateKey">Khóa riêng (Private Key PEM)</label>
-        <textarea
-          id="dsPrivateKey"
-          class="ds-textarea"
-          spellcheck="false"
-          autocomplete="off"
-          placeholder="-----BEGIN PRIVATE KEY-----&#10;Dán khóa riêng của bạn vào đây&#10;-----END PRIVATE KEY-----"
-        ></textarea>
-      </div>
-
-      <div class="ds-field">
-        <label for="dsCertificate">Chứng thư số (Certificate PEM)</label>
-        <textarea
-          id="dsCertificate"
-          class="ds-textarea"
-          spellcheck="false"
-          autocomplete="off"
-          placeholder="-----BEGIN CERTIFICATE-----&#10;Dán chứng thư số tương ứng vào đây&#10;-----END CERTIFICATE-----"
-        ></textarea>
-      </div>
-
-      <div class="ds-key-actions">
-        <label for="dsCertificateFile" class="ds-btn" style="margin:0">
-          <i class="fa-solid fa-folder-open"></i> Tải chứng thư
-        </label>
-        <input
-          type="file"
-          id="dsCertificateFile"
-          class="ds-file-input"
-          accept=".pem,.crt,.cer"
-        >
-        <button type="button" id="dsClearKeys" class="ds-btn">
-          <i class="fa-solid fa-eraser"></i> Xóa trường khóa
-        </button>
-      </div>
-
       <div class="ds-notice">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        Không dùng khóa riêng thật hoặc khóa nhạy cảm trên website demo
-        khi chưa kiểm tra cách máy chủ xử lý và bảo vệ dữ liệu.
+        <i class="fa-solid fa-shield-halved"></i>
+        Chỉ dùng môi trường demo với khóa thử nghiệm. Chứng thư tự ký
+        không mặc nhiên được các phần mềm PDF tin cậy.
       </div>
 
-      <button
-        type="button"
-        id="dsSignButton"
-        class="ds-btn ds-btn-primary ds-btn-wide"
-      >
+      <button type="button" id="dsSignButton"
+              class="ds-btn ds-btn-primary ds-btn-wide">
         <i class="fa-solid fa-file-signature"></i> Ký tài liệu PDF
       </button>
 
-      <div id="dsSigningStatus" class="ds-status" role="status" aria-live="polite"></div>
+      <div id="dsSigningStatus" class="ds-status"
+           role="status" aria-live="polite"></div>
 
-      <div class="ds-checklist">
-        <div><i class="fa-solid fa-circle-check"></i> Kiểm tra đầu vào PDF</div>
-        <div><i class="fa-solid fa-circle-check"></i> Sử dụng khóa riêng để ký</div>
-        <div><i class="fa-solid fa-circle-check"></i> Nhúng chữ ký vào tài liệu PDF</div>
-        <div><i class="fa-solid fa-circle-check"></i> Kiểm tra kết quả trước khi tải xuống</div>
+      <div class="ds-notice">
+        Sau khi ký, hãy dùng chức năng xác minh để kiểm tra kết quả.
+        Không dùng tệp demo làm tài liệu pháp lý.
       </div>
     </section>
 
-    <!-- CỘT 3: XÁC MINH CHỮ KÝ -->
+    <!-- XÁC MINH PDF -->
     <section class="ds-panel ds-verify-column">
       <div class="ds-step">
         <span class="ds-step-number">3</span>
@@ -631,10 +520,10 @@
       </div>
 
       <p class="ds-muted">
-        Chọn PDF đã ký để kiểm tra chữ ký và tính toàn vẹn tài liệu.
+        Chọn PDF đã ký để kiểm tra chữ ký và tính toàn vẹn.
       </p>
 
-      <label for="dsVerifyFile" class="ds-dropzone">
+      <label for="dsVerifyFile" class="ds-dropzone" id="dsVerifyDropzone">
         <i class="fa-solid fa-shield-halved"></i>
         <strong>Chọn PDF cần xác minh</strong>
         <span class="ds-muted">Tài liệu cần có chữ ký số PDF</span>
@@ -643,12 +532,8 @@
         </span>
       </label>
 
-      <input
-        type="file"
-        id="dsVerifyFile"
-        class="ds-file-input"
-        accept=".pdf,application/pdf"
-      >
+      <input type="file" id="dsVerifyFile" class="ds-file-input"
+             accept=".pdf,application/pdf">
 
       <div id="dsVerifyFileCard" class="ds-file-card ds-hidden">
         <i class="fa-solid fa-file-pdf ds-file-icon"></i>
@@ -656,25 +541,19 @@
           <div class="ds-file-name" id="dsVerifyFileName"></div>
           <div class="ds-muted" id="dsVerifyFileSize"></div>
         </div>
-        <button
-          type="button"
-          id="dsRemoveVerifyFile"
-          class="ds-remove"
-          aria-label="Bỏ file xác minh"
-        >
+        <button type="button" id="dsRemoveVerifyFile" class="ds-remove"
+                aria-label="Bỏ file xác minh">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <button
-        type="button"
-        id="dsVerifyButton"
-        class="ds-btn ds-btn-outline ds-btn-wide"
-      >
+      <button type="button" id="dsVerifyButton"
+              class="ds-btn ds-btn-outline ds-btn-wide">
         <i class="fa-solid fa-magnifying-glass"></i> Xác minh chữ ký
       </button>
 
-      <div id="dsVerifyStatus" class="ds-status" role="status" aria-live="polite"></div>
+      <div id="dsVerifyStatus" class="ds-status"
+           role="status" aria-live="polite"></div>
 
       <div class="ds-result">
         <h4><i class="fa-solid fa-clipboard-check"></i> Kết quả xác minh</h4>
@@ -684,46 +563,31 @@
           <div>
             <strong id="dsResultTitle">Chưa xác minh</strong>
             <div id="dsResultDescription" class="ds-muted">
-              Chọn một tài liệu PDF và nhấn xác minh để kiểm tra chữ ký.
+              Chọn PDF và nhấn xác minh để kiểm tra chữ ký.
             </div>
           </div>
         </div>
 
         <div class="ds-result-row">
-          <span>Tên người ký:</span>
-          <span id="dsResultSigner">Chưa có dữ liệu</span>
+          <span>Người ký:</span><span id="dsResultSigner">Chưa có dữ liệu</span>
         </div>
         <div class="ds-result-row">
-          <span>Thuật toán:</span>
-          <span id="dsResultAlgorithm">Chưa có dữ liệu</span>
+          <span>Thuật toán:</span><span id="dsResultAlgorithm">Chưa có dữ liệu</span>
         </div>
         <div class="ds-result-row">
-          <span>Tính toàn vẹn:</span>
-          <span id="dsResultIntegrity">Chưa kiểm tra</span>
+          <span>Tính toàn vẹn:</span><span id="dsResultIntegrity">Chưa kiểm tra</span>
         </div>
         <div class="ds-result-row">
-          <span>Chứng thư:</span>
-          <span id="dsResultCertificate">Chưa kiểm tra độ tin cậy</span>
+          <span>Độ tin cậy:</span><span id="dsResultCertificate">Chưa kiểm tra</span>
         </div>
       </div>
-
-      <button
-        type="button"
-        id="dsDownloadButton"
-        class="ds-btn ds-btn-outline ds-btn-wide"
-        disabled
-      >
-        <i class="fa-solid fa-download"></i> Tải PDF đã ký
-      </button>
     </section>
   </div>
 
   <div class="ds-footer">
     <i class="fa-solid fa-circle-info"></i>
-    <strong>Lưu ý:</strong>
-    Giao diện này chưa tự thực hiện ký số. Kết quả ký và xác minh chỉ được hiển thị
-    khi backend thực sự xử lý và trả về kết quả. Chữ ký hợp lệ về mặt mật mã
-    không đồng nghĩa chứng thư của người ký đã được xác nhận đáng tin cậy.
+    Chữ ký mật mã hợp lệ không đồng nghĩa chứng thư đã được xác nhận
+    đáng tin cậy. Kết quả cuối cùng phụ thuộc vào báo cáo xác minh của backend.
   </div>
 
   <script>
@@ -733,11 +597,12 @@
     root.dataset.initialized = 'true';
 
     const $ = id => document.getElementById(id);
-    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
     let signFile = null;
     let verifyFile = null;
-    let signedDownloadUrl = null;
+    let signedBlob = null;
+    let signedFilename = 'signed_document.pdf';
 
     function formatSize(bytes) {
       if (bytes < 1024) return bytes + ' B';
@@ -752,109 +617,58 @@
     }
 
     function clearStatus(id) {
-      const el = $(id);
-      el.textContent = '';
-      el.className = 'ds-status';
+      $(id).textContent = '';
+      $(id).className = 'ds-status';
     }
 
-    function isPdf(file) {
-      return !!file &&
-        file.name.toLowerCase().endsWith('.pdf') &&
-        (file.type === 'application/pdf' || file.type === '');
+    function clearResult() {
+      $('dsResultBanner').className = 'ds-result-status';
+      $('dsResultBanner').querySelector('i').className = 'fa-solid fa-circle-info';
+      $('dsResultTitle').textContent = 'Chưa xác minh';
+      $('dsResultDescription').textContent =
+        'Chọn PDF và nhấn xác minh để kiểm tra chữ ký.';
+      $('dsResultSigner').textContent = 'Chưa có dữ liệu';
+      $('dsResultAlgorithm').textContent = 'Chưa có dữ liệu';
+      $('dsResultIntegrity').textContent = 'Chưa kiểm tra';
+      $('dsResultCertificate').textContent = 'Chưa kiểm tra';
     }
 
-    function setFile(inputFile, file, kind) {
-      if (file && !isPdf(file)) {
-        showStatus(
-          kind === 'sign' ? 'dsSignStatus' : 'dsVerifyStatus',
-          'Vui lòng chọn tệp PDF hợp lệ.',
-          'error'
-        );
+    function setFile(kind, file) {
+      const statusId = kind === 'sign' ? 'dsSignStatus' : 'dsVerifyStatus';
+
+      if (file && !file.name.toLowerCase().endsWith('.pdf')) {
+        showStatus(statusId, 'Vui lòng chọn tệp có đuôi .pdf.', 'error');
         return;
       }
 
       if (file && file.size > MAX_FILE_SIZE) {
-        showStatus(
-          kind === 'sign' ? 'dsSignStatus' : 'dsVerifyStatus',
-          'Tệp vượt quá giới hạn 10 MB.',
-          'error'
-        );
+        showStatus(statusId, 'Tệp vượt quá giới hạn 20 MB.', 'error');
         return;
       }
 
       if (kind === 'sign') {
         signFile = file;
         $('dsSignFileCard').classList.toggle('ds-hidden', !file);
+        $('dsSignFileName').textContent = file ? file.name : '';
+        $('dsSignFileSize').textContent = file ? formatSize(file.size) : '';
         $('dsInfoName').textContent = file ? file.name : 'Chưa chọn file';
         $('dsInfoSize').textContent = file ? formatSize(file.size) : '—';
         $('dsInfoType').textContent = file ? 'PDF' : '—';
-        $('dsSignFileName').textContent = file ? file.name : '';
-        $('dsSignFileSize').textContent = file ? formatSize(file.size) : '';
         clearStatus('dsSignStatus');
+        clearStatus('dsSigningStatus');
       } else {
         verifyFile = file;
         $('dsVerifyFileCard').classList.toggle('ds-hidden', !file);
         $('dsVerifyFileName').textContent = file ? file.name : '';
         $('dsVerifyFileSize').textContent = file ? formatSize(file.size) : '';
         clearStatus('dsVerifyStatus');
+        clearResult();
       }
-
-      inputFile.value = '';
     }
 
-    function clearVerificationResult() {
-      $('dsResultBanner').className = 'ds-result-status';
-      $('dsResultTitle').textContent = 'Chưa xác minh';
-      $('dsResultDescription').textContent =
-        'Chọn một tài liệu PDF và nhấn xác minh để kiểm tra chữ ký.';
-      $('dsResultSigner').textContent = 'Chưa có dữ liệu';
-      $('dsResultAlgorithm').textContent = 'Chưa có dữ liệu';
-      $('dsResultIntegrity').textContent = 'Chưa kiểm tra';
-      $('dsResultCertificate').textContent = 'Chưa kiểm tra độ tin cậy';
-    }
-
-    function setVerificationResult(result) {
-      const valid = result.valid === true;
-      const banner = $('dsResultBanner');
-
-      banner.className = 'ds-result-status ' + (valid ? 'success' : 'error');
-      banner.querySelector('i').className = valid
-        ? 'fa-solid fa-circle-check'
-        : 'fa-solid fa-circle-xmark';
-
-      $('dsResultTitle').textContent = valid
-        ? 'Chữ ký hợp lệ'
-        : 'Chữ ký không hợp lệ';
-
-      $('dsResultDescription').textContent =
-        result.message || 'Backend đã hoàn tất kiểm tra chữ ký.';
-
-      $('dsResultSigner').textContent = result.signer || 'Không xác định';
-      $('dsResultAlgorithm').textContent = result.algorithm || 'Không có dữ liệu';
-      $('dsResultIntegrity').textContent =
-        result.integrity === true ? 'Không phát hiện thay đổi trái phép'
-        : result.integrity === false ? 'Phát hiện thay đổi hoặc lỗi kiểm tra'
-        : 'Chưa xác định';
-
-      $('dsResultCertificate').textContent =
-        result.certificate_trusted === true ? 'Được xác minh là đáng tin cậy'
-        : result.certificate_trusted === false ? 'Chưa được xác nhận đáng tin cậy'
-        : 'Chưa xác định';
-
-      showStatus(
-        'dsVerifyStatus',
-        result.message || (valid ? 'Xác minh hoàn tất.' : 'Không xác minh được chữ ký.'),
-        valid ? 'success' : 'error'
-      );
-    }
-
-    async function postFile(url, file, fields = {}) {
+    async function postFile(url, file) {
       const formData = new FormData();
       formData.append('file', file, file.name);
-
-      Object.entries(fields).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
 
       const response = await fetch(url, {
         method: 'POST',
@@ -870,6 +684,8 @@
         if (contentType.includes('application/json')) {
           const data = await response.json();
           message = data.message || message;
+        } else {
+          message = 'Máy chủ trả về lỗi HTTP ' + response.status + '. Kiểm tra Render Logs.';
         }
 
         throw new Error(message);
@@ -882,98 +698,79 @@
       return {
         type: 'file',
         blob: await response.blob(),
-        filename: getDownloadFilename(response, 'signed_document.pdf')
+        filename: getFilename(response, 'signed_document.pdf')
       };
     }
 
-    function getDownloadFilename(response, fallback) {
+    function getFilename(response, fallback) {
       const disposition = response.headers.get('content-disposition') || '';
+      const utf8 = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+      if (utf8) {
+        try { return decodeURIComponent(utf8[1]); } catch (_) {}
+      }
+
       const match = disposition.match(/filename="?([^";]+)"?/i);
       return match ? match[1] : fallback;
     }
 
     function downloadBlob(blob, filename) {
-      if (signedDownloadUrl) URL.revokeObjectURL(signedDownloadUrl);
-
-      signedDownloadUrl = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = signedDownloadUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     $('dsSignFile').addEventListener('change', event => {
-      setFile(event.target, event.target.files[0] || null, 'sign');
+      setFile('sign', event.target.files[0] || null);
+      event.target.value = '';
     });
 
     $('dsVerifyFile').addEventListener('change', event => {
-      setFile(event.target, event.target.files[0] || null, 'verify');
+      setFile('verify', event.target.files[0] || null);
+      event.target.value = '';
     });
 
     $('dsRemoveSignFile').addEventListener('click', () => {
-      signFile = null;
-      $('dsSignFileCard').classList.add('ds-hidden');
-      $('dsInfoName').textContent = 'Chưa chọn file';
-      $('dsInfoSize').textContent = '—';
-      $('dsInfoType').textContent = '—';
-      clearStatus('dsSignStatus');
+      setFile('sign', null);
     });
 
     $('dsRemoveVerifyFile').addEventListener('click', () => {
-      verifyFile = null;
-      $('dsVerifyFileCard').classList.add('ds-hidden');
-      clearStatus('dsVerifyStatus');
-      clearVerificationResult();
+      setFile('verify', null);
     });
 
-    $('dsCertificateFile').addEventListener('change', async event => {
-      const file = event.target.files[0];
-      event.target.value = '';
+    function configureDropzone(zoneId, kind) {
+      const zone = $(zoneId);
 
-      if (!file) return;
+      ['dragenter', 'dragover'].forEach(name => {
+        zone.addEventListener(name, event => {
+          event.preventDefault();
+          zone.style.borderColor = '#818cf8';
+        });
+      });
 
-      if (file.size > 1024 * 1024) {
-        showStatus('dsSigningStatus', 'Tệp chứng thư vượt quá 1 MB.', 'error');
-        return;
-      }
+      ['dragleave', 'drop'].forEach(name => {
+        zone.addEventListener(name, event => {
+          event.preventDefault();
+          zone.style.borderColor = '#5274ad';
+        });
+      });
 
-      try {
-        $('dsCertificate').value = await file.text();
-        showStatus(
-          'dsSigningStatus',
-          'Đã nạp nội dung chứng thư vào trường nhập. Chưa xác minh chứng thư.',
-          'info'
-        );
-      } catch {
-        showStatus('dsSigningStatus', 'Không thể đọc tệp chứng thư.', 'error');
-      }
-    });
+      zone.addEventListener('drop', event => {
+        const file = event.dataTransfer.files[0];
+        if (file) setFile(kind, file);
+      });
+    }
 
-    $('dsClearKeys').addEventListener('click', () => {
-      $('dsPrivateKey').value = '';
-      $('dsCertificate').value = '';
-      clearStatus('dsSigningStatus');
-    });
+    configureDropzone('dsSignDropzone', 'sign');
+    configureDropzone('dsVerifyDropzone', 'verify');
 
-    // API backend sẽ được bổ sung ở bước triển khai chữ ký số.
     $('dsSignButton').addEventListener('click', async () => {
       if (!signFile) {
         showStatus('dsSignStatus', 'Vui lòng chọn PDF cần ký.', 'error');
-        return;
-      }
-
-      const privateKey = $('dsPrivateKey').value.trim();
-      const certificate = $('dsCertificate').value.trim();
-
-      if (!privateKey || !certificate) {
-        showStatus(
-          'dsSigningStatus',
-          'Cần có khóa riêng và chứng thư số tương ứng trước khi ký.',
-          'error'
-        );
         return;
       }
 
@@ -981,44 +778,34 @@
       button.disabled = true;
 
       try {
-        showStatus(
-          'dsSigningStatus',
-          'Đang gửi tài liệu đến API ký số...',
-          'info'
-        );
+        showStatus('dsSigningStatus', 'Đang gửi PDF đến máy chủ để ký...', 'info');
 
-        const result = await postFile('/signature/pdf/sign', signFile, {
-          private_key: privateKey,
-          certificate: certificate
-        });
+        const result = await postFile('/signature/pdf/sign', signFile);
 
-        if (result.type === 'json') {
-          if (result.data.success !== true) {
-            throw new Error(result.data.message || 'Backend chưa ký được tài liệu.');
-          }
-
-          showStatus(
-            'dsSigningStatus',
-            result.data.message || 'Backend trả về kết quả JSON. Cần xử lý đường dẫn tải file.',
-            'success'
+        if (result.type !== 'file') {
+          throw new Error(
+            result.data.message || 'Máy chủ không trả về PDF đã ký.'
           );
-          return;
         }
 
-        $('dsDownloadButton').disabled = false;
-        $('dsDownloadButton').onclick = () => {
-          downloadBlob(result.blob, result.filename);
-        };
+        if (result.blob.type && !result.blob.type.includes('pdf')) {
+          throw new Error('Dữ liệu máy chủ trả về không phải PDF.');
+        }
+
+        signedBlob = result.blob;
+        signedFilename = result.filename;
+
+        downloadBlob(signedBlob, signedFilename);
 
         showStatus(
           'dsSigningStatus',
-          'Backend đã trả về tệp kết quả ký. Hãy xác minh chữ ký trước khi sử dụng.',
+          'Máy chủ đã trả về tệp PDF. Tệp đã được tải xuống; hãy chọn tệp đó ở mục xác minh.',
           'success'
         );
       } catch (error) {
         showStatus(
           'dsSigningStatus',
-          error.message || 'Không thể kết nối API ký số. Backend có thể chưa được triển khai.',
+          error.message || 'Không thể ký PDF.',
           'error'
         );
       } finally {
@@ -1036,20 +823,65 @@
       button.disabled = true;
 
       try {
-        showStatus('dsVerifyStatus', 'Đang gửi PDF đến API xác minh...', 'info');
+        showStatus('dsVerifyStatus', 'Đang xác minh chữ ký...', 'info');
 
         const result = await postFile('/signature/pdf/verify', verifyFile);
 
         if (result.type !== 'json') {
-          throw new Error('API xác minh phải trả về dữ liệu JSON.');
+          throw new Error('API xác minh cần trả về dữ liệu JSON.');
         }
 
-        setVerificationResult(result.data);
-      } catch (error) {
-        clearVerificationResult();
+        const data = result.data;
+
+        // Chỉ chấp nhận các trường kết quả xác minh được backend cung cấp.
+        // Không suy luận chữ ký hợp lệ chỉ từ HTTP 200.
+        if (data.success !== true || typeof data.valid !== 'boolean') {
+          throw new Error(
+            data.message || 'Backend chưa trả về kết quả xác minh đầy đủ.'
+          );
+        }
+
+        const valid = data.valid === true;
+        $('dsResultBanner').className =
+          'ds-result-status ' + (valid ? 'success' : 'error');
+
+        $('dsResultBanner').querySelector('i').className = valid
+          ? 'fa-solid fa-circle-check'
+          : 'fa-solid fa-circle-xmark';
+
+        $('dsResultTitle').textContent = valid
+          ? 'Backend báo chữ ký hợp lệ'
+          : 'Backend không xác nhận chữ ký hợp lệ';
+
+        $('dsResultDescription').textContent =
+          data.message || 'Đã nhận kết quả xác minh từ máy chủ.';
+
+        $('dsResultSigner').textContent =
+          data.signer || 'Backend chưa cung cấp thông tin người ký';
+
+        $('dsResultAlgorithm').textContent =
+          data.algorithm || 'Chưa có dữ liệu';
+
+        $('dsResultIntegrity').textContent =
+          data.integrity === true ? 'Được backend xác nhận'
+          : data.integrity === false ? 'Backend báo kiểm tra thất bại'
+          : 'Chưa có kết quả riêng biệt';
+
+        $('dsResultCertificate').textContent =
+          data.trusted === true || data.certificate_trusted === true
+            ? 'Backend xác nhận đáng tin cậy'
+            : 'Chưa được xác nhận đáng tin cậy';
+
         showStatus(
           'dsVerifyStatus',
-          error.message || 'Không thể xác minh. Backend có thể chưa được triển khai.',
+          data.message || 'Đã nhận kết quả xác minh.',
+          valid ? 'success' : 'error'
+        );
+      } catch (error) {
+        clearResult();
+        showStatus(
+          'dsVerifyStatus',
+          error.message || 'Không thể xác minh chữ ký.',
           'error'
         );
       } finally {
@@ -1057,29 +889,7 @@
       }
     });
 
-    // Hỗ trợ kéo thả PDF.
-    const dropzone = $('dsSignDropzone');
-
-    ['dragenter', 'dragover'].forEach(name => {
-      dropzone.addEventListener(name, event => {
-        event.preventDefault();
-        dropzone.style.borderColor = '#818cf8';
-      });
-    });
-
-    ['dragleave', 'drop'].forEach(name => {
-      dropzone.addEventListener(name, event => {
-        event.preventDefault();
-        dropzone.style.borderColor = '#5274ad';
-      });
-    });
-
-    dropzone.addEventListener('drop', event => {
-      const file = event.dataTransfer.files[0];
-      if (file) setFile($('dsSignFile'), file, 'sign');
-    });
-
-    clearVerificationResult();
+    clearResult();
   })();
   </script>
 </div>
