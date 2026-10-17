@@ -33,7 +33,7 @@
         <i class="fa-solid fa-gears text-amber"></i> 1. Sinh cặp khóa Public / Private Key
     </div>
     
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố p:</label>
             <input type="text" id="rsaP" value="" placeholder="Nhập giá trị p...">
@@ -41,6 +41,10 @@
         <div>
             <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số nguyên tố q:</label>
             <input type="text" id="rsaQ" value="" placeholder="Nhập giá trị q...">
+        </div>
+        <div>
+            <label style="font-weight: 600; font-size: 13px; color: #cbd5e1;">Số mũ e (Tùy chọn):</label>
+            <input type="text" id="rsaCustomE" value="" placeholder="Để trống tự động tìm e...">
         </div>
     </div>
 
@@ -218,6 +222,7 @@ function modInverse(e, phi) {
 function generateRSAKeys() {
     let pVal = document.getElementById('rsaP').value.trim();
     let qVal = document.getElementById('rsaQ').value.trim();
+    let eVal = document.getElementById('rsaCustomE').value.trim();
 
     if(!pVal || !qVal) {
         alert('Vui lòng nhập đầy đủ hai số nguyên tố p và q!');
@@ -234,16 +239,25 @@ function generateRSAKeys() {
 
     let n = p * q;
     let phi = (p - 1n) * (q - 1n);
+    let e;
 
-    let e = 3n;
-    while (e < phi) {
-        if (gcd(e, phi) === 1n) break;
-        e += 2n;
+    if (eVal !== "") {
+        e = BigInt(eVal);
+        if (gcd(e, phi) !== 1n) {
+            alert(`Lỗi: Số mũ e = ${e} không nguyên tố cùng nhau với phi(n) = ${phi} (gcd = ${gcd(e, phi).toString()})!`);
+            return;
+        }
+    } else {
+        e = 3n;
+        while (e < phi) {
+            if (gcd(e, phi) === 1n) break;
+            e += 2n;
+        }
     }
 
     let d = modInverse(e, phi);
     if(d === -1n) {
-        alert('Không tìm thấy nghịch đảo modular hợp lệ. Hãy thử cặp p, q khác!');
+        alert('Không tìm thấy nghịch đảo modular hợp lệ. Hãy kiểm tra lại giá trị e hoặc cặp p, q!');
         return;
     }
 
@@ -254,8 +268,6 @@ function generateRSAKeys() {
     document.getElementById('rsaPublic').value = `e = ${e.toString()}, n = ${n.toString()}`;
     document.getElementById('rsaPrivateD').value = d.toString();
     document.getElementById('rsaPrivateN').value = n.toString();
-
-    // ĐÃ XÓA cơ chế tự động điền (autofill) xuống khối 2 và khối 3 theo yêu cầu của bạn
 
     document.getElementById('rsaKeyVisualStep').style.display = 'block';
     document.getElementById('rsaKeyTraceText').innerHTML = `
@@ -325,8 +337,6 @@ function encryptRSA() {
 
     let ciphertext = cipherArr.join(' ');
     document.getElementById('rsaCiphertext').value = ciphertext;
-    
-    // ĐÃ XÓA cơ chế tự động copy bản mã sang ô giải mã
 
     document.getElementById('rsaEncryptVisualStep').style.display = 'block';
     document.getElementById('rsaEncryptTraceText').innerHTML = `
